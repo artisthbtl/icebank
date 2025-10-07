@@ -20,7 +20,7 @@ class UserFactory extends Factory
             'city' => fake()->city(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'pin' => Str::random(6),
+            'pin' => fake()->numerify('######'),
             'profile_photo_path' => null,
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),

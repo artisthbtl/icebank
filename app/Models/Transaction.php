@@ -16,6 +16,6 @@ class Transaction extends Model
 
     public function plan()
     {
-        return $this->belongsTo(Plan::class);
+        return $this->belongsTo(Plan::class, 'related_plan_id');
     }
 }
