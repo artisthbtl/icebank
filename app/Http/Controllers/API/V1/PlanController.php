@@ -1,64 +1,46 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
 use App\Models\Plan;
 use App\Http\Requests\StorePlanRequest;
 use App\Http\Requests\UpdatePlanRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\V1\PlanResource;
+use App\Http\Resources\V1\PlanCollection;
 
 class PlanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return new PlanCollection(Plan::paginate());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StorePlanRequest $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Plan $plan)
     {
-        //
+        return new PlanResource($plan);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Plan $plan)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdatePlanRequest $request, Plan $plan)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Plan $plan)
     {
         //
