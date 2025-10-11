@@ -4,23 +4,50 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\LoginRequest;
+use App\Models\User;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
-    public function login()
+    public function login(LoginRequest $request)
     {
-        $credentials = request(['email', 'password']);
+        $token = auth('api')->attempt($request->validated());
 
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        if($token){
+            return $this->respondWithToken($token, auth('api')->user());
+        } else {
+            return response()->json(['error' => 'Invalid Credentials'], 401);
         }
+    }
 
-        return $this->respondWithToken($token);
+    public function register(RegistrationRequest $request)
+    {
+        $validatedData = $request->validated(); // validate request
+
+        $userData = Arr::mapWithKeys($validatedData, function ($value, $key) {
+            return [Str::snake($key) => $value];
+        });
+
+        $userData['password'] = Hash::make($userData['password']);
+
+        $user = User::create($userData); // creating user
+
+        if($user){
+            $token = auth('api')->login($user);
+            return $this->respondWithToken($token, $user);
+        } else {
+            return response()->json(['error' => 'Registration failed'], 500);
+        }
     }
 
     public function me()
@@ -40,12 +67,13 @@ class AuthController extends Controller
         return $this->respondWithToken(auth('api')->refresh());
     }
 
-    protected function respondWithToken($token)
+    protected function respondWithToken($token, $user)
     {
         return response()->json([
+            'user' => $user,
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60
         ]);
     }
 }

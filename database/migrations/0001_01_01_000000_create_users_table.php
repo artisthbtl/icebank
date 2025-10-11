@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('city');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('pin')->nullable();
             $table->string('profile_photo_path', 2048)->nullable();
+            $table->string('pin')->nullable();
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();

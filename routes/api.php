@@ -9,16 +9,18 @@ use App\Http\Controllers\API\V1\ServiceController;
 use App\Http\Controllers\API\V1\PlanController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
+use App\Http\Controllers\API\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
-    Route::post('login', 'App\Http\Controllers\API\AuthController@login');
-    Route::post('logout', 'App\Http\Controllers\API\AuthController@logout');
-    Route::post('refresh', 'App\Http\Controllers\API\AuthController@refresh');
-    Route::post('me', 'App\Http\Controllers\API\AuthController@me');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::get('me', [AuthController::class, 'me']);
 });
 
 Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\V1'], function () {
