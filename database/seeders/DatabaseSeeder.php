@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
                 'first_name' => 'Marcello',
                 'last_name' => 'Kusumo',
                 'email' => 'marcello@icebank.test',
+                'password' => bcrypt('pass'),
             ]);
 
         // CREATE A BATCH OF RANDOM USERS

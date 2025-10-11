@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API\V1;
 
 use App\Models\Verification;
 use App\Http\Requests\StoreVerificationRequest;
 use App\Http\Requests\UpdateVerificationRequest;
+use App\Http\Controllers\Controller;
 
 class VerificationController extends Controller
 {
