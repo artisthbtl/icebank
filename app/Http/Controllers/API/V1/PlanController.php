@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Plan;
-use App\Http\Requests\StorePlanRequest;
-use App\Http\Requests\UpdatePlanRequest;
+use App\Http\Requests\V1\StorePlanRequest;
+use App\Http\Requests\V1\UpdatePlanRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\PlanResource;
 use App\Http\Resources\V1\PlanCollection;

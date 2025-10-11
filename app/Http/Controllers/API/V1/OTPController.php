@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\OTP;
-use App\Http\Requests\StoreOTPRequest;
-use App\Http\Requests\UpdateOTPRequest;
+use App\Http\Requests\V1\StoreOTPRequest;
+use App\Http\Requests\V1\UpdateOTPRequest;
 use App\Http\Controllers\Controller;
 
 class OTPController extends Controller

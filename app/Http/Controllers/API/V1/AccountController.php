@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Account;
-use App\Http\Requests\StoreAccountRequest;
-use App\Http\Requests\UpdateAccountRequest;
+use App\Http\Requests\V1\StoreAccountRequest;
+use App\Http\Requests\V1\UpdateAccountRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\AccountResource;
 use App\Http\Resources\V1\AccountCollection;

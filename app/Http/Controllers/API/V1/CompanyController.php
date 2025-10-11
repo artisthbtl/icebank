@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Company;
-use App\Http\Requests\StoreCompanyRequest;
-use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Requests\V1\StoreCompanyRequest;
+use App\Http\Requests\V1\UpdateCompanyRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\CompanyResource;
 use App\Http\Resources\V1\CompanyCollection;

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegistrationRequest;
-use App\Http\Requests\LoginRequest;
+use App\Http\Requests\V1\RegistrationRequest;
+use App\Http\Requests\V1\LoginRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\Login;
+use App\Models\Account;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -64,7 +64,7 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(auth('api')->refresh());
+        return $this->respondWithToken(auth('api')->refresh(), auth('api')->user());
     }
 
     protected function respondWithToken($token, $user)
