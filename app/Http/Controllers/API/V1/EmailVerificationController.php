@@ -22,10 +22,26 @@ class EmailVerificationController extends Controller
             event(new Verified($user));
 
             if (!$user->account) {
-                $accountNumber = '';
-                do {
-                    $accountNumber = mt_rand(100000000000, 999999999999);
-                } while (Account::where('account_number', $accountNumber)->exists());
+                $accountNumber = null;
+
+                for ($i = 0; $i < 5; $i++) {
+                    $timeComponent = substr((string) (microtime(true) * 1000), -9);
+
+                    $randomComponent = random_int(100, 999);
+
+                    $candidate = $timeComponent . $randomComponent;
+
+                    if (!Account::where('account_number', $candidate)->exists()) {
+                        $accountNumber = $candidate;
+                        break;
+                    }
+
+                    usleep(1000);
+                }
+                
+                if ($accountNumber === null) {
+                    $accountNumber = $this->generateRandomUniqueAccountNumber();
+                }
 
                 $user->account()->create([
                     'account_number' => $accountNumber,
@@ -35,7 +51,8 @@ class EmailVerificationController extends Controller
             }
         }
 
-        return response()->json(['message' => 'Email has been successfully verified. You can now log in.'], 200);
+        // to-do redirect user to home page
+        return response()->json(['message' => 'Email has been successfully verified.'], 200);
     }
 
     public function resend(Request $request)
@@ -54,5 +71,14 @@ class EmailVerificationController extends Controller
         $user->sendEmailVerificationNotification();
 
         return response()->json(['message' => 'A new verification link has been sent to your email address.']);
+    }
+
+    private function generateRandomUniqueAccountNumber(): string
+    {
+        do {
+            $number = random_int(100000000000, 999999999999);
+        } while (Account::where('account_number', $number)->exists());
+
+        return (string) $number;
     }
 }

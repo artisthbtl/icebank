@@ -9,26 +9,62 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\RegistrationRequest;
 use App\Http\Requests\V1\LoginRequest;
-use App\Mail\RegistrationVerificationMail;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Mail\RegistrationVerificationMail;
+use App\Mail\LoginOtpMail;
 
 class AuthController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyOtpAndLogin']]);
     }
 
     public function login(LoginRequest $request)
     {
-        $token = auth('api')->attempt($request->validated());
+        $credentials = $request->validated();
+        $user = User::where('email', $credentials['email'])->first();
 
-        if($token){
-            return $this->respondWithToken($token, auth('api')->user());
-        } else {
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             return response()->json(['error' => 'Invalid Credentials'], 401);
         }
+
+        $otp = random_int(100000, 999999);
+        $cacheKey = 'otp_for_user_' . $user->id;
+
+        Cache::put($cacheKey, $otp, now()->addMinutes(5));
+
+        Mail::to($user)->send(new LoginOtpMail($user, (string)$otp));
+
+        return response()->json([
+            'message' => 'OTP has been sent to your email.',
+            'userId' => $user->id,
+        ]);
+    }
+
+    public function verifyOtpAndLogin(Request $request)
+    {
+        $request->validate([
+            'userId' => 'required|exists:users,id',
+            'otp' => 'required|string|digits:6',
+        ]);
+
+        $cacheKey = 'otp_for_user_' . $request->userId;
+        $storedOtp = Cache::get($cacheKey);
+
+        if (!$storedOtp || $storedOtp != $request->otp) {
+            return response()->json(['error' => 'Invalid or expired OTP.'], 401);
+        }
+
+        Cache::forget($cacheKey);
+
+        $user = User::find($request->userId);
+        $token = auth('api')->login($user);
+
+        return $this->respondWithToken($token, $user);
     }
 
     public function register(RegistrationRequest $request)
