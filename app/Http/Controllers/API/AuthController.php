@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\RegistrationRequest;
 use App\Http\Requests\V1\LoginRequest;
-use App\Models\User;
-use App\Models\Account;
-use Illuminate\Support\Facades\Hash;
+use App\Mail\RegistrationVerificationMail;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -42,12 +43,11 @@ class AuthController extends Controller
 
         $user = User::create($userData); // creating user
 
-        if($user){
-            $token = auth('api')->login($user);
-            return $this->respondWithToken($token, $user);
-        } else {
-            return response()->json(['error' => 'Registration failed'], 500);
-        }
+        Mail::to($user)->send(new RegistrationVerificationMail($user));
+        
+        return response()->json([
+            'message' => 'Registration successful. A verification link has been sent to your email.'
+        ], 201);
     }
 
     public function me()

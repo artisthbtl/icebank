@@ -10,6 +10,7 @@ use App\Http\Controllers\API\V1\PlanController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\V1\EmailVerificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -32,3 +33,11 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers\API\V1'], f
     Route::apiResource('transactions', TransactionController::class);
     Route::apiResource('subscriptions', SubscriptionController::class);
 });
+
+Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
+    ->name('verification.verify')
+    ->middleware('signed');
+
+Route::post('/email/resend', [EmailVerificationController::class, 'resend'])
+    ->middleware('throttle:6,1')
+    ->name('verification.resend');
