@@ -33,7 +33,7 @@ class AdminLoginOtpMail extends Mailable implements ShouldQueue
     public function content(): Content
     {
         return new Content(
-            view: 'emails.auth.admin-login-otp',
+            view: 'emails.auth.login-otp-admin',
         );
     }
 

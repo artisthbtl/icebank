@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API\V1;
 
 use App\Models\Verification;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\StoreVerificationRequest;
 use App\Http\Requests\V1\UpdateVerificationRequest;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\VerificationResource;
 use App\Http\Resources\V1\VerificationCollection;
 
