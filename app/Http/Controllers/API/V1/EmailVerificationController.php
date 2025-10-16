@@ -22,29 +22,8 @@ class EmailVerificationController extends Controller
             event(new Verified($user));
 
             if (!$user->account) {
-                $accountNumber = null;
-
-                for ($i = 0; $i < 5; $i++) {
-                    $timeComponent = substr((string) (microtime(true) * 1000), -9);
-
-                    $randomComponent = random_int(100, 999);
-
-                    $candidate = $timeComponent . $randomComponent;
-
-                    if (!Account::where('account_number', $candidate)->exists()) {
-                        $accountNumber = $candidate;
-                        break;
-                    }
-
-                    usleep(1000);
-                }
-                
-                if ($accountNumber === null) {
-                    $accountNumber = $this->generateRandomUniqueAccountNumber();
-                }
-
                 $user->account()->create([
-                    'account_number' => $accountNumber,
+                    'account_number' => $this->generateUniqueAccountNumber(),
                     'is_verified' => 'no',
                     'balance' => 0,
                 ]);
@@ -73,12 +52,24 @@ class EmailVerificationController extends Controller
         return response()->json(['message' => 'A new verification link has been sent to your email address.']);
     }
 
-    private function generateRandomUniqueAccountNumber(): string
+    private function generateUniqueAccountNumber(): string
     {
-        do {
-            $number = random_int(100000000000, 999999999999);
-        } while (Account::where('account_number', $number)->exists());
+        for ($i = 0; $i < 5; $i++) {
+            $timeComponent = substr((string) (microtime(true) * 1000), -9);
+            $randomComponent = random_int(100, 999);
+            $candidate = $timeComponent . $randomComponent;
 
-        return (string) $number;
+            if (!Account::where('account_number', $candidate)->exists()) {
+                return $candidate;
+            }
+
+            usleep(1000);
+        }
+
+        do {
+            $accountNumber = random_int(100000000000, 999999999999);
+        } while (Account::where('account_number', $accountNumber)->exists());
+
+        return (string) $accountNumber;
     }
 }

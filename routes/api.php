@@ -10,7 +10,9 @@ use App\Http\Controllers\API\V1\ServiceController;
 use App\Http\Controllers\API\V1\PlanController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
+use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\V1\EmailVerificationController;
+use App\Http\Controllers\API\AdminAuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -50,5 +52,15 @@ Route::middleware('auth:api')->group(function () {
         Route::apiResource('plans', PlanController::class);
         Route::apiResource('transactions', TransactionController::class);
         Route::apiResource('subscriptions', SubscriptionController::class);
+        Route::apiResource('verifications', VerificationController::class);
+    });
+});
+
+// ADMIN ROUTES
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::post('login', [AdminAuthController::class, 'login'])->name('login');
+
+    Route::middleware('auth:admin')->group(function() {
+        // Route::get('verifications', [AdminVerificationController::class, 'index']);
     });
 });

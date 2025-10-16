@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\RegistrationRequest;
 use App\Http\Requests\V1\LoginRequest;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Mail\RegistrationVerificationMail;
-use App\Mail\LoginOtpMail;
 
 class AuthController extends Controller
 {
+    protected AuthService $authService;
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyOtpAndLogin']]);
+        $this->authService = new AuthService();
     }
 
     public function login(LoginRequest $request)
@@ -32,12 +33,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Credentials'], 401);
         }
 
-        $otp = random_int(100000, 999999);
-        $cacheKey = 'otp_for_user_' . $user->id;
-
-        Cache::put($cacheKey, $otp, now()->addMinutes(5));
-
-        Mail::to($user)->send(new LoginOtpMail($user, (string)$otp));
+        $this->authService->sendOtp($user);
 
         return response()->json([
             'message' => 'OTP has been sent to your email.',
@@ -52,14 +48,9 @@ class AuthController extends Controller
             'otp' => 'required|string|digits:6',
         ]);
 
-        $cacheKey = 'otp_for_user_' . $request->userId;
-        $storedOtp = Cache::get($cacheKey);
-
-        if (!$storedOtp || $storedOtp != $request->otp) {
+        if (!$this->authService->verifyOtp($request->userId, $request->otp)) {
             return response()->json(['error' => 'Invalid or expired OTP.'], 401);
         }
-
-        Cache::forget($cacheKey);
 
         $user = User::find($request->userId);
         $token = auth('api')->login($user);
@@ -69,7 +60,7 @@ class AuthController extends Controller
 
     public function register(RegistrationRequest $request)
     {
-        $validatedData = $request->validated(); // validate request
+        $validatedData = $request->validated();
 
         $userData = Arr::mapWithKeys($validatedData, function ($value, $key) {
             return [Str::snake($key) => $value];
