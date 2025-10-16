@@ -59,7 +59,8 @@ Route::middleware('auth:api')->group(function () {
 // ADMIN ROUTES
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login'])->name('login');
-
+    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtpAndLogin'])->name('verify-otp');
+    
     Route::middleware('auth:admin')->group(function() {
         // Route::get('verifications', [AdminVerificationController::class, 'index']);
     });

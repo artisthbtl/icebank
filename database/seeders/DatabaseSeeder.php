@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\Subscription;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,6 +25,10 @@ class DatabaseSeeder extends Seeder
                 'email' => 'marcello@icebank.test',
                 'password' => bcrypt('pass'),
             ]);
+
+        
+        // CREATE ADMIN
+        Admin::factory()->create();
 
         // CREATE A BATCH OF RANDOM USERS
         $randomUsers = User::factory()

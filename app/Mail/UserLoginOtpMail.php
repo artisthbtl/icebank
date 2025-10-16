@@ -10,7 +10,7 @@ use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\User;
 
-class LoginOtpMail extends Mailable implements ShouldQueue
+class UserLoginOtpMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
