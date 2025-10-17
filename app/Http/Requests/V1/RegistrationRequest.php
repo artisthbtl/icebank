@@ -19,7 +19,7 @@ class RegistrationRequest extends FormRequest
             'dateOfBirth' => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
             'city' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|same:passwordConfirmation',
         ];
     }
 }

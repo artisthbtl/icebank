@@ -4,7 +4,7 @@ namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVerificationRequest extends FormRequest
+class UpdatePinRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,8 +14,8 @@ class StoreVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ktpImage' => 'required|image|mimes:jpeg,png,jpg|max:2048', // 2MB Max
-            'selfieImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'currentPin' => 'required|string|digits:6',
+            'newPin' => 'required|string|digits:6|same:newPinConfirmation',
         ];
     }
 }

@@ -16,11 +16,6 @@ class PlanController extends Controller
         return new PlanCollection(Plan::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StorePlanRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class PlanController extends Controller
     public function show(Plan $plan)
     {
         return new PlanResource($plan);
-    }
-
-    public function edit(Plan $plan)
-    {
-        //
     }
 
     public function update(UpdatePlanRequest $request, Plan $plan)

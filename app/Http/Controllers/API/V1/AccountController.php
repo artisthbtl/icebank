@@ -16,11 +16,6 @@ class AccountController extends Controller
         return new AccountCollection(Account::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreAccountRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class AccountController extends Controller
     public function show(Account $account)
     {
         return new AccountResource($account);
-    }
-
-    public function edit(Account $account)
-    {
-        //
     }
 
     public function update(UpdateAccountRequest $request, Account $account)

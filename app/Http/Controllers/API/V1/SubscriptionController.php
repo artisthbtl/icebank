@@ -16,11 +16,6 @@ class SubscriptionController extends Controller
         return new SubscriptionCollection(Subscription::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreSubscriptionRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class SubscriptionController extends Controller
     public function show(Subscription $subscription)
     {
         return new SubscriptionResource($subscription);
-    }
-
-    public function edit(Subscription $subscription)
-    {
-        //
     }
 
     public function update(UpdateSubscriptionRequest $request, Subscription $subscription)

@@ -11,7 +11,3 @@ Route::get('/', function () {
 Route::get('/register', function () {
     return view('auth.register');
 });
-
-// Route::get('/create-pin', [UserController::class, 'createPin'])->name('create.pin');
-
-// Route::get('/verify', [VerificationController::class, 'create'])->name('create.verification');

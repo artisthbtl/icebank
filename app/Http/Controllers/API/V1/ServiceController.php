@@ -16,11 +16,6 @@ class ServiceController extends Controller
         return new ServiceCollection(Service::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreServiceRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class ServiceController extends Controller
     public function show(Service $service)
     {
         return new ServiceResource($service);
-    }
-
-    public function edit(Service $service)
-    {
-        //
     }
 
     public function update(UpdateServiceRequest $request, Service $service)

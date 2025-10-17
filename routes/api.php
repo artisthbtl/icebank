@@ -22,7 +22,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('verify-otp', [AuthController::class, 'verifyOtpAndLogin'])->name('verify-otp');
+    Route::post('verify-otp', [AuthController::class, 'verifyOtpAndLogin']);
 });
 
 Route::prefix('email')->name('verification.')->group(function () {
@@ -46,13 +46,14 @@ Route::middleware('auth:api')->group(function () {
 
     Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('users', UserController::class)->except(['store', 'update']);
-        Route::post('users/store-pin', [UserController::class, 'storePin'])->name('store.pin');
-        Route::put('users/update-pin', [UserController::class, 'updatePin'])->name('update.pin');
+        Route::post('users/store-pin', [UserController::class, 'storePin']);
+        Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('plans', PlanController::class);
         Route::apiResource('verifications', VerificationController::class);
+        Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
 
         Route::middleware('is.verified')->group(function () {
             Route::apiResource('transactions', TransactionController::class);
@@ -64,7 +65,7 @@ Route::middleware('auth:api')->group(function () {
 // ADMIN ROUTES
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login'])->name('login');
-    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtpAndLogin'])->name('verify-otp');
+    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtpAndLogin']);
     
     Route::middleware('auth:admin')->group(function() {
         // Route::get('verifications', [AdminVerificationController::class, 'index']);

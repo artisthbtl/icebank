@@ -14,7 +14,7 @@ class StorePinRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pin' => 'required|string|digits:6|confirmed',
+            'pin' => 'required|string|digits:6|same:pinConfirmation',
         ];
     }
 }

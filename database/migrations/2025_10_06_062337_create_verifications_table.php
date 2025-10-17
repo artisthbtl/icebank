@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('verifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('ktp_image_path');
-            $table->string('selfie_image_path');
+            $table->string('ktp_path');
+            $table->string('selfie_path');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
             $table->text('rejection_reason')->nullable();
             $table->timestamps();

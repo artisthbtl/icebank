@@ -16,11 +16,6 @@ class TransactionController extends Controller
         return new TransactionCollection(Transaction::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreTransactionRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class TransactionController extends Controller
     public function show(Transaction $transaction)
     {
         return new TransactionResource($transaction);
-    }
-
-    public function edit(Transaction $transaction)
-    {
-        //
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)

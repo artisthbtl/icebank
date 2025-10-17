@@ -16,11 +16,6 @@ class CompanyController extends Controller
         return new CompanyCollection(Company::paginate());
     }
 
-    public function create()
-    {
-        //
-    }
-
     public function store(StoreCompanyRequest $request)
     {
         //
@@ -29,11 +24,6 @@ class CompanyController extends Controller
     public function show(Company $company)
     {
         return new CompanyResource($company);
-    }
-
-    public function edit(Company $company)
-    {
-        //
     }
 
     public function update(UpdateCompanyRequest $request, Company $company)

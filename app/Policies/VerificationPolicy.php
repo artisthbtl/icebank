@@ -16,12 +16,9 @@ class VerificationPolicy
         return false;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Verification $verification): bool
+    public function view(User $user, Verification $verification)
     {
-        return false;
+        return $user->is_admin || $user->id === $verification->user_id;
     }
 
     /**

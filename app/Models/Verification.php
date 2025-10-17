@@ -11,8 +11,8 @@ class Verification extends Model
 
     protected $fillable = [
         'user_id',
-        'ktp_image_path',
-        'selfie_image_path',
+        'ktp_path',
+        'selfie_path',
         'status',
     ];
     

@@ -10,12 +10,10 @@ class CheckPin
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = Auth::user();
-
-        if (is_null($user->pin)) {
-            if (!$request->routeIs('create.pin') && !$request->routeIs('store.pin')) {
-                return redirect()->route('create.pin');
-            }
+        if (Auth::user()->pin === null) {
+            return response()->json([
+                'message' => 'You must create a PIN to access this feature.'
+            ], 403);
         }
 
         return $next($request);
