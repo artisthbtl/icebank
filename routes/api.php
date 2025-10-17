@@ -44,17 +44,20 @@ Route::middleware('auth:api')->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('me');
     });
 
-    Route::prefix('v1')->name('v1.')->group(function () {
-        Route::apiResource('users', UserController::class);
-        Route::post('users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
-        Route::put('users/update-pin', [UserController::class, 'updatePin'])->name('pin.update');
+    Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
+        Route::apiResource('users', UserController::class)->except(['store', 'update']);
+        Route::post('users/store-pin', [UserController::class, 'storePin'])->name('store.pin');
+        Route::put('users/update-pin', [UserController::class, 'updatePin'])->name('update.pin');
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('plans', PlanController::class);
-        Route::apiResource('transactions', TransactionController::class);
-        Route::apiResource('subscriptions', SubscriptionController::class);
         Route::apiResource('verifications', VerificationController::class);
+
+        Route::middleware('is.verified')->group(function () {
+            Route::apiResource('transactions', TransactionController::class);
+            Route::apiResource('subscriptions', SubscriptionController::class);
+        });
     });
 });
 

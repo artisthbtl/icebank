@@ -3,6 +3,9 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\CheckPin;
+use App\Http\Middleware\IsVerified;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -13,8 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin' => \App\Http\Middleware\IsAdmin::class,
-            'check.pin' => \App\Http\Middleware\CheckPin::class,
+            'admin' => IsAdmin::class,
+            'check.pin' => CheckPin::class,
+            'is.verified' => IsVerified::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

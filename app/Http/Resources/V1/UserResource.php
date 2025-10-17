@@ -16,7 +16,7 @@ class UserResource extends JsonResource
             'dateOfBirth' => $this->date_of_birth,
             'city' => $this->city,
             'email' => $this->email,
-            'profilePhotoUrl' => $this->profile_photo_path ? url($this->profile_photo_path) : null,
+            'profilePhotoPath' => $this->profile_photo_path ? url($this->profile_photo_path) : null,
             'emailVerifiedAt' => $this->email_verified_at,
         ];
     }

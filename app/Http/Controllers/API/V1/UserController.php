@@ -48,7 +48,7 @@ class UserController extends Controller
         $user = Auth::user();
 
         if (!is_null($user->pin)) {
-            return response()->json(['message' => 'PIN already set.'], 400);
+            return response()->json(['message' => 'PIN already set.'], 409);
         }
 
         $user->pin = Hash::make($request->pin);

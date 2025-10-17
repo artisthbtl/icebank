@@ -6,16 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class CheckPin
+class IsVerified
 {
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();
 
-        if (is_null($user->pin)) {
-            if (!$request->routeIs('create.pin') && !$request->routeIs('store.pin')) {
-                return redirect()->route('create.pin');
-            }
+        if (!$user || !$user->account || $user->account->is_verified !== 'yes') {
+            return redirect()->route('create.verification');
         }
 
         return $next($request);

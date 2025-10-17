@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 'last_name' => 'Kusumo',
                 'email' => 'marcello@icebank.test',
                 'password' => bcrypt('pass'),
+                'pin' => bcrypt('123456'),
             ]);
 
         

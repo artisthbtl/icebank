@@ -19,7 +19,7 @@ class VerificationController extends Controller
 
     public function create()
     {
-        //
+        return view('verification.create');
     }
 
     public function store(StoreVerificationRequest $request)
