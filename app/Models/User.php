@@ -19,11 +19,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         'city',
         'email',
         'password',
+        'pin',
+        'profile_photo_path',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+        'pin',
     ];
 
     protected function casts(): array
@@ -31,6 +34,7 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'pin' => 'hashed',
         ];
     }
 

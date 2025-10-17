@@ -46,6 +46,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('users', UserController::class);
+        Route::post('users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
+        Route::put('users/update-pin', [UserController::class, 'updatePin'])->name('pin.update');
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
