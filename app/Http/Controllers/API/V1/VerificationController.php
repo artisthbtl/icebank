@@ -46,18 +46,22 @@ class VerificationController extends Controller
     public function showFile($filename)
     {
         try {
-            $verification = Verification::where('ktp_path', 'verifications/' . $filename)
-                                        ->orWhere('selfie_path', 'verifications/' . $filename)
+            $sanitizedFilename = basename($filename);
+            $path = 'verifications/' . $sanitizedFilename;
+
+            $verification = Verification::where('ktp_path', $path)
+                                        ->orWhere('selfie_path', $path)
                                         ->firstOrFail();
 
             $this->authorize('view', $verification);
-            $path = 'verifications/' . $filename;
 
-            if (!Storage::disk('local')->exists($path)) {
-                return response()->json(['message' => 'File not found.'], 404);
+            $storagePath = ($verification->ktp_path === $path) ? $verification->ktp_path : $verification->selfie_path;
+
+            if (!Storage::disk('local')->exists($storagePath)) {
+                return response()->json(['message' => 'File not found on disk.'], 404);
             }
-
-            return Storage::disk('local')->response($path);
+            
+            return Storage::disk('local')->response($storagePath);
 
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Not Found'], 404);

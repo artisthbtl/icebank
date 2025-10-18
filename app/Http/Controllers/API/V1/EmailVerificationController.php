@@ -30,7 +30,6 @@ class EmailVerificationController extends Controller
             }
         }
 
-        // to-do redirect user to home page
         return response()->json(['message' => 'Email has been successfully verified.'], 200);
     }
 
