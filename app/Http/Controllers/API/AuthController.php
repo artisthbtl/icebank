@@ -69,7 +69,7 @@ class AuthController extends Controller
         $user = User::create($userData);
 
         $verificationLink = URL::temporarySignedRoute(
-            'email.verify',
+            'verify-email',
             now()->addMinutes(30),
             [
                 'id' => $user->id,

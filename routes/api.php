@@ -36,8 +36,8 @@ Route::prefix('email')->name('email')->group(function () {
     });
 
     Route::middleware('signed')->group(function () {
-        Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify');
-        Route::get('/verify-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-update');
+        Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify-email');
+        Route::get('/verify-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-email-update');
     });
 });
 
