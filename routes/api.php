@@ -30,14 +30,14 @@ Route::prefix('auth')->name('auth.')->group(function () {
     });
 });
 
-Route::prefix('email')->name('email')->group(function () {
+Route::prefix('email')->name('email.')->group(function () {
     Route::middleware('throttle:6,1')->group(function () {
         // Route::post('/resend', [EmailVerificationController::class, 'resend'])->name('resend');
     });
 
     Route::middleware('signed')->group(function () {
-        Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify-email');
-        Route::get('/verify-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-email-update');
+        Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify');
+        Route::get('/verify-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-update');
     });
 });
 
@@ -50,19 +50,21 @@ Route::middleware('auth:api')->group(function () {
         Route::get('me', [AuthController::class, 'me'])->name('me');
     });
 
+    Route::post('v1/users/store-pin', [UserController::class, 'storePin']);
     Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
         Route::apiResource('users', UserController::class)->except(['store', 'update']);
-        Route::post('users/store-pin', [UserController::class, 'storePin']);
+        Route::post('users/update-pfp', [UserController::class, 'updateProfilePhoto']);
         Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::put('users/update-password', [UserController::class, 'updatePassword']);
         Route::put('users/update-email', [UserController::class, 'updateEmail']);
+        Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
+        Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('plans', PlanController::class);
         Route::apiResource('verifications', VerificationController::class);
         Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
-
         Route::middleware('is.verified')->group(function () {
             Route::apiResource('transactions', TransactionController::class);
             Route::apiResource('subscriptions', SubscriptionController::class);

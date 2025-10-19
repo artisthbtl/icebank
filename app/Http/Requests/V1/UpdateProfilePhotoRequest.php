@@ -4,7 +4,7 @@ namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreVerificationRequest extends FormRequest
+class UpdateProfilePhotoRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,8 +14,7 @@ class StoreVerificationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ktpImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'selfieImage' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'photo' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ];
     }
 }

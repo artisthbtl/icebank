@@ -11,6 +11,8 @@ use App\Http\Requests\V1\StorePinRequest;
 use App\Http\Requests\V1\UpdateEmailRequest;
 use App\Http\Requests\V1\UpdatePinRequest;
 use App\Http\Requests\V1\UpdatePasswordRequest;
+use App\Http\Requests\V1\UpdateProfilePhotoRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -98,7 +100,7 @@ class UserController extends Controller
         }
 
         $verificationLink = URL::temporarySignedRoute(
-            'verify-email-update',
+            'email.verify-update',
             now()->addMinutes(30),
             [
                 'user'      => $user->id,
@@ -125,5 +127,66 @@ class UserController extends Controller
         return response()->json([
             'message' => 'Your email address has been successfully updated.'
         ], 200);
+    }
+
+    public function updateProfilePhoto(UpdateProfilePhotoRequest $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $oldPhotoPath = $user->profile_photo_path;
+            $newPhotoPath = $request->file('photo')->store('profile_photos', 'public');
+
+            if ($oldPhotoPath) {
+                Storage::disk('public')->delete($oldPhotoPath);
+            }
+
+            $user->update([
+                'profile_photo_path' => $newPhotoPath
+            ]);
+
+            return response()->json([
+                'message' => 'Profile photo updated successfully.',
+                'profilePhotoPath' => $newPhotoPath,
+                'photoUrl' => Storage::disk('public')->url($newPhotoPath)
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while updating the profile photo.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function deleteProfilePhoto()
+    {
+        try {
+            $user = Auth::user();
+
+            $photoPath = $user->profile_photo_path;
+
+            if ($photoPath) {
+                Storage::disk('public')->delete($photoPath);
+
+                $user->update([
+                    'photo_path' => null
+                ]);
+
+                return response()->json([
+                    'message' => 'Profile photo deleted successfully.'
+                ], 200);
+            }
+
+            return response()->json([
+                'message' => 'No profile photo to delete.'
+            ], 404);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'An error occurred while deleting the profile photo.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }
