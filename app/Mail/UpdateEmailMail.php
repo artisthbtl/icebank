@@ -8,40 +8,32 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\URL;
 use App\Models\User;
 
-class RegistrationVerificationMail extends Mailable implements ShouldQueue
+class UpdateEmailMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     public User $user;
+    public string $verificationLink;
 
-    public function __construct(User $user)
+    public function __construct(User $user, string $verificationLink)
     {
         $this->user = $user;
+        $this->verificationLink = $verificationLink;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Icebank! Please Verify Your Email.',
+            subject: 'Verify Your New Email Address',
         );
     }
 
     public function content(): Content
     {
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(10),
-            ['id' => $this->user->id, 'hash' => sha1($this->user->getEmailForVerification())]
-        );
-
         return new Content(
-            view: 'emails.auth.verify-email',
-            with: [
-                'verificationUrl' => $verificationUrl,
-            ],
+            view: 'emails.auth.update-email',
         );
     }
 

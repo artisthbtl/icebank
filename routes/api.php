@@ -13,7 +13,6 @@ use App\Http\Controllers\API\V1\ServiceController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\VerificationController;
-use App\Http\Controllers\API\V1\EmailVerificationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -23,7 +22,7 @@ Route::get('/user', function (Request $request) {
 Route::prefix('auth')->name('auth.')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
-    Route::post('verify-otp', [AuthController::class, 'verifyOtpAndLogin']);
+    Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 
     Route::middleware('throttle:5,1')->group(function () {
         Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLink']);
@@ -31,14 +30,15 @@ Route::prefix('auth')->name('auth.')->group(function () {
     });
 });
 
-Route::prefix('email')->name('verification.')->group(function () {
-    Route::get('/verify/{id}/{hash}', [EmailVerificationController::class, 'verify'])
-        ->name('verify')
-        ->middleware('signed');
+Route::prefix('email')->name('email')->group(function () {
+    Route::middleware('throttle:6,1')->group(function () {
+        // Route::post('/resend', [EmailVerificationController::class, 'resend'])->name('resend');
+    });
 
-    Route::post('/resend', [EmailVerificationController::class, 'resend'])
-        ->middleware('throttle:6,1')
-        ->name('resend');
+    Route::middleware('signed')->group(function () {
+        Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify');
+        Route::get('/verify-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-update');
+    });
 });
 
 
@@ -55,6 +55,7 @@ Route::middleware('auth:api')->group(function () {
         Route::post('users/store-pin', [UserController::class, 'storePin']);
         Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::put('users/update-password', [UserController::class, 'updatePassword']);
+        Route::put('users/update-email', [UserController::class, 'updateEmail']);
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
@@ -72,7 +73,7 @@ Route::middleware('auth:api')->group(function () {
 // ADMIN ROUTES
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('login', [AdminAuthController::class, 'login']);
-    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtpAndLogin']);
+    Route::post('verify-otp', [AdminAuthController::class, 'verifyOtp']);
     
     Route::middleware('auth:admin')->group(function() {
         // Route::get('verifications', [AdminVerificationController::class, 'index']);

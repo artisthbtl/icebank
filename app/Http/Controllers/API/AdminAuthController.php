@@ -6,6 +6,7 @@ use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\VerifyOtpRequest;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 
@@ -35,13 +36,8 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function verifyOtpAndLogin(Request $request)
+    public function verifyOtpAndLogin(VerifyOtpRequest $request)
     {
-        $request->validate([
-            'adminId' => 'required|exists:admins,id',
-            'otp' => 'required|string|digits:6',
-        ]);
-
         if (!$this->authService->verifyAdminOtp($request->adminId, $request->otp)) {
             return response()->json(['error' => 'Invalid or expired OTP.'], 401);
         }

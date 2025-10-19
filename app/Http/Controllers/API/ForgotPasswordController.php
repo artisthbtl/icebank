@@ -3,15 +3,13 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Jobs\SendPasswordResetJob;
 use App\Models\User;
 use Carbon\Carbon;
-
+use App\Http\Requests\V1\ResetPasswordRequest;
 
 class ForgotPasswordController extends Controller
 {
@@ -33,14 +31,8 @@ class ForgotPasswordController extends Controller
         ], 200);
     }
 
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'token' => 'required|string',
-            'password' => 'required|string|min:8|same:passwordConfirmation', 
-        ]);
-
         $tokenData = DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->first();

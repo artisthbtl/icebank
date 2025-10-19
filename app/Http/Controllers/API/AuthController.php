@@ -3,16 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\V1\RegistrationRequest;
-use App\Http\Requests\V1\LoginRequest;
-use App\Services\AuthService;
-use Illuminate\Http\Request;
+use App\Models\Account;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use App\Mail\RegistrationVerificationMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\Request;
+use App\Http\Requests\V1\RegistrationRequest;
+use App\Http\Requests\V1\LoginRequest;
+use App\Http\Requests\V1\VerifyOtpRequest;
+use App\Http\Controllers\Controller;
+use App\Services\AuthService;
+use App\Mail\EmailVerificationMail;
 
 class AuthController extends Controller
 {
@@ -40,13 +44,8 @@ class AuthController extends Controller
         ]);
     }
 
-    public function verifyOtpAndLogin(Request $request)
+    public function verifyOtp(VerifyOtpRequest $request)
     {
-        $request->validate([
-            'userId' => 'required|exists:users,id',
-            'otp' => 'required|string|digits:6',
-        ]);
-
         if (!$this->authService->verifyOtp($request->userId, $request->otp)) {
             return response()->json(['error' => 'Invalid or expired OTP.'], 401);
         }
@@ -67,13 +66,45 @@ class AuthController extends Controller
 
         $userData['password'] = Hash::make($userData['password']);
 
-        $user = User::create($userData); // creating user
+        $user = User::create($userData);
 
-        Mail::to($user)->send(new RegistrationVerificationMail($user));
+        $verificationLink = URL::temporarySignedRoute(
+            'email.verify',
+            now()->addMinutes(30),
+            [
+                'id' => $user->id,
+                'hash' => sha1($user->getEmailForVerification())
+            ]
+        );
+
+        Mail::to($user)->send(new EmailVerificationMail($user, $verificationLink));
         
         return response()->json([
             'message' => 'Registration successful. A verification link has been sent to your email.'
         ], 201);
+    }
+
+    public function verify(Request $request)
+    {
+        $user = User::findOrFail($request->route('id'));
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json(['message' => 'Email already verified.'], 200);
+        }
+
+        if ($user->markEmailAsVerified()) {
+            event(new Verified($user));
+
+            if (!$user->account) {
+                $user->account()->create([
+                    'account_number' => $this->generateUniqueAccountNumber(),
+                    'is_verified' => 'no',
+                    'balance' => 0,
+                ]);
+            }
+        }
+
+        return response()->json(['message' => 'Email has been successfully verified.'], 200);
     }
 
     public function me()
@@ -101,5 +132,26 @@ class AuthController extends Controller
             'tokenType' => 'bearer',
             'expiresIn' => auth('api')->factory()->getTTL() * 60
         ]);
+    }
+
+    private function generateUniqueAccountNumber(): string
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $timeComponent = substr((string) (microtime(true) * 1000), -9);
+            $randomComponent = random_int(100, 999);
+            $candidate = $timeComponent . $randomComponent;
+
+            if (!Account::where('account_number', $candidate)->exists()) {
+                return $candidate;
+            }
+
+            usleep(1000);
+        }
+
+        do {
+            $accountNumber = random_int(100000000000, 999999999999);
+        } while (Account::where('account_number', $accountNumber)->exists());
+
+        return (string) $accountNumber;
     }
 }
