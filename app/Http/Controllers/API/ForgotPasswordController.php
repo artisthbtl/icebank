@@ -38,24 +38,18 @@ class ForgotPasswordController extends Controller
         $request->validate([
             'email' => 'required|email',
             'token' => 'required|string',
-            'password' => 'required|string|confirmed|min:8',
+            'password' => 'required|string|min:8|same:passwordConfirmation', 
         ]);
 
         $tokenData = DB::table('password_reset_tokens')
             ->where('email', $request->email)
-            ->where('token', $request->token)
             ->first();
 
-        if (
-            !$tokenData ||
-            Carbon::parse($tokenData->created_at)->addMinutes(60)->isPast()
-        ) {
-            return response()->json(['message' => 'Invalid or expired token.'], 400);
-        }
-
         $user = User::where('email', $request->email)->first();
-        if (!$user) {
-            return response()->json(['message' => 'User not found.'], 404);
+
+        if (!$tokenData || !$user || !Hash::check($request->token, $tokenData->token) ||
+            Carbon::parse($tokenData->created_at)->addMinutes(60)->isPast() ) {
+            return response()->json(['message' => 'Invalid request.'], 400);
         }
 
         $user->password = Hash::make($request->password);

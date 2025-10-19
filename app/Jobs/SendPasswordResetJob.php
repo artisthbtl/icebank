@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Mail\PasswordResetMail;
+use Hash;
 use Throwable;
 
 class SendPasswordResetJob implements ShouldQueue
@@ -30,11 +31,11 @@ class SendPasswordResetJob implements ShouldQueue
         try {
             DB::table('password_reset_tokens')->where('email', $this->email)->delete();
 
-            $token = Str::random(60);
+            $token = bin2hex(random_bytes(32));
 
             DB::table('password_reset_tokens')->insert([
                 'email'      => $this->email,
-                'token'      => $token,
+                'token'      => Hash::make($token),
                 'created_at' => Carbon::now()
             ]);
 

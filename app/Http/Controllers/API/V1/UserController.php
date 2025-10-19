@@ -11,6 +11,7 @@ use App\Http\Requests\V1\StorePinRequest;
 use App\Http\Requests\V1\UpdatePinRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\V1\UpdatePasswordRequest;
 
 class UserController extends Controller
 {
@@ -67,5 +68,17 @@ class UserController extends Controller
         return response()->json(['message' => 'PIN updated successfully.']);
     }
 
-    
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $user = Auth::user();
+
+        if (!Hash::check($request->currentPassword, $user->password)) {
+            return response()->json(['message' => 'Current password is incorrect.'], 400);
+        }
+
+        $user->password = Hash::make($request->newPassword);
+        $user->save();
+
+        return response()->json(['message' => 'Password updated successfully.']);
+    }
 }
