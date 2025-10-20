@@ -69,6 +69,10 @@ class UserController extends Controller
             return response()->json(['message' => 'Current PIN is incorrect.'], 400);
         }
 
+        if (Hash::check($request->newPin, $user->pin)) {
+            return response()->json(['message' => 'The new PIN cannot be the same as the old one.'], 400);
+        }
+
         $user->pin = Hash::make($request->newPin);
         $user->save();
 
@@ -81,6 +85,10 @@ class UserController extends Controller
 
         if (!Hash::check($request->currentPassword, $user->password)) {
             return response()->json(['message' => 'Current password is incorrect.'], 400);
+        }
+
+        if (Hash::check($request->newPassword, $user->password)) {
+            return response()->json(['message' => 'The new password cannot be the same as the old one.'], 400);
         }
 
         $user->password = Hash::make($request->newPassword);
@@ -99,11 +107,15 @@ class UserController extends Controller
             return response()->json(['message' => 'PIN is incorrect.'], 400);
         }
 
+        if($oldEmail === $newEmail) {
+            return response()->json(['message' => 'The new email cannot be the same as the old one.'], 400);
+        }
+
         $verificationLink = URL::temporarySignedRoute(
             'email.verify-update',
             now()->addMinutes(30),
             [
-                'user'      => $user->id,
+                'user'     => $user->id,
                 'newEmail' => $request->newEmail,
             ]
         );
@@ -170,7 +182,7 @@ class UserController extends Controller
                 Storage::disk('public')->delete($photoPath);
 
                 $user->update([
-                    'photo_path' => null
+                    'profile_photo_path' => null
                 ]);
 
                 return response()->json([
@@ -180,7 +192,7 @@ class UserController extends Controller
 
             return response()->json([
                 'message' => 'No profile photo to delete.'
-            ], 404);
+            ], 400);
 
         } catch (\Exception $e) {
             return response()->json([

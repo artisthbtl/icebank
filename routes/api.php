@@ -52,8 +52,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('v1/users/store-pin', [UserController::class, 'storePin']);
     Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
-        Route::apiResource('users', UserController::class)->except(['store', 'update']);
-        Route::post('users/update-pfp', [UserController::class, 'updateProfilePhoto']);
+        // Route::apiResource('users', UserController::class)->except(['store', 'update']);
         Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::put('users/update-password', [UserController::class, 'updatePassword']);
         Route::put('users/update-email', [UserController::class, 'updateEmail']);
