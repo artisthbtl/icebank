@@ -9,6 +9,11 @@ class Company extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'logo_path',
+    ];
+
     public function services()
     {
         return $this->hasMany(Service::class);
