@@ -3,26 +3,23 @@
 namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\V1\CompanyTypeEnum;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreServiceRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'companyId' => 'required|exists:companies,id',
+            'name' => 'required|string|max:255',
+            'type' => ['nullable', new Enum(CompanyTypeEnum::class)],
+            'description' => 'nullable|string',
         ];
     }
 }

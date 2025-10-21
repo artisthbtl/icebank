@@ -6,23 +6,18 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateServiceRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
-            //
+            'companyId' => 'sometimes|exists:companies,id',
+            'name' => 'sometimes|string|max:255',
+            'type' => 'sometime|string|max:255',
+            'description' => 'sometimes|string',
         ];
     }
 }

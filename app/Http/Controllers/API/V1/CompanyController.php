@@ -19,14 +19,12 @@ class CompanyController extends Controller
 
     public function store(StoreCompanyRequest $request)
     {
-        $data = $request->validated();
+        $logoPath = $request->file('logo')->store('company_logos', 'public');
 
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('company_logos', 'public');
-            $data['logo_path'] = $logoPath;
-        }
-
-        $company = Company::create($data);
+        $company = Company::create([
+            'name' => $request->input('name'),
+            'logo_path' => $logoPath,
+        ]);
 
         return new CompanyResource($company);
     }

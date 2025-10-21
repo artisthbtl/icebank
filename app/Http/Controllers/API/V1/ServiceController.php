@@ -18,7 +18,14 @@ class ServiceController extends Controller
 
     public function store(StoreServiceRequest $request)
     {
-        //
+        $service = Service::create([
+            'company_id' => $request->input('companyId'),
+            'name' => $request->input('name'),
+            'type' => $request->input('type'),
+            'description' => $request->input('description'),
+        ]);
+
+        return new ServiceResource($service);
     }
 
     public function show(Service $service)
@@ -28,11 +35,16 @@ class ServiceController extends Controller
 
     public function update(UpdateServiceRequest $request, Service $service)
     {
-        //
+        $data = $request->validated();
+        $service->update($data);
+
+        return new ServiceResource($service);
     }
 
     public function destroy(Service $service)
     {
-        //
+        $service->delete();
+
+        return response()->json(['message' => 'Service deleted successfully.'], 200);
     }
 }
