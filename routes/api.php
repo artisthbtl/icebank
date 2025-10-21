@@ -53,11 +53,14 @@ Route::middleware('auth:api')->group(function () {
     Route::post('v1/users/store-pin', [UserController::class, 'storePin']);
     Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
         // Route::apiResource('users', UserController::class)->except(['store', 'update']);
+        Route::get('users', [UserController::class, 'index']);
+        Route::get('users/{user}', [UserController::class, 'show']);
         Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::put('users/update-password', [UserController::class, 'updatePassword']);
         Route::put('users/update-email', [UserController::class, 'updateEmail']);
         Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
         Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
+        Route::delete('users/delete-user', [UserController::class, 'destroy']);
         Route::apiResource('accounts', AccountController::class);
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);

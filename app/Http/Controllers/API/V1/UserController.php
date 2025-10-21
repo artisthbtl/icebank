@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\V1\DeleteUserRequest;
 use App\Http\Resources\V1\UserResource;
 use App\Http\Resources\V1\UserCollection;
 use App\Http\Requests\V1\StorePinRequest;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UpdateEmailMail;
 use App\Mail\EmailChangeMail;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -27,24 +29,39 @@ class UserController extends Controller
         return new UserCollection(User::paginate());
     }
 
-    public function store(Request $request)
-    {
-        //
-    }
-
     public function show(User $user)
     {
         return new UserResource($user);
     }
 
-    public function update(Request $request, User $user)
+    public function destroy(DeleteUserRequest $request)
     {
-        //
-    }
+        $user = Auth::user();
+        if (!Hash::check($request->pin, $user->pin)) {
+            return response()->json(['message' => 'PIN is incorrect.'], 400);
+        }
 
-    public function destroy(User $user)
-    {
-        //
+        try {
+            if ($user->profile_photo_path) {
+                Storage::disk('public')->delete($user->profile_photo_path);
+            }
+
+            $verifications = $user->verifications; // Plural, returns a Collection
+            foreach ($verifications as $verification) {
+                if ($verification->ktp_path) {
+                    Storage::disk('local')->delete($verification->ktp_path);
+                    Storage::disk('local')->delete($verification->selfie_path);
+                    break;
+                }
+            }
+            
+            $user->delete();
+
+            return response()->json(['message' => 'User deleted successfully.'], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete user.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     public function storePin(StorePinRequest $request)
