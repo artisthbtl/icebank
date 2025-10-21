@@ -10,6 +10,13 @@ class Plan extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $fillable = [
+        'service_id',
+        'name',
+        'price',
+        'duration',
+    ];
+
     public function service()
     {
         return $this->belongsTo(Service::class);

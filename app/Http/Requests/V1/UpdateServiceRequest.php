@@ -14,7 +14,6 @@ class UpdateServiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'companyId' => 'sometimes|exists:companies,id',
             'name' => 'sometimes|string|max:255',
             'type' => 'sometime|string|max:255',
             'description' => 'sometimes|string',

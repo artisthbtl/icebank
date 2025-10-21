@@ -18,7 +18,14 @@ class PlanController extends Controller
 
     public function store(StorePlanRequest $request)
     {
-        //
+        $plan = Plan::create([
+            'service_id' => $request->input('serviceId'),
+            'name' => $request->input('name'),
+            'price' => $request->input('price'),
+            'duration' => $request->input('duration'),
+        ]);
+
+        return new PlanResource($plan);
     }
 
     public function show(Plan $plan)
@@ -28,11 +35,16 @@ class PlanController extends Controller
 
     public function update(UpdatePlanRequest $request, Plan $plan)
     {
-        //
+        $data = $request->validated();
+        $plan->update($data);
+
+        return new PlanResource($plan);
     }
 
     public function destroy(Plan $plan)
     {
-        //
+        $plan->delete();
+
+        return response()->json(['message' => 'Plan deleted successfully.'], 200);
     }
 }
