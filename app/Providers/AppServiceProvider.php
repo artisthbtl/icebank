@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use App\Models\Verification;
+use App\Policies\UserPolicy;
 use App\Policies\VerificationPolicy;
 
 class AppServiceProvider extends ServiceProvider
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
 
     protected $policies = [
         Verification::class => VerificationPolicy::class,
+        User::class => UserPolicy::class,
     ];
 }

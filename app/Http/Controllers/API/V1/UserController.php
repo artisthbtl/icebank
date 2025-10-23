@@ -20,7 +20,6 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\UpdateEmailMail;
 use App\Mail\EmailChangeMail;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
@@ -31,6 +30,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $this->authorize('view', $user);
         return new UserResource($user);
     }
 

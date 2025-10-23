@@ -3,6 +3,7 @@
 namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Password;
 
 class RegistrationRequest extends FormRequest
 {
@@ -19,7 +20,15 @@ class RegistrationRequest extends FormRequest
             'dateOfBirth' => 'required|date|before_or_equal:' . now()->subYears(17)->format('Y-m-d'),
             'city' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|same:passwordConfirmation',
+            'password' => [
+                'required',
+                'string',
+                'same:passwordConfirmation',
+                Password::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols(),
+            ],
         ];
     }
 }

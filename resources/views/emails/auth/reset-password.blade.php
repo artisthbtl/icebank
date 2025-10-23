@@ -69,7 +69,7 @@
                 --}}
                 <a href="{{ url('https://your-frontend-app.com/reset-password?token=' . $token . '&email=' . rawurlencode($email)) }}" class="button">Reset Password</a>
             </div>
-            <p>This password reset link will expire in 60 minutes.</p>
+            <p>This password reset link will expire in 30 minutes.</p>
             <p>If you did not request a password reset, no further action is required.</p>
             <p>Thank you!</p>
         </div>

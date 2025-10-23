@@ -36,7 +36,7 @@ class AdminAuthController extends Controller
         ]);
     }
 
-    public function verifyOtpAndLogin(VerifyOtpRequest $request)
+    public function verifyOtp(VerifyOtpRequest $request)
     {
         if (!$this->authService->verifyAdminOtp($request->adminId, $request->otp)) {
             return response()->json(['error' => 'Invalid or expired OTP.'], 401);
