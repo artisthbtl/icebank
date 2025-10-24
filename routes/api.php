@@ -59,15 +59,16 @@ Route::middleware('auth:api')->group(function () {
         Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
         Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
         Route::apiResource('verifications', VerificationController::class);
-        
-        Route::middleware('validate.pin')->group(function () {
-            Route::delete('users/delete-user', [UserController::class, 'destroy']);
-            Route::post('accounts/add-balance', [AccountController::class, 'addBalance']);
-        });
+        Route::delete('users/delete-user', [UserController::class, 'destroy']);
 
         Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
         Route::middleware('is.verified')->group(function () {
-            Route::apiResource('transactions', TransactionController::class);
+
+            Route::middleware('validate.pin')->group(function () {
+                Route::post('add-balance', [AccountController::class, 'addBalance']);
+                Route::post('transfer', [TransactionController::class, 'transfer']);
+            });
+
             Route::apiResource('subscriptions', SubscriptionController::class);
         });
     });

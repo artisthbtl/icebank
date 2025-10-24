@@ -52,8 +52,8 @@ class AccountController extends Controller
         }
 
         return response()->json([
-            'message' => 'Balance has been added to your account.',
-            'new_balance' => $account->balance
+            'message' => "$amount ices has been added to your account.",
+            'newBalance' => $account->balance
         ], 200);
     }
 }

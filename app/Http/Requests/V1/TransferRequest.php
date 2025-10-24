@@ -4,7 +4,7 @@ namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddBalanceRequest extends FormRequest
+class TransferRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,7 +15,8 @@ class AddBalanceRequest extends FormRequest
     {
         return [
             'pin' => 'required|string|digits:6',
-            'amount' => 'required|numeric|min:0.01|max:1000000.00',
+            'amount' => 'required|numeric|min:1|max:1000000.00',
+            'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
         ];
     }
 }
