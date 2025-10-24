@@ -67,7 +67,7 @@
                   It passes the token and email, which your frontend will then
                   use to make the API call to /reset-password.
                 --}}
-                <a href="{{ url('https://your-frontend-app.com/reset-password?token=' . $token . '&email=' . rawurlencode($email)) }}" class="button">Reset Password</a>
+                <a href="{{ url('https://localhost:8000/reset-password?token=' . $token . '&email=' . rawurlencode($email)) }}" class="button">Reset Password</a>
             </div>
             <p>This password reset link will expire in 30 minutes.</p>
             <p>If you did not request a password reset, no further action is required.</p>

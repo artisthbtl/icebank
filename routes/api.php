@@ -53,15 +53,18 @@ Route::middleware('auth:api')->group(function () {
     Route::post('v1/users/store-pin', [UserController::class, 'storePin']);
     Route::middleware('check.pin')->prefix('v1')->name('v1.')->group(function () {
         Route::get('users/{user}', [UserController::class, 'show']);
-        Route::delete('users/delete-user', [UserController::class, 'destroy']);
         Route::put('users/update-pin', [UserController::class, 'updatePin']);
         Route::put('users/update-password', [UserController::class, 'updatePassword']);
         Route::put('users/update-email', [UserController::class, 'updateEmail']);
         Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
         Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
-        Route::apiResource('accounts', AccountController::class);
-        
         Route::apiResource('verifications', VerificationController::class);
+        
+        Route::middleware('validate.pin')->group(function () {
+            Route::delete('users/delete-user', [UserController::class, 'destroy']);
+            Route::post('accounts/add-balance', [AccountController::class, 'addBalance']);
+        });
+
         Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
         Route::middleware('is.verified')->group(function () {
             Route::apiResource('transactions', TransactionController::class);
@@ -80,6 +83,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::apiResource('companies', CompanyController::class);
         Route::apiResource('services', ServiceController::class);
         Route::apiResource('plans', PlanController::class);
-        // Route::get('verifications', [AdminVerificationController::class, 'index']);
     });
 });

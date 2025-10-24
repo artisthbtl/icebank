@@ -37,9 +37,6 @@ class UserController extends Controller
     public function destroy(DeleteUserRequest $request)
     {
         $user = Auth::user();
-        if (!Hash::check($request->pin, $user->pin)) {
-            return response()->json(['message' => 'PIN is incorrect.'], 400);
-        }
 
         try {
             if ($user->profile_photo_path) {

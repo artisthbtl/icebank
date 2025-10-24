@@ -14,8 +14,8 @@ return new class extends Migration
             $table->enum('type', ['add_balance', 'transfer', 'pay_plan']);
             $table->decimal('amount', 15, 2);
             $table->string('description')->nullable();
-            $table->foreignId('related_account_id')->nullable()->constrained('accounts')->onDelete('set null');
-            $table->foreignId('related_plan_id')->nullable()->constrained('plans')->onDelete('set null');
+            $table->foreignId('related_account_id')->nullable()->constrained('accounts')->onDelete('restrict');
+            $table->foreignId('related_plan_id')->nullable()->constrained('plans')->onDelete('restrict');
             $table->timestamps();
         });
     }

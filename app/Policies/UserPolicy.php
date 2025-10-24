@@ -8,6 +8,6 @@ class UserPolicy
 {
     public function view(User $authUser, User $user)
     {
-        return $authUser->id === $user->id;
+        return $authUser->id === $user->id || $authUser->is_admin;
     }
 }
