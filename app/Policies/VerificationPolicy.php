@@ -15,7 +15,7 @@ class VerificationPolicy
 
     public function view(User $user, Verification $verification)
     {
-        return $user->is_admin || $user->id === $verification->user_id;
+        return $user->id === $verification->user_id;
     }
 
     public function create(User $user): bool

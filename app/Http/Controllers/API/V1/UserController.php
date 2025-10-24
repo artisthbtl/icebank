@@ -34,7 +34,7 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    public function destroy(DeleteUserRequest $request)
+    public function destroy()
     {
         $user = Auth::user();
 

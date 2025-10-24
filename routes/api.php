@@ -59,17 +59,19 @@ Route::middleware('auth:api')->group(function () {
         Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
         Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
         Route::apiResource('verifications', VerificationController::class);
-        Route::delete('users/delete-user', [UserController::class, 'destroy']);
-
         Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
+
+        Route::middleware('validate.pin')->group(function () {
+            Route::post('add-balance', [AccountController::class, 'addBalance']);
+            Route::delete('users/delete-user', [UserController::class, 'destroy']);
+        });
+
         Route::middleware('is.verified')->group(function () {
-
             Route::middleware('validate.pin')->group(function () {
-                Route::post('add-balance', [AccountController::class, 'addBalance']);
                 Route::post('transfer', [TransactionController::class, 'transfer']);
+                Route::post('subscribe/{plan}', [SubscriptionController::class, 'subscribe']);
+                Route::post('cancel-subscription/{subscription}', [SubscriptionController::class, 'cancel']);
             });
-
-            Route::apiResource('subscriptions', SubscriptionController::class);
         });
     });
 });
@@ -80,9 +82,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('verify-otp', [AdminAuthController::class, 'verifyOtp']);
     
     Route::middleware('auth:admin')->group(function() {
-        Route::get('users', [UserController::class, 'index']);
-        Route::apiResource('companies', CompanyController::class);
-        Route::apiResource('services', ServiceController::class);
-        Route::apiResource('plans', PlanController::class);
+        // Route::get('users', [UserController::class, 'index']);
+        // Route::apiResource('companies', CompanyController::class);
+        // Route::apiResource('services', ServiceController::class);
+        // Route::apiResource('plans', PlanController::class);
     });
 });

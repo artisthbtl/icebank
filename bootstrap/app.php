@@ -7,6 +7,7 @@ use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\CheckPin;
 use App\Http\Middleware\IsVerified;
 use App\Http\Middleware\ValidatePin;
+use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'is.verified' => IsVerified::class,
             'validate.pin' => ValidatePin::class,
         ]);
+    })
+    ->withSchedule(function (Schedule $schedule): void {
+        $schedule->command('subscriptions:renew')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

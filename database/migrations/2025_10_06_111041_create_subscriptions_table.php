@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaction_id')->nullable()->constrained()->onDelete('set null');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+            $table->foreignId('plan_id')->constrained()->onDelete('restrict');
             $table->date('end_date');
             $table->enum('status', ['active', 'expired', 'canceled'])->default('active');
             $table->timestamps();
