@@ -12,9 +12,9 @@ use Exception;
 
 class RenewSubscription extends Command
 {
-    protected string $signature = 'subscriptions:renew';
+    protected $signature = 'subscriptions:renew';
 
-    protected string $description = 'Renew all active subscriptions that are due';
+    protected $description = 'Renew all active subscriptions that are due';
 
     public function handle()
     {
