@@ -19,31 +19,33 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UpdateEmailMail;
 use App\Mail\EmailChangeMail;
+use Exception;
 use Illuminate\Support\Facades\URL;
 
 class UserController extends Controller
 {
     public function index()
     {
-        return new UserCollection(User::paginate());
-    }
+        $user = Auth::user();
 
-    public function show(User $user)
-    {
         $this->authorize('view', $user);
         return new UserResource($user);
     }
 
-    public function destroy()
+    public function destroy(DeleteUserRequest $request)
     {
         $user = Auth::user();
+
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json(['message' => 'Password is incorrect.'], 400);
+        }
 
         try {
             if ($user->profile_photo_path) {
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
 
-            $verifications = $user->verifications; // Plural, returns a Collection
+            $verifications = $user->verifications;
             foreach ($verifications as $verification) {
                 if ($verification->ktp_path) {
                     Storage::disk('local')->delete($verification->ktp_path);
@@ -56,7 +58,7 @@ class UserController extends Controller
 
             return response()->json(['message' => 'User deleted successfully.'], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'Failed to delete user.', 'error' => $e->getMessage()], 500);
         }
     }
@@ -177,7 +179,7 @@ class UserController extends Controller
                 'photoUrl' => Storage::disk('public')->url($newPhotoPath)
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while updating the profile photo.',
                 'error' => $e->getMessage()
@@ -187,11 +189,10 @@ class UserController extends Controller
 
     public function deleteProfilePhoto()
     {
+        $user = Auth::user();
+        $photoPath = $user->profile_photo_path;
+
         try {
-            $user = Auth::user();
-
-            $photoPath = $user->profile_photo_path;
-
             if ($photoPath) {
                 Storage::disk('public')->delete($photoPath);
 
@@ -208,7 +209,7 @@ class UserController extends Controller
                 'message' => 'No profile photo to delete.'
             ], 400);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'message' => 'An error occurred while deleting the profile photo.',
                 'error' => $e->getMessage()

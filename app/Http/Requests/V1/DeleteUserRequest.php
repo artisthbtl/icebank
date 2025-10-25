@@ -14,7 +14,7 @@ class DeleteUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'pin' => 'required|string|digits:6',
+            'password' => 'required|string|min:8',
         ];
     }
 }
