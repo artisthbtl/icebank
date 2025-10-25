@@ -10,17 +10,43 @@ use App\Http\Resources\V1\TransactionResource;
 use App\Http\Resources\V1\TransactionCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
 use Exception;
 
 class TransactionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return new TransactionCollection(Transaction::paginate());
+        $user = Auth::user();
+        $account = $user->account;
+
+        if (!$account) {
+            return response()->json(['message' => 'User does not have an account.'], 404);
+        }
+
+        $transactions = Transaction::where('account_id', $account->id)
+                                   ->orderBy('created_at', 'desc')
+                                   ->paginate();
+
+        return new TransactionCollection($transactions);
     }
 
     public function show(Transaction $transaction)
     {
+        $user = Auth::user();
+        if ($transaction->account_id !== $user->account->id) {
+            return response()->json(['message' => 'Forbidden'], 403);
+        }
+
+        if ($transaction->type === 'pay_plan') {
+            $transaction->load('plan.service.company');
+        } elseif ($transaction->type === 'transfer') {
+            if ($transaction->amount < 0) {
+                $transaction->load('receiverAccount.user');
+            } else {
+                $transaction->load('senderAccount.user');
+            }
+        }
         return new TransactionResource($transaction);
     }
 

@@ -2,27 +2,41 @@
 
 namespace App\Http\Controllers\API\V1;
 
+use App\Models\Plan;
+use App\Models\Transaction;
 use App\Models\Subscription;
-use App\Http\Requests\V1\UpdateSubscriptionRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\SubscriptionResource;
 use App\Http\Resources\V1\SubscriptionCollection;
-use App\Models\Plan;
-use App\Models\Transaction;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Exception;
 use Auth;
 
 class SubscriptionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return new SubscriptionCollection(Subscription::paginate());
+        $user = Auth::user();
+
+        $subscriptions = $user->subscriptions()
+                              ->with('plan.service.company')
+                              ->orderBy('created_at', 'desc')
+                              ->paginate();
+
+        return new SubscriptionCollection($subscriptions);
     }
 
     public function show(Subscription $subscription)
     {
+        if ($subscription->user_id !== Auth::id()) {
+            return response()->json(['message' => 'This subscription does not belong to you.'], 403);
+        }
+
+        $subscription->load('plan.service.company');
+
         return new SubscriptionResource($subscription);
     }
 
@@ -32,13 +46,60 @@ class SubscriptionController extends Controller
         $account = $user->account;
         $price = $plan->price;
 
-        $isActive = $user->subscriptions()
-                         ->where('plan_id', $plan->id)
-                         ->where('status', 'active')
-                         ->exists();
+        $existingSubscription = $user->subscriptions()
+                                     ->where('plan_id', $plan->id)
+                                     ->first();
 
-        if ($isActive) {
-            return response()->json(['error' => 'You are already subscribed to this plan.'], 400);
+        if ($existingSubscription) {
+            if ($existingSubscription->status === 'active') {
+                return response()->json(['error' => 'You are already subscribed to this plan.'], 400);
+            }
+
+            if ($existingSubscription->status === 'canceled') {
+                $existingSubscription->status = 'active';
+                $existingSubscription->save();
+
+                return response()->json([
+                    'message' => 'Your subscription to ' . $plan->name . ' has been reactivated. It will renew on ' . Carbon::parse($existingSubscription->end_date)->toFormattedDateString(),
+                ], 200);
+            }
+
+
+            if ($existingSubscription->status === 'expired') {
+                if ($account->balance < $price) {
+                    return response()->json(['error' => 'Insufficient balance to resubscribe.'], 400);
+                }
+
+                try {
+                    DB::transaction(function () use ($user, $account, $plan, $price, $existingSubscription) {
+                        $account->balance -= $price;
+                        $account->save();
+
+                        $transaction = Transaction::create([
+                            'account_id' => $account->id,
+                            'type' => 'pay_plan',
+                            'amount' => -$price,
+                            'description' => "Resubscribed to " . $plan->name,
+                            'related_plan_id' => $plan->id,
+                        ]);
+
+                        $existingSubscription->update([
+                            'transaction_id' => $transaction->id,
+                            'status' => 'active',
+                            'end_date' => Carbon::now()->addDays($plan->duration),
+                        ]);
+                    });
+
+                } catch (Exception $e) {
+                    Log::error('Resubscription failed for user ' . $user->id . ': ' . $e->getMessage());
+                    return response()->json(['error' => 'An error occurred during the resubscription.'], 500);
+                }
+
+                return response()->json([
+                    'message' => 'Successfully resubscribed to ' . $plan->name,
+                    'new_balance' => $account->balance
+                ], 200);
+            }
         }
 
         if ($account->balance < $price) {
@@ -68,6 +129,7 @@ class SubscriptionController extends Controller
             });
 
         } catch (Exception $e) {
+            Log::error('New subscription failed for user ' . $user->id . ': ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred during the subscription.'], 500);
         }
 
@@ -85,9 +147,11 @@ class SubscriptionController extends Controller
             return response()->json(['error' => 'This subscription is already inactive.'], 400);
         }
 
-        $subscription->status = 'cancelled';
+        $subscription->status = 'canceled';
         $subscription->save();
 
-        return response()->json(['message' => 'Subscription has been cancelled successfully.'], 200);
+        return response()->json([
+            'message' => 'Subscription has been cancelled successfully. It will remain active until ' . Carbon::parse($subscription->end_date)->toFormattedDateString()
+        ], 200);
     }
 }

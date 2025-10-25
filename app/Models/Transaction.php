@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Transaction extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $fillable = [
         'account_id',
         'type',
@@ -27,5 +27,20 @@ class Transaction extends Model
     public function plan()
     {
         return $this->belongsTo(Plan::class, 'related_plan_id');
+    }
+
+    public function relatedAccount()
+    {
+        return $this->belongsTo(Account::class, 'related_account_id');
+    }
+
+    public function receiverAccount()
+    {
+        return $this->belongsTo(Account::class, 'related_account_id');
+    }
+
+    public function senderAccount()
+    {
+        return $this->belongsTo(Account::class, 'related_account_id');
     }
 }

@@ -11,13 +11,10 @@ class SubscriptionResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'userId' => $this->user_id,
-            'planId' => $this->plan_id,
-            'transactionId' => $this->transaction_id,
             'status' => $this->status,
-            'startedDate' => $this->created_at,
-            'updatedDate' => $this->updated_at,
             'endDate' => $this->end_date,
+            'createdAt' => $this->created_at,
+            'plan' => new PlanResource($this->whenLoaded('plan')),
         ];
     }
 }
