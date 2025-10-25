@@ -10,12 +10,11 @@ use App\Http\Resources\V1\TransactionResource;
 use App\Http\Resources\V1\TransactionCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
 use Exception;
 
 class TransactionController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
         $account = $user->account;
@@ -25,6 +24,7 @@ class TransactionController extends Controller
         }
 
         $transactions = Transaction::where('account_id', $account->id)
+                                   ->with(['plan.service.company', 'receiverAccount.user', 'senderAccount.user'])
                                    ->orderBy('created_at', 'desc')
                                    ->paginate();
 
@@ -33,11 +33,8 @@ class TransactionController extends Controller
 
     public function show(Transaction $transaction)
     {
-        $user = Auth::user();
-        if ($transaction->account_id !== $user->account->id) {
-            return response()->json(['message' => 'Forbidden'], 403);
-        }
-
+        $this->authorize('view', $transaction);
+    
         if ($transaction->type === 'pay_plan') {
             $transaction->load('plan.service.company');
         } elseif ($transaction->type === 'transfer') {

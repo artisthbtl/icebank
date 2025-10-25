@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Policies;
+namespace App\Policies; // Make sure this namespace is correct
 
 use App\Models\Subscription;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class SubscriptionPolicy
 {
-    public function delete(User $user, Subscription $subscription): bool
+    public function view(User $user, Subscription $subscription)
+    {
+        return $user->id === $subscription->user_id;
+    }
+
+    public function cancel(User $user, Subscription $subscription)
     {
         return $user->id === $subscription->user_id;
     }

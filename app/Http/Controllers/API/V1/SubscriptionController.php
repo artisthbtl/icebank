@@ -31,9 +31,7 @@ class SubscriptionController extends Controller
 
     public function show(Subscription $subscription)
     {
-        if ($subscription->user_id !== Auth::id()) {
-            return response()->json(['message' => 'This subscription does not belong to you.'], 403);
-        }
+        $this->authorize('view', $subscription);
 
         $subscription->load('plan.service.company');
 
@@ -141,7 +139,7 @@ class SubscriptionController extends Controller
 
     public function cancel(Subscription $subscription)
     {
-        $this->authorize('delete', $subscription);
+        $this->authorize('cancel', $subscription);
 
         if ($subscription->status !== 'active') {
             return response()->json(['error' => 'This subscription is already inactive.'], 400);

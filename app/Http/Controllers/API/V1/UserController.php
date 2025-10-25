@@ -28,13 +28,15 @@ class UserController extends Controller
     {
         $user = Auth::user();
 
-        $this->authorize('view', $user);
+        $this->authorize('view', $user); 
         return new UserResource($user);
     }
 
     public function destroy(DeleteUserRequest $request)
     {
         $user = Auth::user();
+        
+        $this->authorize('delete', $user);
 
         if (!Hash::check($request->password, $user->password)) {
             return response()->json(['message' => 'Password is incorrect.'], 400);
@@ -59,13 +61,15 @@ class UserController extends Controller
             return response()->json(['message' => 'User deleted successfully.'], 200);
 
         } catch (Exception $e) {
-            return response()->json(['message' => 'Failed to delete user.', 'error' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Failed to delete user.'], 500);
         }
     }
 
     public function storePin(StorePinRequest $request)
     {
         $user = Auth::user();
+        
+        $this->authorize('update', $user);
 
         if (!is_null($user->pin)) {
             return response()->json(['message' => 'PIN already set.'], 409);
@@ -80,6 +84,8 @@ class UserController extends Controller
     public function updatePin(UpdatePinRequest $request)
     {
         $user = Auth::user();
+        
+        $this->authorize('update', $user);
 
         if (!Hash::check($request->currentPin, $user->pin)) {
             return response()->json(['message' => 'Current PIN is incorrect.'], 400);
@@ -98,6 +104,8 @@ class UserController extends Controller
     public function updatePassword(UpdatePasswordRequest $request)
     {
         $user = Auth::user();
+        
+        $this->authorize('update', $user);
 
         if (!Hash::check($request->currentPassword, $user->password)) {
             return response()->json(['message' => 'Current password is incorrect.'], 400);
@@ -116,6 +124,9 @@ class UserController extends Controller
     public function updateEmail(UpdateEmailRequest $request)
     {
         $user = Auth::user();
+        
+        $this->authorize('update', $user);
+        
         $oldEmail = $user->email;
         $newEmail = $request->newEmail;
 
@@ -146,6 +157,8 @@ class UserController extends Controller
 
     public function verifyEmailUpdate(Request $request, User $user)
     {
+        $this->authorize('update', $user);
+        
         $newEmail = $request->query('newEmail');
         
         $user->email = $newEmail;
@@ -159,12 +172,14 @@ class UserController extends Controller
 
     public function updateProfilePhoto(UpdateProfilePhotoRequest $request)
     {
+        $user = Auth::user();
+        
+        $this->authorize('update', $user);
+        
+        $oldPhotoPath = $user->profile_photo_path;
+        $newPhotoPath = $request->file('photo')->store('profile_photos', 'public');
+
         try {
-            $user = Auth::user();
-
-            $oldPhotoPath = $user->profile_photo_path;
-            $newPhotoPath = $request->file('photo')->store('profile_photos', 'public');
-
             if ($oldPhotoPath) {
                 Storage::disk('public')->delete($oldPhotoPath);
             }
@@ -180,16 +195,16 @@ class UserController extends Controller
             ], 200);
 
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred while updating the profile photo.',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['error' => 'Failed to update profile photo.'], 500);
         }
     }
 
     public function deleteProfilePhoto()
     {
         $user = Auth::user();
+        
+        $this->authorize('update', $user);
+        
         $photoPath = $user->profile_photo_path;
 
         try {
@@ -210,10 +225,7 @@ class UserController extends Controller
             ], 400);
 
         } catch (Exception $e) {
-            return response()->json([
-                'message' => 'An error occurred while deleting the profile photo.',
-                'error' => $e->getMessage()
-            ], 500);
+            return response()->json(['error' => 'Failed to delete profile photo.'], 500);
         }
     }
 }

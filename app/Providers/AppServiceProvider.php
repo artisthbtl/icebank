@@ -8,21 +8,17 @@ use App\Models\Verification;
 use App\Policies\UserPolicy;
 use App\Policies\VerificationPolicy;
 use App\Models\Subscription;
+use App\Models\Transaction;
 use App\Policies\SubscriptionPolicy;
+use App\Policies\TransactionPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         //
@@ -32,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
         Verification::class => VerificationPolicy::class,
         User::class => UserPolicy::class,
         Subscription::class => SubscriptionPolicy::class,
+        Transaction::class => TransactionPolicy::class,
     ];
 }

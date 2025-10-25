@@ -9,9 +9,6 @@ use App\Http\Resources\V1\UserResource;
 
 class TransactionResource extends JsonResource
 {
-    /**
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         $baseData = [
