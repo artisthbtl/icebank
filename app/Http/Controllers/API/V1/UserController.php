@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DeleteUserRequest;
 use App\Http\Resources\V1\UserResource;
-use App\Http\Resources\V1\UserCollection;
 use App\Http\Requests\V1\StorePinRequest;
 use App\Http\Requests\V1\UpdateEmailRequest;
 use App\Http\Requests\V1\UpdatePinRequest;

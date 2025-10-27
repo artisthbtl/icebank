@@ -44,22 +44,25 @@ Route::middleware('auth:api')->group(function () {
         Route::put('users/update-email', [UserController::class, 'updateEmail']);
         Route::post('users/update-photo', [UserController::class, 'updateProfilePhoto']);
         Route::delete('users/delete-photo', [UserController::class, 'deleteProfilePhoto']);
+        Route::delete('users/delete-user', [UserController::class, 'destroy']);
 
         Route::get('transactions', [TransactionController::class, 'index']);
         Route::get('transactions/{transaction}', [TransactionController::class, 'show']);
 
-        // Route::apiResource('verifications', VerificationController::class);
-        // Route::get('/verifications/files/{filename}', [VerificationController::class, 'showFile']);
+        Route::get('verifications', [VerificationController::class, 'index']);
+        Route::post('verifications', [VerificationController::class, 'store']);
+        Route::get('verifications/latest', [VerificationController::class, 'showLatest']);
+        Route::get('verifications/{verification}', [VerificationController::class, 'show']);
+        Route::get('verifications/file/{filename}', [VerificationController::class, 'showFile']);
 
         Route::middleware('validate.pin')->group(function () {
             Route::post('add-balance', [AccountController::class, 'addBalance']);
-            Route::delete('users/delete-user', [UserController::class, 'destroy']);
         });
 
-        Route::middleware('is.verified')->group(function () {
-            Route::get('subscriptions', [SubscriptionController::class, 'index']);
-            Route::get('subscriptions/{subscription}', [SubscriptionController::class, 'show']);
+        Route::get('subscriptions', [SubscriptionController::class, 'index']);
+        Route::get('subscriptions/{subscription}', [SubscriptionController::class, 'show']);
 
+        Route::middleware('is.verified')->group(function () {
             Route::middleware('validate.pin')->group(function () {
                 Route::post('transfer', [TransactionController::class, 'transfer']);
                 Route::post('subscribe/{plan}', [SubscriptionController::class, 'subscribe']);

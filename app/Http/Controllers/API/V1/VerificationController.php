@@ -15,7 +15,11 @@ class VerificationController extends Controller
 {
     public function index()
     {
-        return new VerificationCollection(Verification::paginate());
+        $user = Auth::user();
+
+        $verifications = $user->verifications()->latest()->paginate(10);
+
+        return new VerificationCollection($verifications);
     }
 
     public function store(StoreVerificationRequest $request)
@@ -70,11 +74,21 @@ class VerificationController extends Controller
 
     public function show(Verification $verification)
     {
+        $this->authorize('view', $verification);
+
         return new VerificationResource($verification);
     }
 
-    public function destroy(Verification $verification)
+    public function showLatest()
     {
-        //
+        $user = Auth::user();
+
+        $latestVerification = $user->verifications()->latest()->first();
+
+        if (!$latestVerification) {
+            return response()->json(['message' => 'No verification history found.'], 404);
+        }
+
+        return new VerificationResource($latestVerification);
     }
 }
