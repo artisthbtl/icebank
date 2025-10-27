@@ -36,6 +36,23 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid Credentials'], 401);
         }
 
+        if (!$user->email_verified_at) {
+            $verificationLink = URL::temporarySignedRoute(
+                'auth.verify',
+                now()->addMinutes(30),
+                [
+                    'id' => $user->id,
+                    'hash' => sha1($user->getEmailForVerification())
+                ]
+            );
+
+            Mail::to($user)->send(new EmailVerificationMail($user, $verificationLink));
+            
+            return response()->json([
+                'message' => 'Registration successful. A verification link has been sent to your email.'
+            ], 201);
+        }
+
         $this->authService->sendOtp($user);
 
         return response()->json([
@@ -69,7 +86,7 @@ class AuthController extends Controller
         $user = User::create($userData);
 
         $verificationLink = URL::temporarySignedRoute(
-            'email.verify',
+            'auth.verify',
             now()->addMinutes(30),
             [
                 'id' => $user->id,

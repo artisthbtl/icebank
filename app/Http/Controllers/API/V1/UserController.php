@@ -138,7 +138,7 @@ class UserController extends Controller
         }
 
         $verificationLink = URL::temporarySignedRoute(
-            'email.verify-update',
+            'auth.verify-update',
             now()->addMinutes(30),
             [
                 'user'     => $user->id,
