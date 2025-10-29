@@ -1,13 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\V1\UserController;
-use App\Http\Controllers\API\V1\VerificationController;
 
 Route::get('/', function () {
-    return view('home');
+    return inertia('LandingPage');
 });
 
-Route::get('/register', function () {
-    return view('auth.register');
-});
+// Route::get('/register', function () {
+//     return inertia('auth.register');
+// });
