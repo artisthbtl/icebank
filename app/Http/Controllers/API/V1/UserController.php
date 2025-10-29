@@ -189,8 +189,7 @@ class UserController extends Controller
 
             return response()->json([
                 'message' => 'Profile photo updated successfully.',
-                'profilePhotoPath' => $newPhotoPath,
-                'photoUrl' => Storage::disk('public')->url($newPhotoPath)
+                'profilePhotoPath' => $user->fresh()->photo_url
             ], 200);
 
         } catch (Exception $e) {

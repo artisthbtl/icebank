@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject, MustVerifyEmail
@@ -61,5 +62,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
     public function verifications()
     {
         return $this->hasMany(Verification::class);
+    }
+
+    public function getPhotoUrlAttribute()
+    {
+        if ($this->profile_photo_path) {
+            return Storage::disk('public')->url($this->profile_photo_path);
+        }
+
+        return url('storage/profile_photos/default.png');
     }
 }
