@@ -6,6 +6,6 @@ Route::get('/', function () {
     return inertia('LandingPage');
 });
 
-// Route::get('/register', function () {
-//     return inertia('auth.register');
-// });
+Route::get('/home', function () {
+    return inertia('HomePage');
+})->name('home');
