@@ -18,6 +18,7 @@ Route::middleware('throttle:6,1')->prefix('auth')->name('auth.')->group(function
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
+    Route::get('check-verification/{pollToken}', [AuthController::class, 'checkVerificationStatus']);
 
     Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLink']);
     Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword']);

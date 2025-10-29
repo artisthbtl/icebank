@@ -17,6 +17,7 @@ use App\Http\Requests\V1\VerifyOtpRequest;
 use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use App\Mail\EmailVerificationMail;
+use Cache;
 
 class AuthController extends Controller
 {
@@ -48,8 +49,12 @@ class AuthController extends Controller
 
             Mail::to($user)->send(new EmailVerificationMail($user, $verificationLink));
             
+            $pollToken = Str::random(60);
+            Cache::put('verification_poll_' . $pollToken, $user->id, now()->addMinutes(30));
+
             return response()->json([
-                'message' => 'Registration successful. A verification link has been sent to your email.'
+                'message' => 'Registration successful. A verification link has been sent to your email.',
+                'pollToken' => $pollToken
             ], 201);
         }
 
@@ -58,6 +63,31 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'OTP has been sent to your email.',
             'userId' => $user->id,
+        ]);
+    }
+
+    public function checkVerificationStatus($pollToken)
+    {
+        $userId = Cache::get('verification_poll_' . $pollToken);
+
+        if (!$userId) {
+            return response()->json(['error' => 'Invalid or expired poll token.'], 404);
+        }
+
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        $isVerified = $user->hasVerifiedEmail();
+
+        if ($isVerified) {
+            Cache::forget('verification_poll_' . $pollToken);
+        }
+
+        return response()->json([
+            'verified' => $isVerified
         ]);
     }
 
@@ -95,7 +125,7 @@ class AuthController extends Controller
         );
 
         Mail::to($user)->send(new EmailVerificationMail($user, $verificationLink));
-        
+
         return response()->json([
             'message' => 'Registration successful. A verification link has been sent to your email.'
         ], 201);
