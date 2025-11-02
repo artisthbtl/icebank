@@ -3,9 +3,9 @@
 use App\Http\Middleware\CheckPin;
 use Illuminate\Support\Facades\Route;
 
-// Route::get('/', function () {
-//     return inertia('LandingPage');
-// });
+Route::get('/', function () {
+    return inertia('LandingPage');
+});
 
 // Route::get('/home', function () {
 //     return inertia('HomePage');
