@@ -19,8 +19,8 @@ export default function LandingPage() {
             logoChars: new SplitText(".preloader-logo h1", { type: "chars" }),
             footerLines: new SplitText(".preloader-footer p", { type: "lines" }),
             headerChars: new SplitText(".header h1", { type: "chars" }),
-            heroFooterH3: new SplitText(".hero-footer h3", { type: "lines" }),
-            heroFooterP: new SplitText(".hero-footer p", { type: "lines" }),
+            heroParagraphH3: new SplitText(".hero-paragraph h3", { type: "lines" }),
+            // heroFooterP: new SplitText(".hero-footer p", { type: "lines" }),
             btnLabels: new SplitText(".btn-label span", { type: "lines" }),
         };
 
@@ -29,8 +29,8 @@ export default function LandingPage() {
             [
                 splits.footerLines.lines,
                 splits.headerChars.chars,
-                splits.heroFooterH3.lines,
-                splits.heroFooterP.lines,
+                splits.heroParagraphH3.lines,
+                // splits.heroFooterP.lines,
                 splits.btnLabels.lines,
             ],
             { y: "100%" }
@@ -135,7 +135,7 @@ export default function LandingPage() {
             delay: -2,
         })
         .to(
-            [splits.heroFooterH3.lines, splits.heroFooterP.lines],
+            splits.heroParagraphH3.lines,
             {
                 y: 0,
                 stagger: 0.1,
@@ -222,9 +222,9 @@ export default function LandingPage() {
                                 </div>
                             </div>
 
-                            <div className="hero-footer">
+                            <div className="hero-paragraph">
                                 <h3>They said life's about balance, and your balance's safe with us.</h3>
-                                <p>artisthbtl</p>
+                                {/* <p>artisthbtl</p> */}
                             </div>
                         </div>
                     </div>

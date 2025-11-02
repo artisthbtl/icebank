@@ -4,7 +4,7 @@
     /* --base-100: #011E2A; */
     --base-100: #04040b;
     /* --base-200: #60BDDE; */
-    --base-200: #60BDDE;
+    --base-200: #3dcbff;
     --base-300: #eeeef7;
 }
 
@@ -64,33 +64,25 @@ img {
 
 .header h1 {
     font-size: 12rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: -0.25rem;
     line-height: 1;
+    padding-left: 10rem;
 }
 
-.hero-footer {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 2rem;
+.hero-paragraph {
+    padding: 0 2rem 2rem 22.4rem;
+    margin-top: 1rem;
     width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
-.hero-footer h3 {
-    font-size: 2rem;
+.hero-paragraph h3 {
+    font-size: 1.8rem;
     font-weight: 400;
     line-height: 1.1;
-    width: 25%;
-}
-
-.hero-footer p {
-    width: 25%;
+    width: auto; 
+    max-width: 25ch;
     text-align: right;
-    opacity: 0.7;
 }
 
 .register-btn {
@@ -111,7 +103,7 @@ img {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.25rem 0.25rem 0.25rem 1.5rem;
+    padding: 1.25rem 0.25rem 1.25rem 1.5rem;
     border-radius: 4rem;
     background-color: var(--base-300);
     color: var(--base-100);
@@ -119,10 +111,14 @@ img {
     cursor: pointer;
 }
 
-.btn-label span{
-    font-size: 0.9rem;
-    font-weight: 450;
+.btn-label span {
+    font-size: 1.3rem;
+    font-weight: 400;
     line-height: 1;
+}
+
+.register-btn .btn {
+    padding: 1.25rem 1.5rem;
 }
 
 .preloader-progress, .preloader-mask, .preloader-content {
@@ -195,7 +191,7 @@ img {
 
 .preloader-footer p {
     color: var(--base-300);
-    opacity: 0.5;
+    opacity: 0.8;
 }
 
 .line, .char {
