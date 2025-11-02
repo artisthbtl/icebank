@@ -16,7 +16,11 @@
         "vite": "^7.0.4"
     },
     "dependencies": {
+        "@emotion/react": "^11.14.0",
+        "@emotion/styled": "^11.14.1",
+        "@gsap/react": "^2.1.2",
         "@inertiajs/react": "^2.2.14",
+        "@mui/material": "^7.3.4",
         "react": "^19.2.0",
         "react-dom": "^19.2.0"
     }
