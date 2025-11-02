@@ -1,5 +1,7 @@
 import CallIcon from '@mui/icons-material/Call';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
+import heroImage from '../Assets/IcebankHero.png';
+import './LandingPage.css';
 
 export default function LandingPage() {
     
@@ -25,7 +27,7 @@ export default function LandingPage() {
                 <section className="hero">
                     <div className="hero-inner">
                         <div className="hero-img">
-                            <img src="./Assets/IcebankHero.png" alt=""></img>
+                            <img src={heroImage} alt="Icebank Hero"></img>
                         </div>
 
                         <div className="hero-content">
