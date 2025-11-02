@@ -101,7 +101,7 @@ export default function LandingPage() {
             "<"
         )
         .to(
-            ".preloader-progress",
+            [".preloader-progress", ".preloader-content"],
             {
                 opacity: 0,
                 duration: 0.5,
