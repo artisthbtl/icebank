@@ -126,6 +126,25 @@ img {
     font-size: 1.3rem;
     font-weight: 400;
     line-height: 1;
+    position: relative; /* Add this line */
+}
+
+.btn-label span::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: var(--base-100);
+    bottom: -2.5px;
+    left: 0;
+
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.btn:hover .btn-label span::after {
+    transform: scaleX(1);
 }
 
 .register-btn .btn {
@@ -149,6 +168,16 @@ img {
 
 .scroll-down-btn .btn-label span {
     font-size: 1rem;
+}
+
+.btn-label,
+.btn-icon {
+    transition: transform 0.1s ease-out;
+}
+
+.btn:active .btn-label,
+.btn:active .btn-icon {
+    transform: scale(0.95);
 }
 
 .preloader-progress, .preloader-mask, .preloader-content {
