@@ -18,27 +18,25 @@ export default function LandingPage() {
         const splits = {
             logoChars: new SplitText(".preloader-logo h1", { type: "chars" }),
             footerLines: new SplitText(".preloader-footer p", { type: "lines" }),
-            headerChars: new SplitText(".header h1", { type: "chars" }),
             heroParagraphH3: new SplitText(".hero-paragraph h3", { type: "lines" }),
-            // heroFooterP: new SplitText(".hero-footer p", { type: "lines" }),
+            heroParagraphP: new SplitText(".hero-paragraph p", { type: "lines" }),
             btnLabels: new SplitText(".btn-label span", { type: "lines" }),
         };
 
-        gsap.set([splits.logoChars.chars], { x: "100%" });
+        gsap.set([splits.logoChars.chars], { clipPath: "inset(0 100% 0 0)" });
         gsap.set(
             [
                 splits.footerLines.lines,
-                splits.headerChars.chars,
-                splits.heroParagraphH3.lines,
-                // splits.heroFooterP.lines,
                 splits.btnLabels.lines,
             ],
             { y: "100%" }
         );
+        gsap.set([splits.heroParagraphH3.lines, splits.heroParagraphP.lines], { clipPath: "inset(0 0 100% 0)" });
+        gsap.set(".header h1", { clipPath: "inset(100% 0 0 0)" });
         gsap.set(".btn-icon", { clipPath: "circle(0% at 50% 50%)" });
         gsap.set(".btn", { scale: 0 });
 
-        function animateProgress(duration = 4) {
+        function animateProgress(duration = 2) {
             const tl = gsap.timeline();
             const counterSteps = 5;
             let currentProgress = 0;
@@ -63,7 +61,7 @@ export default function LandingPage() {
         const tl = gsap.timeline({ delay: 0.5 });
 
         tl.to(splits.logoChars.chars, {
-            x: "0%",
+            clipPath: "inset(0 0% 0 0)",
             stagger: 0.05,
             duration: 1,
             ease: "power4.inOut",
@@ -83,7 +81,7 @@ export default function LandingPage() {
         .to(
             splits.logoChars.chars,
             {
-                x: "-100%",
+                clipPath: "inset(0 0 0 100%)",
                 stagger: 0.05,
                 duration: 1,
                 ease: "power4.inOut",
@@ -127,17 +125,16 @@ export default function LandingPage() {
             },
             "<"
         )
-        .to(splits.headerChars.chars, {
-            y: 0,
-            stagger: 0.05,
-            duration: 1,
+        .to(".header h1", {
+            clipPath: "inset(0% 0 0 0)",
+            duration: 1.5,
             ease: "power4.out",
             delay: -2,
         })
         .to(
-            splits.heroParagraphH3.lines,
+            [splits.heroParagraphH3.lines, splits.heroParagraphP.lines],
             {
-                y: 0,
+                clipPath: "inset(0 0 0% 0)",
                 stagger: 0.1,
                 duration: 1,
                 ease: "power4.out",
@@ -224,7 +221,7 @@ export default function LandingPage() {
 
                             <div className="hero-paragraph">
                                 <h3>They said life's about balance, and your balance's safe with us.</h3>
-                                {/* <p>artisthbtl</p> */}
+                                <p>Easy banking, secure future, with Icebank.</p>
                             </div>
                         </div>
                     </div>
