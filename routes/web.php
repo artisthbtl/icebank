@@ -7,10 +7,10 @@ Route::get('/', function () {
     return inertia('LandingPage');
 });
 
-// Route::get('/home', function () {
-//     return inertia('HomePage');
-// })->middleware(['auth:api', CheckPin::class])->name('home');
+Route::get('/register', function () {
+    return inertia('RegisterPage');
+})->name('register');
 
-// Route::get('/create-pin', function () {
-//     return inertia('Auth/CreatePin');
-// })->middleware('auth:api')->name('create-pin');
+Route::get('/login', function () {
+    return inertia('LoginPage');
+})->name('login');

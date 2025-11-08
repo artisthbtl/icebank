@@ -25,6 +25,7 @@ body::-webkit-scrollbar {
 body {
     font-family: "Host Grotesk";
     overflow-x: hidden;
+    background-color: var(--base-100); 
 }
 
 img {
@@ -254,7 +255,7 @@ img {
 .preloader-mask {
     background-color: var(--base-100);
     mask: linear-gradient(var(--base-300), var(--base-300)), 
-        url('../Assets/mask.svg') center/35% no-repeat;
+        url('../js/Assets/mask.svg') center/35% no-repeat;
     mask-composite: subtract;
     will-change: transform;
     z-index: 1;
@@ -373,7 +374,7 @@ img {
 
     .preloader-mask {
         mask: linear-gradient(var(--base-300), var(--base-300)), 
-            url('../Assets/mask.svg') center/90% no-repeat;
+            url('../js/Assets/mask.svg') center/90% no-repeat;
         mask-composite: subtract;
     }
 

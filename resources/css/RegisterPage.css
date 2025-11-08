@@ -1,0 +1,164 @@
+
+
+.register-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    
+}
+
+.register-content-area {
+    display: flex;
+    
+    background-color: var(--base-400); 
+    color: var(--base-300); 
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.register-image-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+    
+    min-width: 40%;
+}
+
+.register-image-section img,
+.register-image-section svg {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    
+    color: var(--base-200); 
+    max-height: 400px;
+}
+
+.register-form-section {
+    flex: 1.5;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 60%;
+}
+
+.register-title {
+    text-align: center;
+    font-size: 2.25rem;
+    font-weight: 700;
+    
+    color: var(--base-300);
+    margin-bottom: 24px;
+}
+
+.register-subtitle {
+    text-align: center;
+    
+    color: rgba(238, 238, 247, 0.7); 
+    margin-bottom: 32px;
+    font-size: 1.125rem;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.register-field-row {
+    display: flex;
+    gap: 16px;
+}
+
+.register-field-row .MuiFormControl-root {
+    flex: 1;
+}
+
+.register-submit-btn {
+    margin-top: 24px !important;
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-family: "Host Grotesk";
+    
+    background-color: var(--base-200) !important; 
+    color: var(--base-100) !important; 
+    border-radius: 8px !important;
+}
+
+.register-submit-btn:hover {
+    filter: brightness(1.1);
+}
+
+
+@media (max-width: 900px) {
+    .register-content-area {
+        flex-direction: column;
+        max-width: 600px;
+    }
+    
+    .register-image-section { min-width: unset; width: 100%; }
+    .register-form-section { min-width: unset; width: 100%; padding: 30px; }
+
+    .register-field-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .register-field-row .MuiFormControl-root {
+        margin-bottom: 16px;
+    }
+
+    .register-field-row .MuiFormControl-root:last-child {
+        margin-bottom: 0;
+    }
+}
+
+
+
+
+
+.register-form .MuiInputBase-root {
+    color: var(--base-300);
+}
+
+.register-form .MuiInputLabel-root {
+    color: rgba(238, 238, 247, 0.7); 
+}
+
+.register-form .MuiFormHelperText-root {
+    color: rgba(238, 238, 247, 0.6);
+}
+
+.register-form .Mui-error .MuiFormHelperText-root,
+.register-form .Mui-error .MuiInputLabel-root {
+    color: #f44336; 
+}
+
+
+.register-form .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(238, 238, 247, 0.4); 
+}
+
+.register-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(238, 238, 247, 0.7);
+}
+
+
+
+
+.register-form .Mui-focused .MuiInputLabel-root {
+    color: var(--base-200) !important; 
+}
+
+.register-form .Mui-focused .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: var(--base-200) !important; 
+}

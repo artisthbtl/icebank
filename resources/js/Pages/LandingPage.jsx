@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import heroImage from '../Assets/IcebankHero.png';
-import './LandingPage.css';
-
+import '../../css/landingPage.css';
+import { Link } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
@@ -240,16 +240,16 @@ export default function LandingPage() {
                             </div>
                             
                             <div className="header-buttons">
-                                <div className="btn btn-outline">
+                                <Link href="/login" className="btn btn-outline">
                                     <div className="btn-label">
                                         <span>Login</span>
                                     </div>
-                                </div>
-                                <div className="btn">
+                                </Link>
+                                <Link href="/register" className="btn">
                                     <div className="btn-label">
                                         <span>Register</span>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
 
                             <div className="scroll-down-btn">
