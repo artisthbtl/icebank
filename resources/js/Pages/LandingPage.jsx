@@ -1,16 +1,20 @@
 import { useRef } from 'react';
-import CallIcon from '@mui/icons-material/Call';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import heroImage from '../Assets/IcebankHero.png';
 import './LandingPage.css';
 
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import { useGSAP } from '@gsap/react';
 
 gsap.registerPlugin(SplitText, useGSAP);
+gsap.registerPlugin(SplitText, useGSAP, ScrollTrigger);
 
 export default function LandingPage() {
+    gsap.set("body", { overflow: "hidden" });
+    gsap.set(document.documentElement, { overflow: "hidden" });
+    gsap.set(document.body, { overflow: "hidden" });
     const container = useRef(null);
 
     useGSAP(() => {
@@ -20,7 +24,7 @@ export default function LandingPage() {
             footerLines: new SplitText(".preloader-footer p", { type: "lines" }),
             heroParagraphH3: new SplitText(".hero-paragraph h3", { type: "lines" }),
             heroParagraphP: new SplitText(".hero-paragraph p", { type: "lines" }),
-            btnLabels: new SplitText(".btn-label span", { type: "lines" }),
+            btnLabels: new SplitText(".btn-label span", { type: "lines" })
         };
 
         gsap.set([splits.logoChars.chars], { clipPath: "inset(0 100% 0 0)" });
@@ -35,6 +39,7 @@ export default function LandingPage() {
         gsap.set(".header h1", { clipPath: "inset(100% 0 0 0)" });
         gsap.set(".btn-icon", { clipPath: "circle(0% at 50% 50%)" });
         gsap.set(".btn", { scale: 0 });
+        gsap.set(".wipe-reveal-text-bright", { clipPath: "inset(0 0 100% 0)" });
 
         function animateProgress(duration = 2) {
             const tl = gsap.timeline();
@@ -58,7 +63,7 @@ export default function LandingPage() {
             return tl;
         }
 
-        const tl = gsap.timeline({ delay: 0.5 });
+        const tl = gsap.timeline({ delay: 0.1 });
 
         tl.to(splits.logoChars.chars, {
             clipPath: "inset(0 0% 0 0)",
@@ -167,7 +172,41 @@ export default function LandingPage() {
                 ease: "power4.out",
             },
             "<"
+        )
+        .set([".preloader-mask", ".preloader-progress", ".preloader-content"], { 
+            display: "none" 
+        })
+        .set(document.documentElement, { 
+            overflow: "auto"
+        }, "<")
+        .set(document.body, { 
+            overflow: "auto"
+        }, "<");
+
+        gsap.fromTo(".hero-img", 
+            { scale: 1 },
+            { 
+                scale: 1.08,
+                immediateRender: false,
+                scrollTrigger: {
+                    trigger: ".hero",
+                    start: "top top",
+                    end: "75% top",
+                    scrub: true,
+                }
+            }
         );
+
+        gsap.to(".wipe-reveal-text-bright", {
+            clipPath: "inset(0 0 0% 0)",
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".page-2",
+                start: "top 75%", 
+                end: "top 25%",
+                scrub: true,
+            }
+        });
 
     }, { scope: container });
 
@@ -199,8 +238,13 @@ export default function LandingPage() {
                             <div className="header">
                                 <h1>Icebank</h1>
                             </div>
-
-                            <div className="register-btn">
+                            
+                            <div className="header-buttons">
+                                <div className="btn btn-outline">
+                                    <div className="btn-label">
+                                        <span>Login</span>
+                                    </div>
+                                </div>
                                 <div className="btn">
                                     <div className="btn-label">
                                         <span>Register</span>
@@ -224,6 +268,21 @@ export default function LandingPage() {
                                 <p>Easy banking, secure future, with Icebank.</p>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                <section className="page-2">
+                    <div className="wipe-reveal-text">
+                        <p className="wipe-reveal-text-dim">
+                            Welcome to Icebank, the most secure, fast, and reliable digital 
+                            banking and wallet service, offering FAST balance transfer between 
+                            accounts, and a way to pay your favorite subscription just in ONE click.
+                        </p>
+                        <p className="wipe-reveal-text-bright">
+                            Welcome to Icebank, the most secure, fast, and reliable digital 
+                            banking and wallet service, offering FAST balance transfer between 
+                            accounts, and a way to pay your favorite subscription just in ONE click.
+                        </p>
                     </div>
                 </section>
             </div>

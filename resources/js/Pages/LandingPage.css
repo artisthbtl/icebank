@@ -1,11 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Cal+Sans&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
 
+html, body {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    display: none;
+}
+
 :root {
-    /* --base-100: #011E2A; */
     --base-100: #04040b;
-    /* --base-200: #60BDDE; */
     --base-200: #3dcbff;
     --base-300: #eeeef7;
+    --base-400: #333344;
 }
 
 * {
@@ -16,6 +24,7 @@
 
 body {
     font-family: "Host Grotesk";
+    overflow-x: hidden;
 }
 
 img {
@@ -109,10 +118,26 @@ img {
     cursor: pointer;
 }
 
-.register-btn {
+.header-buttons {
     position: absolute;
     top: 2rem;
     right: 2rem;
+    display: flex; 
+    gap: 0.75rem;
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--base-300);
+    border: 2px solid var(--base-300);
+}
+
+.header-buttons .btn-outline {
+    padding: calc(1.25rem - 2px) calc(1.5rem - 2px);
+}
+
+.btn-outline .btn-label span::after {
+    background-color: var(--base-300);
 }
 
 .scroll-down-btn {
@@ -147,7 +172,7 @@ img {
     transform: scaleX(1);
 }
 
-.register-btn .btn {
+.header-buttons .btn {
     padding: 1.25rem 1.5rem 1.25rem 1.5rem;
 }
 
@@ -258,6 +283,44 @@ img {
     padding-bottom: 0.2rem;
     margin-bottom: -0.2rem;
     will-change: transform;
+}
+
+.page-2 {
+    height: 100svh;
+    padding: 8rem 8rem 4rem 8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background-color: var(--base-100);
+    color: var(--base-300);
+    overflow: hidden;
+    gap: 2rem;
+    position: relative;
+}
+
+.wipe-reveal-text {
+    position: relative;
+}
+
+.wipe-reveal-text-dim,
+.wipe-reveal-text-bright {
+    font-size: 4rem;
+    font-weight: 475;
+    line-height: 1.2;
+    max-width: 40ch;
+    text-align: left;
+    margin: 0; 
+}
+
+.wipe-reveal-text-dim {
+    color: var(--base-400);
+}
+
+.wipe-reveal-text-bright {
+    color: var(--base-300);
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 
 @media (max-width: 808px) {
