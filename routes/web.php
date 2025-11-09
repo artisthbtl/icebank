@@ -14,3 +14,11 @@ Route::get('/register', function () {
 Route::get('/login', function () {
     return inertia('LoginPage');
 })->name('login');
+
+Route::get('/create-pin', function () {
+    return inertia('CreatePinPage');
+})->middleware('auth')->name('pin.create');
+
+Route::get('/dashboard', function () {
+    return inertia('DashboardPage');
+})->middleware('auth')->name('dashboard');

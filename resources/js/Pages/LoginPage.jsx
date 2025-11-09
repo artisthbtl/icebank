@@ -2,6 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
+import OtpForm from '@/Components/OtpForm'; // <-- 1. IMPORT THE NEW COMPONENT
 import { Link } from '@inertiajs/react';
 import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
@@ -32,21 +33,19 @@ const loginUser = async (userData) => {
 
 
 export default function LoginPage() {
-    const [statusState, setStatusState] = useState({
-        open: false,
-        status: 'success',
-        message: '',
-        redirectLink: null,
-    });
+    const [currentView, setCurrentView] = useState('login'); // 'login', 'otp', or 'error'
+    const [loginUserId, setLoginUserId] = useState(null);
+    const [criticalError, setCriticalError] = useState(null);
+
 
     const [formHeight, setFormHeight] = useState(null);
     const formSectionRef = useRef(null);
 
     useLayoutEffect(() => {
-        if (formSectionRef.current && !statusState.open && !formHeight) {
+        if (formSectionRef.current && currentView === 'login' && !formHeight) {
             setFormHeight(formSectionRef.current.offsetHeight);
         }
-    }, [statusState.open, formHeight]);
+    }, [currentView, formHeight]);
 
     const { 
         control, 
@@ -67,50 +66,27 @@ export default function LoginPage() {
         mutationFn: loginUser,
         
         onSuccess: (data) => {
-            setStatusState({
-                open: true,
-                status: 'success',
-                message: data.message || 'OTP has been sent to your email.',
-                redirectLink: null,
-            });
-            reset(); 
+            setLoginUserId(data.userId);
+            setCurrentView('otp');
+            reset();
         },
         
         onError: (error) => {
             if (error.response) {
-                if (error.response.status === 401 && error.response.data.error) {
+                if (error.response.status === 401 || error.response.status === 422) {
                     setError('root.serverError', {
                         type: '401',
-                        message: error.response.data.error
+                        message: "Invalid Credentials"
                     });
                     return;
                 }
 
-                if (error.response.status === 422) {
-                    const serverErrors = error.response.data.errors;
-                    if (serverErrors) {
-                        Object.keys(serverErrors).forEach((key) => {
-                            if (key in loginSchema.shape) {
-                                setError(key, { type: 'server', message: serverErrors[key][0] });
-                            }
-                        });
-                    }
-                    return;
-                }
-
-                setStatusState({
-                    open: true,
-                    status: 'error',
-                    message: error.response.data.message || 'An unexpected error occurred.',
-                    redirectLink: null,
-                });
+                setCriticalError(error.response.data.message || 'An unexpected error occurred.');
+                setCurrentView('error');
             } else {
-                setStatusState({
-                    open: true,
-                    status: 'error',
-                    message: 'A network error occurred. Please try again.',
-                    redirectLink: null,
-                });
+                // Handle network errors
+                setCriticalError('A network error occurred. Please try again.');
+                setCurrentView('error');
             }
         },
     });
@@ -120,8 +96,9 @@ export default function LoginPage() {
         mutation.mutate(data);
     };
 
-    const resetStatus = () => {
-        setStatusState((prev) => ({ ...prev, open: false }));
+    const resetToLogin = () => {
+        setCurrentView('login');
+        setCriticalError(null);
     };
 
     return (
@@ -143,8 +120,7 @@ export default function LoginPage() {
                             transition: 'min-height 0.3s ease'
                         }}
                     >
-                        
-                        {!statusState.open ? (
+                        {currentView === 'login' && (
                             <>
                                 <Typography component="h1" variant="h4" className="login-title">
                                     Welcome Back!
@@ -185,7 +161,7 @@ export default function LoginPage() {
                                             />
                                         )}
                                     />
-                                    
+
                                     <Button
                                         type="submit"
                                         fullWidth
@@ -201,7 +177,7 @@ export default function LoginPage() {
                                     >
                                         {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                                     </Button>
-                                    
+
                                     {errors.root?.serverError && (
                                         <Typography 
                                             role="alert" 
@@ -224,16 +200,21 @@ export default function LoginPage() {
                                     </Typography>
                                 </Box>
                             </>
-                        ) : (
+                        )}
+
+                        {currentView === 'otp' && (
+                            <OtpForm userId={loginUserId} />
+                        )}
+
+                        {currentView === 'error' && (
                             <StatusDisplayCard 
-                                status={statusState.status}
-                                message={statusState.message}
-                                redirectLink={statusState.redirectLink}
-                                onReset={resetStatus} 
+                                status="error"
+                                message={criticalError}
+                                redirectLink={null}
+                                onReset={resetToLogin}
                             />
                         )}
                     </div>
-
                 </div>
             </div>
         </>

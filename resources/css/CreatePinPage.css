@@ -1,0 +1,180 @@
+/* This file re-uses the exact same color variables and styling
+  as RegisterPage.css and LoginPage.css for a consistent theme.
+*/
+
+/* --- MAIN PAGE WRAPPER --- */
+.pin-page-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+    /* Assumes dark background on <body> */
+}
+
+/* --- FORM CONTAINER CARD --- */
+.pin-content-area {
+    /* Based on login-form-section */
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #1E293B; /* Lighter blue form background */
+    box-sizing: border-box;
+    
+    /* Unique styles for this single-card page */
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    max-width: 500px; /* Constrain width */
+    width: 100%;
+}
+
+.pin-title {
+    text-align: center;
+    font-size: 2.25rem !important;
+    font-weight: 700 !important;
+    color: #E2E8F0 !important; 
+    margin-bottom: 12px !important;
+}
+
+.pin-subtitle {
+    text-align: center;
+    color: #94A3B8 !important; 
+    margin-bottom: 24px !important;
+    font-size: 1.125rem !important;
+}
+
+.pin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; /* Spaces out PIN and Confirm PIN */
+    width: 100%;
+}
+
+.pin-submit-btn {
+    margin-top: 16px !important;
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important; 
+    color: #0F172A !important; 
+    border-radius: 8px !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pin-submit-btn:hover {
+    filter: brightness(1.1);
+}
+
+.pin-submit-btn:disabled,
+.pin-submit-btn.Mui-disabled {
+    background-color: #334155 !important;
+    color: #94A3B8 !important;
+    cursor: not-allowed !important;
+    filter: none !important;
+}
+
+/* --- MUI FORM STYLING (Copied from other pages) --- */
+.pin-form .MuiInputBase-input {
+    color: #E2E8F0 !important; 
+}
+
+.pin-form .MuiInputLabel-root {
+    color: #94A3B8 !important; 
+}
+
+.pin-form .MuiFormHelperText-root {
+    color: #94A3B8 !important;
+}
+
+.pin-form .Mui-error .MuiFormHelperText-root,
+.pin-form .Mui-error .MuiInputLabel-root {
+    color: #f44336 !important; 
+}
+
+.pin-form .MuiOutlinedInput-root {
+    background-color: #2a3a50; 
+    border-radius: 8px !important;
+}
+
+.pin-form .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #334155 !important; 
+}
+
+.pin-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #94A3B8 !important; 
+}
+
+.pin-form .Mui-focused .MuiInputLabel-root {
+    color: #38BDF8 !important; 
+}
+
+.pin-form .Mui-focused .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #38BDF8 !important; 
+    border-width: 2px !important;
+}
+
+/* --- STATUS CARD STYLES (Copied from other pages) --- */
+.status-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    color: #E2E8F0;
+}
+
+.status-card-icon {
+    font-size: 4.5rem !important;
+}
+
+.status-card-icon.success {
+    color: #38BDF8;
+}
+
+.status-card-icon.error {
+    color: #FBBF24;
+}
+
+.status-card-message {
+    color: #94A3B8;
+    font-size: 1.1rem !important;
+    max-width: 400px;
+}
+
+.status-card-button {
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important; 
+    color: #0F172A !important; 
+    border-radius: 8px !important;
+}
+
+.status-card-button:hover {
+    filter: brightness(1.1);
+}
+
+.status-card-button-try-again {
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    color: #38BDF8 !important; 
+    border-color: #38BDF8 !important;
+    border-radius: 8px !important;
+}
+
+.status-card-button-try-again:hover {
+    border-color: #E2E8F0 !important;
+    color: #E2E8F0 !important;
+    background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+/* --- RESPONSIVENESS --- */
+@media (max-width: 600px) {
+    .pin-content-area { 
+        padding: 30px; 
+    }
+}

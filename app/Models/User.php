@@ -72,4 +72,14 @@ class User extends Authenticatable implements JWTSubject, MustVerifyEmail
 
         return url('storage/profile_photos/default.png');
     }
+
+    public function getHasPinAttribute()
+    {
+        return !is_null($this->pin);
+    }
+
+    public function getFullNameAttribute()
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 }
