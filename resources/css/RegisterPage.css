@@ -1,4 +1,14 @@
-
+/* Colors based on your "ice blue" theme:
+  --color-darkest-bg: #0F172A;  (Dark slate blue for page background)
+  --color-form-bg: #1E293B;     (Lighter blue for the form)
+  --color-input-fill: #2a3a50;  (Slightly lighter fill for inputs)
+  --color-text-ice: #E2E8F0;     (Ice blue for main text/input content)
+  --color-text-label: #94A3B8;   (Lighter ice blue for labels/helpers)
+  --color-border: #334155;       (Slate border for inputs)
+  --color-primary-btn: #38BDF8; (A bright "ice" blue for the button)
+  --color-warning-fg: #FBBF24;   (An "in-theme" warning yellow)
+  --color-success-fg: #38BDF8;   (The "ice" blue for success)
+*/
 
 .register-page-wrapper {
     display: flex;
@@ -12,35 +22,42 @@
 
 .register-content-area {
     display: flex;
-    
-    background-color: var(--base-400); 
-    color: var(--base-300); 
     border-radius: 12px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     max-width: 1200px;
     width: 100%;
+    
 }
+
 
 .register-image-section {
     flex: 1;
     display: flex;
+    flex-direction: column; 
     justify-content: center;
     align-items: center;
     padding: 40px;
-    
+    background-color: #0F172A; 
     min-width: 40%;
+    box-sizing: border-box;
 }
 
-.register-image-section img,
-.register-image-section svg {
-    max-width: 100%;
+.register-svg-image {
+    width: 100%;
     height: auto;
-    object-fit: contain;
-    
-    color: var(--base-200); 
-    max-height: 400px;
+    max-width: 300px;
+    color: #38BDF8; 
 }
+
+.image-quote {
+    margin-top: 24px !important;
+    color: #94A3B8 !important; 
+    font-style: italic;
+    text-align: center;
+    max-width: 300px;
+}
+
 
 .register-form-section {
     flex: 1.5;
@@ -48,30 +65,31 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    background-color: #1E293B; 
     min-width: 60%;
+    box-sizing: border-box;
 }
 
 .register-title {
     text-align: center;
-    font-size: 2.25rem;
-    font-weight: 700;
-    
-    color: var(--base-300);
-    margin-bottom: 24px;
+    font-size: 2.25rem !important;
+    font-weight: 700 !important;
+    color: #E2E8F0 !important; 
+    margin-bottom: 12px !important;
 }
 
 .register-subtitle {
     text-align: center;
-    
-    color: rgba(238, 238, 247, 0.7); 
-    margin-bottom: 32px;
-    font-size: 1.125rem;
+    color: #94A3B8 !important; 
+    margin-bottom: 24px !important;
+    font-size: 1.125rem !important;
 }
 
 .register-form {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    width: 100%;
 }
 
 .register-field-row {
@@ -84,19 +102,105 @@
 }
 
 .register-submit-btn {
-    margin-top: 24px !important;
+    margin-top: 16px !important;
     padding: 12px 0 !important;
     font-size: 1rem !important;
-    font-family: "Host Grotesk";
-    
-    background-color: var(--base-200) !important; 
-    color: var(--base-100) !important; 
+    font-weight: bold !important;
+    background-color: #38BDF8 !important; 
+    color: #0F172A !important; 
     border-radius: 8px !important;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .register-submit-btn:hover {
     filter: brightness(1.1);
 }
+
+.register-submit-btn:disabled {
+    background-color: #334155 !important;
+    color: #94A3B8 !important;
+    cursor: not-allowed !important;
+    filter: none !important;
+}
+
+.register-login-link {
+    text-align: center;
+    margin-top: 20px !important;
+    color: #94A3B8 !important;
+}
+
+.register-login-link a {
+    color: #38BDF8 !important;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.register-login-link a:hover {
+    text-decoration: underline;
+}
+
+.register-form .MuiInputBase-input {
+    color: #E2E8F0 !important; 
+}
+
+.register-form .MuiInputLabel-root {
+    color: #94A3B8 !important; 
+}
+
+.register-form .MuiFormHelperText-root {
+    color: #94A3B8 !important;
+}
+
+.register-form .Mui-error .MuiFormHelperText-root,
+.register-form .Mui-error .MuiInputLabel-root {
+    color: #f44336 !important; 
+}
+
+.register-form .MuiOutlinedInput-root {
+    background-color: #2a3a50; 
+    border-radius: 8px !important;
+}
+
+.register-form .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #334155 !important; 
+}
+
+.register-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: #94A3B8 !important; 
+}
+
+.register-form .Mui-focused .MuiInputLabel-root {
+    color: #38BDF8 !important; 
+}
+
+.register-form .Mui-focused .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+    border-color: #38BDF8 !important; 
+    border-width: 2px !important;
+}
+
+.helper-text-container {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    
+    margin-top: 4px; 
+    margin-left: 14px;
+}
+
+.helper-text-container svg {
+    font-size: 1.1rem;
+    margin-right: 6px;
+}
+
+.helper-text-warning {
+    color: #FBBF24; 
+}
+
+.helper-text-success {
+    color: #38BDF8; 
+}
+
 
 
 @media (max-width: 900px) {
@@ -105,8 +209,23 @@
         max-width: 600px;
     }
     
-    .register-image-section { min-width: unset; width: 100%; }
-    .register-form-section { min-width: unset; width: 100%; padding: 30px; }
+    .register-image-section { 
+        min-width: unset; 
+        width: 100%;
+        padding: 40px 20px;
+    }
+    .register-svg-image {
+        max-width: 200px;
+    }
+    .image-quote {
+        display: none; 
+    }
+
+    .register-form-section { 
+        min-width: unset; 
+        width: 100%; 
+        padding: 30px; 
+    }
 
     .register-field-row {
         flex-direction: column;
@@ -114,51 +233,18 @@
     }
     
     .register-field-row .MuiFormControl-root {
+        margin-bottom: 0;
+    }
+
+    .register-form {
+        gap: 0;
+    }
+
+    .register-form .MuiFormControl-root {
         margin-bottom: 16px;
     }
 
-    .register-field-row .MuiFormControl-root:last-child {
-        margin-bottom: 0;
+    .register-form .helper-text-container {
+        margin-bottom: 16px; 
     }
-}
-
-
-
-
-
-.register-form .MuiInputBase-root {
-    color: var(--base-300);
-}
-
-.register-form .MuiInputLabel-root {
-    color: rgba(238, 238, 247, 0.7); 
-}
-
-.register-form .MuiFormHelperText-root {
-    color: rgba(238, 238, 247, 0.6);
-}
-
-.register-form .Mui-error .MuiFormHelperText-root,
-.register-form .Mui-error .MuiInputLabel-root {
-    color: #f44336; 
-}
-
-
-.register-form .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(238, 238, 247, 0.4); 
-}
-
-.register-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: rgba(238, 238, 247, 0.7);
-}
-
-
-
-
-.register-form .Mui-focused .MuiInputLabel-root {
-    color: var(--base-200) !important; 
-}
-
-.register-form .Mui-focused .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
-    border-color: var(--base-200) !important; 
 }

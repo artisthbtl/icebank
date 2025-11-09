@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusModal from '@/Components/StatusModal';
+import { Link } from '@inertiajs/react';
 import {
     Typography,
     TextField,
@@ -9,6 +10,11 @@ import {
     CircularProgress,
     Box
 } from '@mui/material';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 import '../../css/RegisterPage.css';
 
@@ -17,30 +23,59 @@ const RegisterImage = () => (
         xmlns="http://www.w3.org/2000/svg" 
         viewBox="0 0 24 24" 
         fill="currentColor" 
-        className="w-24 h-24 text-blue-500"
-        style={{ width: '100%', height: 'auto', maxWidth: '300px', color: '#1976d2' }} // Direct style or add class
+        className="register-svg-image"
     >
         <path fillRule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.438-.695Z" clipRule="evenodd" />
     </svg>
 );
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+const minAgeDate = new Date();
+minAgeDate.setFullYear(minAgeDate.getFullYear() - 17);
+
+const registerSchema = z.object({
+    firstName: z.string().min(1, 'First name is required').max(50, 'First name is too long'),
+    lastName: z.string().min(1, 'Last name is required').max(50, 'Last name is too long'),
+    dateOfBirth: z.string().min(1, 'Date of birth is required')
+        .refine((val) => new Date(val) <= minAgeDate, 'You must be at least 17 years old'),
+    city: z.string().min(2, 'City is required').max(100, 'City name is too long'),
+    email: z.string().min(1, 'Email is required').email('Invalid email address'),
+    password: z.string()
+        .regex(passwordRegex, "Invalid password format"), 
+    passwordConfirmation: z.string().min(1, 'Please confirm your password'),
+}).refine((data) => data.password === data.passwordConfirmation, {
+    message: "Passwords do not match",
+    path: ['passwordConfirmation'],
+});
 
 const registerUser = async (userData) => {
     const { data } = await axios.post('/api/auth/register', userData);
     return data;
 };
 
-export default function RegisterPage() {
-    const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
-        dateOfBirth: '',
-        city: '',
-        email: '',
-        password: '',
-        passwordConfirmation: '',
-    });
+const PasswordHelper = ({ isDirty, error, successMessage }) => {
+    if (!isDirty) {
+        return null;
+    }
 
+    if (error) {
+        return (
+            <Box className="helper-text-container helper-text-warning">
+                <WarningAmberIcon />
+                <span>{error.message}</span>
+            </Box>
+        );
+    }
+
+    return (
+        <Box className="helper-text-container helper-text-success">
+            <CheckCircleIcon />
+            <span>{successMessage}</span>
+        </Box>
+    );
+};
+
+export default function RegisterPage() {
     const [modalState, setModalState] = useState({
         open: false,
         status: 'success',
@@ -48,35 +83,49 @@ export default function RegisterPage() {
         redirectLink: null,
     });
 
-    const [validationErrors, setValidationErrors] = useState({});
+    const { 
+        control, 
+        handleSubmit, 
+        reset, 
+        setError, 
+        formState: { errors, isValid: isFormValid, dirtyFields } 
+    } = useForm({
+        resolver: zodResolver(registerSchema),
+        mode: 'onChange', // Validates instantly
+        defaultValues: {
+            firstName: '', lastName: '', dateOfBirth: '', city: '',
+            email: '', password: '', passwordConfirmation: '',
+        }
+    });
 
     const mutation = useMutation({
         mutationFn: registerUser,
         
         onSuccess: (data) => {
-            setValidationErrors({});
             setModalState({
                 open: true,
                 status: 'success',
                 message: data.message || 'Registration successful! Please check your email to verify your account.',
                 redirectLink: '/login',
             });
-            setFormData({
-                firstName: '', lastName: '', dateOfBirth: '', city: '',
-                email: '', password: '', passwordConfirmation: '',
-            });
+            reset(); 
         },
         
         onError: (error) => {
             if (error.response && error.response.status === 422) {
-                const errors = error.response.data.errors;
-                setValidationErrors(errors);
-
+                const serverErrors = error.response.data.errors;
                 let firstErrorMessage = 'Please fix the errors in the form.';
-                if (errors) {
-                    const firstErrorKey = Object.keys(errors)[0];
-                    if (firstErrorKey && errors[firstErrorKey].length > 0) {
-                        firstErrorMessage = errors[firstErrorKey][0];
+                if (serverErrors) {
+                    Object.keys(serverErrors).forEach((key) => {
+                        const fieldName = key;
+                        const message = serverErrors[key][0];
+                        if (fieldName in registerSchema.shape) {
+                            setError(fieldName, { type: 'server', message: message });
+                        }
+                    });
+                    const firstErrorKey = Object.keys(serverErrors)[0];
+                    if (firstErrorKey) {
+                        firstErrorMessage = serverErrors[firstErrorKey][0];
                     }
                 }
 
@@ -97,26 +146,12 @@ export default function RegisterPage() {
         },
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setValidationErrors({});
-        mutation.mutate(formData);
+    const onSubmit = (data) => {
+        mutation.mutate(data);
     };
 
     const closeModal = () => {
         setModalState((prev) => ({ ...prev, open: false }));
-    };
-
-    const getError = (field) => {
-        return validationErrors[field] ? validationErrors[field][0] : null;
     };
 
     return (
@@ -125,6 +160,9 @@ export default function RegisterPage() {
                 <div className="register-content-area">
                     <div className="register-image-section">
                         <RegisterImage />
+                        <Typography variant="body1" className="image-quote">
+                            "It is not the man who has too little, but the man who craves more, that is poor." - Seneca
+                        </Typography>
                     </div>
 
                     <div className="register-form-section">
@@ -135,87 +173,129 @@ export default function RegisterPage() {
                             Join us and start managing your finances today!
                         </Typography>
                         
-                        <Box component="form" onSubmit={handleSubmit} noValidate className="register-form">
+                        <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate className="register-form">
                             <div className="register-field-row">
-                                <TextField
+                                <Controller
                                     name="firstName"
-                                    label="First Name"
-                                    fullWidth
-                                    required
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    error={!!getError('firstName')}
-                                    helperText={getError('firstName')}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="First Name"
+                                            fullWidth
+                                            required
+                                            error={!!errors.firstName}
+                                            helperText={errors.firstName?.message}
+                                        />
+                                    )}
                                 />
-                                <TextField
+                                <Controller
                                     name="lastName"
-                                    label="Last Name"
-                                    fullWidth
-                                    required
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    error={!!getError('lastName')}
-                                    helperText={getError('lastName')}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Last Name"
+                                            fullWidth
+                                            required
+                                            error={!!errors.lastName}
+                                            helperText={errors.lastName?.message}
+                                        />
+                                    )}
                                 />
                             </div>
 
                             <div className="register-field-row">
-                                <TextField
+                                <Controller
                                     name="dateOfBirth"
-                                    label="Date of Birth"
-                                    type="date"
-                                    fullWidth
-                                    required
-                                    value={formData.dateOfBirth}
-                                    onChange={handleChange}
-                                    InputLabelProps={{ shrink: true }}
-                                    error={!!getError('dateOfBirth')}
-                                    helperText={getError('dateOfBirth')}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="Date of Birth"
+                                            type="date"
+                                            fullWidth
+                                            required
+                                            InputLabelProps={{ shrink: true }}
+                                            error={!!errors.dateOfBirth}
+                                            helperText={errors.dateOfBirth?.message}
+                                        />
+                                    )}
                                 />
-                                <TextField
+                                <Controller
                                     name="city"
-                                    label="City"
-                                    fullWidth
-                                    required
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    error={!!getError('city')}
-                                    helperText={getError('city')}
+                                    control={control}
+                                    render={({ field }) => (
+                                        <TextField
+                                            {...field}
+                                            label="City"
+                                            fullWidth
+                                            required
+                                            error={!!errors.city}
+                                            helperText={errors.city?.message}
+                                        />
+                                    )}
                                 />
                             </div>
 
-                            <TextField
+                            <Controller
                                 name="email"
-                                label="Email Address"
-                                type="email"
-                                fullWidth
-                                required
-                                value={formData.email}
-                                onChange={handleChange}
-                                error={!!getError('email')}
-                                helperText={getError('email')}
+                                control={control}
+                                render={({ field }) => (
+                                    <TextField
+                                        {...field}
+                                        label="Email Address"
+                                        type="email"
+                                        fullWidth
+                                        required
+                                        error={!!errors.email}
+                                        helperText={errors.email?.message}
+                                    />
+                                )}
                             />
-                            <TextField
+                            
+                            <Controller
                                 name="password"
-                                label="Password"
-                                type="password"
-                                fullWidth
-                                required
-                                value={formData.password}
-                                onChange={handleChange}
-                                error={!!getError('password')}
-                                helperText={getError('password') || "Min 8 chars, mixed case, numbers, symbols."}
+                                control={control}
+                                render={({ field }) => (
+                                    <Box sx={{ width: '100%' }}>
+                                        <TextField
+                                            {...field}
+                                            label="Password"
+                                            type="password"
+                                            fullWidth
+                                            required
+                                            error={!!errors.password && dirtyFields.password}
+                                        />
+                                        <PasswordHelper
+                                            isDirty={dirtyFields.password}
+                                            error={errors.password ? { message: "Include 8 chars, lowercase, uppercase, numbers, symbols." } : null}
+                                            successMessage="Password looks strong!"
+                                        />
+                                    </Box>
+                                )}
                             />
-                            <TextField
+                            
+                            <Controller
                                 name="passwordConfirmation"
-                                label="Confirm Password"
-                                type="password"
-                                fullWidth
-                                required
-                                value={formData.passwordConfirmation}
-                                onChange={handleChange}
-                                error={!!getError('passwordConfirmation')}
-                                helperText={getError('passwordConfirmation')} // Added helperText for confirmation password
+                                control={control}
+                                render={({ field }) => (
+                                    <Box sx={{ width: '100%' }}>
+                                        <TextField
+                                            {...field}
+                                            label="Confirm Password"
+                                            type="password"
+                                            fullWidth
+                                            required
+                                            error={!!errors.passwordConfirmation && dirtyFields.passwordConfirmation}
+                                        />
+                                        <PasswordHelper
+                                            isDirty={dirtyFields.passwordConfirmation}
+                                            error={errors.passwordConfirmation}
+                                            successMessage="Passwords match!"
+                                        />
+                                    </Box>
+                                )}
                             />
                             
                             <Button
@@ -223,10 +303,24 @@ export default function RegisterPage() {
                                 fullWidth
                                 variant="contained"
                                 className="register-submit-btn"
-                                disabled={mutation.isPending}
+                                disabled={!isFormValid || mutation.isPending}
+
+                                sx={{
+                                    '&.Mui-disabled': {
+                                        cursor: 'not-allowed',
+                                        pointerEvents: 'auto'
+                                    }
+                                }}
                             >
                                 {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Register'}
                             </Button>
+
+                            <Typography variant="body2" className="register-login-link">
+                                Already have an account?{' '}
+                                <Link href="/login">
+                                    Login
+                                </Link>
+                            </Typography>
                         </Box>
                     </div>
                 </div>
