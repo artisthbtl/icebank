@@ -3,17 +3,11 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
 import { Link } from '@inertiajs/react';
-import {
-    Typography,
-    TextField,
-    Button,
-    CircularProgress,
-    Box
-} from '@mui/material';
+import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import '../../css/LoginPage.css'; 
+import '../../css/LoginPage.css';
 
 const LoginImage = () => (
     <svg 
@@ -84,10 +78,12 @@ export default function LoginPage() {
         
         onError: (error) => {
             if (error.response) {
-                let errorMessage = error.response.data.message || 'An unexpected error occurred.';
-                
                 if (error.response.status === 401 && error.response.data.error) {
-                    errorMessage = error.response.data.error;
+                    setError('root.serverError', {
+                        type: '401',
+                        message: error.response.data.error
+                    });
+                    return;
                 }
 
                 if (error.response.status === 422) {
@@ -98,14 +94,14 @@ export default function LoginPage() {
                                 setError(key, { type: 'server', message: serverErrors[key][0] });
                             }
                         });
-                        errorMessage = "Please fix the errors in the form.";
                     }
+                    return;
                 }
 
                 setStatusState({
                     open: true,
                     status: 'error',
-                    message: errorMessage,
+                    message: error.response.data.message || 'An unexpected error occurred.',
                     redirectLink: null,
                 });
             } else {
@@ -120,6 +116,7 @@ export default function LoginPage() {
     });
 
     const onSubmit = (data) => {
+        setError('root.serverError', null); 
         mutation.mutate(data);
     };
 
@@ -146,6 +143,7 @@ export default function LoginPage() {
                             transition: 'min-height 0.3s ease'
                         }}
                     >
+                        
                         {!statusState.open ? (
                             <>
                                 <Typography component="h1" variant="h4" className="login-title">
@@ -203,6 +201,20 @@ export default function LoginPage() {
                                     >
                                         {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Login'}
                                     </Button>
+                                    
+                                    {errors.root?.serverError && (
+                                        <Typography 
+                                            role="alert" 
+                                            sx={{ 
+                                                color: '#FBBF24',
+                                                fontSize: '0.9rem', 
+                                                textAlign: 'center',
+                                                marginTop: '2px',
+                                            }}
+                                        >
+                                            {errors.root.serverError.message}
+                                        </Typography>
+                                    )}
 
                                     <Typography variant="body2" className="login-register-link">
                                         Don't have an account?{' '}
@@ -221,6 +233,7 @@ export default function LoginPage() {
                             />
                         )}
                     </div>
+
                 </div>
             </div>
         </>

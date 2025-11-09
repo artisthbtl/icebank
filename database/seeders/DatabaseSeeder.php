@@ -16,9 +16,8 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // CREATE A MAIN "POWER USER"
         $powerUser = User::factory()
-            ->has(Account::factory(['balance' => 50000])) // Create a user with one account that has a high balance
+            ->has(Account::factory(['balance' => 50000]))
             ->create([
                 'first_name' => 'Marcello',
                 'last_name' => 'Kusumo',
@@ -27,17 +26,13 @@ class DatabaseSeeder extends Seeder
                 'pin' => bcrypt('123456'),
             ]);
 
-        
-        // CREATE ADMIN
         Admin::factory()->create();
 
-        // CREATE A BATCH OF RANDOM USERS
         $randomUsers = User::factory()
             ->count(20)
-            ->has(Account::factory()) // Every user gets one account
+            ->has(Account::factory())
             ->create();
 
-        // CREATE COMPANIES, SERVICES, AND PLANS
         $netflix = Company::factory()->create(['name' => 'Netflix']);
         $spotify = Company::factory()->create(['name' => 'Spotify']);
         $gym = Company::factory()->create(['name' => 'IceGym']);
@@ -55,7 +50,6 @@ class DatabaseSeeder extends Seeder
         Plan::factory()->for($yogaService)->create(['price' => 60.00, 'duration' => 30]);
 
 
-        // POPULATE THE POWER USER'S TRANSACTION HISTORY
         Transaction::factory()->count(5)->for($powerUser->account)->create();
 
         Transaction::factory()
@@ -75,8 +69,6 @@ class DatabaseSeeder extends Seeder
             'plan_id' => $gymPlan->id,
         ]);
 
-
-        // GIVE RANDOM USERS SOME ACTIVITY
         foreach ($randomUsers->take(5) as $user) {
             Transaction::factory()->count(2)->for($user->account)->create();
 
