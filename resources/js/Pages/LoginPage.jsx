@@ -27,7 +27,7 @@ const LoginImage = () => (
 );
 
 const loginSchema = z.object({
-    email: z.string().min(1, 'Email is required').email('Invalid email address'),
+    email: z.email('Invalid email address').min(1, 'Email is required'),
     password: z.string().min(1, 'Password is required'),
 });
 
@@ -131,6 +131,13 @@ export default function LoginPage() {
         <>
             <div className="login-page-wrapper">
                 <div className="login-content-area">
+                    <div className="login-image-section">
+                        <LoginImage />
+                        <Typography variant="body1" className="image-quote">
+                            "An investment in knowledge pays the best interest." - Benjamin Franklin
+                        </Typography>
+                    </div>
+                    
                     <div 
                         className="login-form-section" 
                         ref={formSectionRef}
@@ -214,14 +221,6 @@ export default function LoginPage() {
                             />
                         )}
                     </div>
-
-                    <div className="login-image-section">
-                        <LoginImage />
-                        <Typography variant="body1" className="image-quote">
-                            "An investment in knowledge pays the best interest." - Benjamin Franklin
-                        </Typography>
-                    </div>
-
                 </div>
             </div>
         </>

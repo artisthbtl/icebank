@@ -31,7 +31,7 @@ const registerSchema = z.object({
     dateOfBirth: z.string().min(1, 'Date of birth is required')
         .refine((val) => new Date(val) <= minAgeDate, 'You must be at least 17 years old'),
     city: z.string().min(2, 'City is required').max(100, 'City name is too long'),
-    email: z.string().min(1, 'Email is required').z.email('Invalid email address'),
+    email: z.email('Invalid email address').min(1, 'Email is required'),
     password: z.string()
         .regex(passwordRegex, "Invalid password format"), 
     passwordConfirmation: z.string().min(1, 'Please confirm your password'),
