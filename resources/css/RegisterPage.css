@@ -17,7 +17,6 @@
     min-height: 100vh;
     padding: 20px;
     box-sizing: border-box;
-    
 }
 
 .register-content-area {
@@ -27,9 +26,7 @@
     overflow: hidden;
     max-width: 1200px;
     width: 100%;
-    
 }
-
 
 .register-image-section {
     flex: 1;
@@ -57,7 +54,6 @@
     text-align: center;
     max-width: 300px;
 }
-
 
 .register-form-section {
     flex: 1.5;
@@ -183,7 +179,6 @@
     align-items: center;
     font-size: 0.75rem;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
-    
     margin-top: 4px; 
     margin-left: 14px;
 }
@@ -201,7 +196,61 @@
     color: #38BDF8; 
 }
 
+.status-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    color: #E2E8F0;
+}
 
+.status-card-icon {
+    font-size: 4.5rem !important;
+}
+
+.status-card-icon.success {
+    color: #38BDF8;
+}
+
+.status-card-icon.error {
+    color: #FBBF24;
+}
+
+.status-card-message {
+    color: #94A3B8;
+    font-size: 1.1rem !important;
+    max-width: 400px;
+}
+
+.status-card-button {
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important; 
+    color: #0F172A !important; 
+    border-radius: 8px !important;
+}
+
+.status-card-button:hover {
+    filter: brightness(1.1);
+}
+
+.status-card-button-try-again {
+    padding: 12px 24px !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    color: #38BDF8 !important; 
+    border-color: #38BDF8 !important;
+    border-radius: 8px !important;
+}
+
+.status-card-button-try-again:hover {
+    border-color: #E2E8F0 !important;
+    color: #E2E8F0 !important;
+    background-color: rgba(56, 189, 248, 0.1) !important;
+}
 
 @media (max-width: 900px) {
     .register-content-area {
