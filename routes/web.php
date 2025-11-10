@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\CheckPin;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\AuthController;
 
 Route::get('/', function () {
     return inertia('LandingPage');
@@ -22,3 +23,5 @@ Route::get('/create-pin', function () {
 Route::get('/dashboard', function () {
     return inertia('DashboardPage');
 })->middleware('auth')->name('dashboard');
+
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');

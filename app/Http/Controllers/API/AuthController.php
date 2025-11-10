@@ -99,6 +99,7 @@ class AuthController extends Controller
 
         $user = User::find($request->userId);
         $token = auth('api')->login($user);
+        auth('web')->login($user, true);
 
         return $this->respondWithToken($token, $user);
     }
