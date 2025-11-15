@@ -17,7 +17,7 @@ class VerifyOtpRequest extends FormRequest
             'otp' => 'required|string|digits:6',
         ];
 
-        if ($this->is('api/auth/verify-otp')) {
+        if ($this->is('api/auth/verify-otp') || $this->is('auth/verify-otp')) {
             $rules['userId'] = 'required|exists:users,id';
         } else {
             $rules['adminId'] = 'required|exists:admins,id';

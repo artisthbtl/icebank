@@ -2,7 +2,7 @@ import React, { useState, useRef, useLayoutEffect } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
-import OtpForm from '@/Components/OtpForm'; // <-- 1. IMPORT THE NEW COMPONENT
+import OtpForm from '@/Components/OtpForm';
 import { Link } from '@inertiajs/react';
 import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';

@@ -41,10 +41,17 @@ export default function OtpForm({ userId }) {
         },
         
         onError: (error) => {
-            setError('root.serverError', {
-                type: '401',
-                message: error.response?.data?.error || 'Invalid or expired OTP.'
-            });
+            let message = 'An unknown error occurred.';
+            if (error.response) {
+                if (error.response.status === 401) {
+                    message = error.response.data.error || 'Invalid or expired OTP.';
+                } else if (error.response.status === 422) {
+                    message = 'Validation failed. Please try again.';
+                } else {
+                    message = error.response.data.message || 'An unexpected error occurred.';
+                }
+            }
+            setError('root.serverError', { type: 'manual', message: message });
         },
     });
 

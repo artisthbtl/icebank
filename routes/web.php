@@ -3,6 +3,7 @@
 use App\Http\Middleware\CheckPin;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Resources\V1\TransactionCollection;
 
 Route::get('/', function () {
     return inertia('LandingPage');
@@ -21,7 +22,20 @@ Route::get('/create-pin', function () {
 })->middleware('auth')->name('pin.create');
 
 Route::get('/dashboard', function () {
-    return inertia('DashboardPage');
-})->middleware('auth')->name('dashboard');
+    $user = Auth::user();
+    $user->load('account');
 
-Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify');
+    $recentTransactions = \App\Models\Transaction::where('account_id', $user->account->id)
+        ->latest()
+        ->take(5)
+        ->get();
+
+    return inertia('DashboardPage', [
+        'account' => $user->account,
+        'recentTransactions' => new TransactionCollection($recentTransactions)
+    ]);
+})->middleware(['auth', 'check.pin'])->name('dashboard');
+
+Route::post('/auth/verify-otp',
+    [AuthController::class, 'verifyOtp'
+])->name('otp.verify');

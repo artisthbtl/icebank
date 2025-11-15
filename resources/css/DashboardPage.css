@@ -1,0 +1,232 @@
+/* DashboardPage.css
+    Uses the same color theme as the rest of the app.
+    --color-darkest-bg: #0F172A;  (Page background)
+    --color-form-bg: #1E293B;     (Card background)
+    --color-input-fill: #2a3a50;  (Input fill)
+    --color-text-ice: #E2E8F0;     (Main text)
+    --color-text-label: #94A3B8;   (Subtle text)
+    --color-primary-btn: #38BDF8; (Bright blue)
+    --color-warning-fg: #FBBF24;   (Yellow)
+*/
+
+/* --- Page Shell & Layout --- */
+
+.dashboard-page-wrapper {
+    background-color: #0F172A; /* Darkest background */
+    color: #E2E8F0; /* Ice blue text */
+    min-height: 100vh;
+    width: 100%;
+}
+
+.dashboard-content-container {
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+.dashboard-section-title {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+    margin-bottom: 16px !important;
+}
+
+/* --- 1. Navbar --- */
+
+.dashboard-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 32px;
+    background-color: #1E293B; /* Card background */
+    border-bottom: 1px solid #334155; /* Slate border */
+}
+
+.dashboard-logo-text {
+    font-weight: 700 !important;
+    color: #E2E8F0 !important;
+}
+
+.dashboard-nav-link {
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+.dashboard-nav-link:hover {
+    color: #E2E8F0;
+}
+
+/* --- Verification Alert --- */
+.dashboard-alert {
+    background-color: #4A3C23 !important; /* Dark yellow */
+    color: #FBBF24 !important; /* Warning Yellow */
+    border-radius: 8px !important;
+}
+
+/* --- 2. Account Info Card --- */
+
+.dashboard-account-card {
+    background-color: #1E293B; /* Card background */
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-account-avatar-section {
+    flex-shrink: 0;
+}
+
+.dashboard-account-avatar .MuiAvatar-fallback {
+    font-size: 2.5rem; /* Larger initials */
+}
+
+.dashboard-account-details {
+    flex-grow: 1;
+}
+
+.dashboard-account-name {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+}
+
+.dashboard-balance-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px !important;
+}
+
+.dashboard-balance-label {
+    color: #94A3B8 !important; /* Subtle text */
+    font-size: 1.1rem !important;
+}
+
+.dashboard-balance-amount {
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.dashboard-balance-toggle {
+    color: #94A3B8 !important;
+}
+.dashboard-balance-toggle:hover {
+    color: #E2E8F0 !important;
+}
+
+
+/* --- 3. Feature Buttons --- */
+
+.dashboard-features-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.dashboard-feature-btn {
+    padding: 16px !important;
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    border-radius: 8px !important;
+    color: #0F172A !important; /* Dark text on all buttons */
+    text-transform: none !important; /* Keep capitalization */
+}
+
+/* Button Colors from PNG */
+.feature-btn-add {
+    background-color: #10B981 !important; /* Green */
+}
+.feature-btn-transfer {
+    background-color: #3B82F6 !important; /* Blue */
+}
+.feature-btn-subscribe {
+    background-color: #38BDF8 !important; /* Ice Blue */
+}
+
+/* --- 4. Recent Transaction Card --- */
+
+.dashboard-recent-txn-container {
+    background-color: #1E293B; /* Card background */
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-txn-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.dashboard-txn-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #334155; /* Slate border */
+}
+.dashboard-txn-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.txn-details {
+    /* (empty for now) */
+}
+
+.txn-title {
+    color: #E2E8F0 !important;
+    font-weight: 500 !important;
+}
+
+.txn-date {
+    color: #94A3B8 !important;
+    font-size: 0.9rem !important;
+}
+
+.txn-amount {
+    /* (empty for now) */
+}
+
+.txn-value {
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+.txn-expense {
+    color: #FBBF24 !important; /* Warning Yellow */
+}
+.txn-income {
+    color: #38BDF8 !important; /* Ice Blue */
+}
+
+.no-txn-message {
+    color: #94A3B8;
+    text-align: center;
+    padding: 20px;
+}
+
+
+/* --- Responsiveness --- */
+
+@media (max-width: 600px) {
+    .dashboard-navbar {
+        padding: 16px;
+    }
+
+    /* Stack Account Info Card on mobile */
+    .dashboard-account-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .dashboard-balance-wrapper {
+        justify-content: center; /* Center balance and toggle */
+    }
+    
+    /* Stack Feature Buttons on mobile */
+    .dashboard-features-container {
+        grid-template-columns: 1fr;
+    }
+}

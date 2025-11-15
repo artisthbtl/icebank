@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             ->create([
                 'first_name' => 'Marcello',
                 'last_name' => 'Kusumo',
-                'email' => 'marcello@icebank.test',
+                'email' => 'eyokusumo@gmail.com',
                 'password' => bcrypt('pass'),
                 'pin' => bcrypt('123456'),
             ]);
