@@ -1,9 +1,9 @@
 import React from 'react';
 import { usePage, Head } from '@inertiajs/react';
-import Navbar from '@/Components/Dashboard/Navbar';
-import AccountInfoCard from '@/Components/Dashboard/AccountInfoCard';
-import FeatureButtons from '@/Components/Dashboard/FeatureButtons';
-import RecentTransactionCard from '@/Components/Dashboard/RecentTransactionCard';
+import Navbar from "@/Components/Navbar";
+import AccountInfoCard from "@/Components/AccountInfoCard";
+import FeatureButtons from "@/Components/FeatureButtons";
+import RecentTransactionCard from '@/Components/RecentTransactionCard';
 import { Alert, Box, Container } from '@mui/material';
 import '../../css/DashboardPage.css'; 
 
