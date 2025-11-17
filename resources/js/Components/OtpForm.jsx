@@ -1,7 +1,6 @@
 import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
-import { router } from '@inertiajs/react';
 import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -35,9 +34,7 @@ export default function OtpForm({ userId }) {
         mutationFn: verifyOtp,
         
         onSuccess: (data) => {
-            localStorage.setItem('accessToken', data.accessToken);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
-            router.visit('/dashboard'); 
+            window.location.href = '/dashboard'; 
         },
         
         onError: (error) => {

@@ -1,13 +1,13 @@
-/* Colors based on your "ice blue" theme:
-  --color-darkest-bg: #0F172A;  (Dark slate blue for page background)
-  --color-form-bg: #1E293B;     (Lighter blue for the form)
-  --color-input-fill: #2a3a50;  (Slightly lighter fill for inputs)
-  --color-text-ice: #E2E8F0;     (Ice blue for main text/input content)
-  --color-text-label: #94A3B8;   (Lighter ice blue for labels/helpers)
-  --color-border: #334155;       (Slate border for inputs)
-  --color-primary-btn: #38BDF8; (A bright "ice" blue for the button)
-  --color-warning-fg: #FBBF24;   (An "in-theme" warning yellow)
-  --color-success-fg: #38BDF8;   (The "ice" blue for success)
+/* Colors:
+  --color-darkest-bg: #0F172A;
+  --color-form-bg: #1E293B;
+  --color-input-fill: #2a3a50;
+  --color-text-ice: #E2E8F0;
+  --color-text-label: #94A3B8;
+  --color-border: #334155;
+  --color-primary-btn: #38BDF8;
+  --color-warning-fg: #FBBF24;
+  --color-success-fg: #38BDF8;
 */
 
 .register-page-wrapper {

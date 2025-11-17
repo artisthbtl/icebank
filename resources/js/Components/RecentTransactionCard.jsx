@@ -15,7 +15,6 @@ export default function RecentTransactionCard({ transactions }) {
                     recentTxns.slice(0, 3).map((txn) => (
                         <div key={txn.id} className="dashboard-txn-item">
                             <div className="txn-details">
-                                {/* Show sender/receiver name based on txn type, or description */}
                                 <Typography className="txn-title">
                                     {txn.description} 
                                 </Typography>
@@ -29,7 +28,7 @@ export default function RecentTransactionCard({ transactions }) {
                                 <Typography 
                                     className={`txn-value ${txn.amount < 0 ? 'txn-expense' : 'txn-income'}`}
                                 >
-                                    Rp. {Number(txn.amount).toLocaleString('id-ID')}
+                                    {Number(txn.amount).toLocaleString('id-ID')}
                                 </Typography>
                             </div>
                         </div>

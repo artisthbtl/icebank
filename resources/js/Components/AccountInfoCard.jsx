@@ -1,56 +1,69 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, Avatar, IconButton } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import '../../css/DashboardPage.css'; 
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import '../../css/DashboardPage.css';
 
 export default function AccountInfoCard({ user, account }) {
-    const [showBalance, setShowBalance] = useState(false);
+    const [showBalance, setShowBalance] = React.useState(true);
+    
+    const toggleBalance = () => {
+        setShowBalance(!showBalance);
+    };
 
-    // Fallback data in case props aren't fully loaded yet
-    const firstName = user?.first_name || 'User';
-    const lastName = user?.last_name || '';
-    // Ensure balance is a number before calling toLocaleString
-    const balance = Number(account?.balance || 0);
-    const formattedBalance = balance.toLocaleString('id-ID', { minimumFractionDigits: 0 });
+    const getInitials = (user) => {
+        if (user?.first_name) {
+            return user.first_name.substring(0, 1).toUpperCase();
+        }
+        return user?.email ? user.email.substring(0, 2).toUpperCase() : '...';
+    };
 
     return (
         <Box className="dashboard-account-card">
-            <div className="dashboard-account-avatar-section">
-                 {/* Use user's initials if no photo is available */}
+            <Box className="dashboard-account-avatar-section">
                 <Avatar 
                     className="dashboard-account-avatar"
-                    src={user?.profile_photo_path ? `/storage/${user.profile_photo_path}` : null}
-                    alt={`${firstName} ${lastName}`}
-                    sx={{ width: 100, height: 100, bgcolor: 'var(--base-200)' }} // Temporary inline style for size
+                    sx={{ width: 64, height: 64, bgcolor: '#38BDF8' }}
                 >
-                    {firstName[0]}{lastName[0]}
+                    {getInitials(user)}
                 </Avatar>
-            </div>
+            </Box>
 
-            <div className="dashboard-account-details">
-                <Typography variant="h5" className="dashboard-account-name">
-                    {firstName} {lastName}
+            <Box className="dashboard-account-details">
+                <Typography 
+                    variant="h5" 
+                    className="dashboard-account-name"
+                >
+                    {user?.first_name} {user?.last_name}
                 </Typography>
                 
-                <div className="dashboard-balance-wrapper">
-                    <Typography variant="body1" className="dashboard-balance-label">
+                <Typography className="dashboard-account-number">
+                    Account: {account?.account_number}
+                </Typography>
+
+                <Box className="dashboard-balance-wrapper">
+                    <Typography 
+                        variant="h6"
+                        className="dashboard-balance-label"
+                    >
                         Balance:
                     </Typography>
                     
-                    <Typography variant="h4" className="dashboard-balance-amount">
-                        Rp. {showBalance ? formattedBalance : '*****'}
+                    <Typography 
+                        variant="h6"
+                        className="dashboard-balance-amount"
+                    >
+                        {showBalance ? `${Number(account?.balance || 0).toLocaleString('id-ID')}` : '•••••••••'}
                     </Typography>
 
                     <IconButton 
-                        onClick={() => setShowBalance(!showBalance)} 
+                        onClick={toggleBalance} 
                         className="dashboard-balance-toggle"
-                        aria-label="toggle balance visibility"
+                        size="small"
                     >
-                        {showBalance ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                        {showBalance ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
-                </div>
-            </div>
+                </Box>
+            </Box>
         </Box>
     );
 }

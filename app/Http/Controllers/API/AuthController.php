@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
 use App\Services\AuthService;
 use App\Mail\EmailVerificationMail;
 use Cache;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -98,10 +99,16 @@ class AuthController extends Controller
         }
 
         $user = User::find($request->userId);
-        $token = auth('api')->login($user);
-        auth('web')->login($user, true);
 
-        return $this->respondWithToken($token, $user);
+        if (!$user) {
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        Auth::login($user, true);
+
+        $request->session()->regenerate();
+
+        return response()->json(['message' => 'Login successful.']);
     }
 
     public function register(RegistrationRequest $request)

@@ -1,41 +1,38 @@
 <?php
 
-use App\Http\Middleware\CheckPin;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
-use App\Http\Resources\V1\TransactionCollection;
+use App\Http\Controllers\API\DashboardController;
+use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return inertia('LandingPage');
+Route::middleware('guest')->group(function () {
+    
+    Route::get('/', function () {
+        return inertia('LandingPage');
+    })->name('landing');
+
+    Route::get('/register', function () {
+        return inertia('RegisterPage');
+    })->name('register');
+
+    Route::get('/login', function () {
+        return inertia('LoginPage');
+    })->name('login');
 });
 
-Route::get('/register', function () {
-    return inertia('RegisterPage');
-})->name('register');
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])
+    ->name('otp.verify');
 
-Route::get('/login', function () {
-    return inertia('LoginPage');
-})->name('login');
+Route::middleware('auth')->group(function () {
+    
+    Route::get('/create-pin', function () {
+        return inertia('CreatePinPage');
+    })->name('pin.create');
+    
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    Route::middleware('check.pin')->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])
+             ->name('dashboard');
+    });
 
-Route::get('/create-pin', function () {
-    return inertia('CreatePinPage');
-})->middleware('auth')->name('pin.create');
-
-Route::get('/dashboard', function () {
-    $user = Auth::user();
-    $user->load('account');
-
-    $recentTransactions = \App\Models\Transaction::where('account_id', $user->account->id)
-        ->latest()
-        ->take(5)
-        ->get();
-
-    return inertia('DashboardPage', [
-        'account' => $user->account,
-        'recentTransactions' => new TransactionCollection($recentTransactions)
-    ]);
-})->middleware(['auth', 'check.pin'])->name('dashboard');
-
-Route::post('/auth/verify-otp',
-    [AuthController::class, 'verifyOtp'
-])->name('otp.verify');
+});
