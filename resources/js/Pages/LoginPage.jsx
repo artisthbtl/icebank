@@ -4,7 +4,9 @@ import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
 import OtpForm from '@/Components/OtpForm';
 import { Link } from '@inertiajs/react';
-import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
+import { Typography, TextField, Button, CircularProgress, Box, IconButton, InputAdornment } from '@mui/material';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -33,11 +35,10 @@ const loginUser = async (userData) => {
 
 
 export default function LoginPage() {
-    const [currentView, setCurrentView] = useState('login'); // 'login', 'otp', or 'error'
+    const [currentView, setCurrentView] = useState('login');
     const [loginUserId, setLoginUserId] = useState(null);
     const [criticalError, setCriticalError] = useState(null);
-
-
+    const [showPassword, setShowPassword] = useState(false);
     const [formHeight, setFormHeight] = useState(null);
     const formSectionRef = useRef(null);
 
@@ -153,11 +154,23 @@ export default function LoginPage() {
                                             <TextField
                                                 {...field}
                                                 label="Password"
-                                                type="password"
+                                                type={showPassword ? "text" : "password"}
                                                 fullWidth
                                                 required
                                                 error={!!errors.password}
                                                 helperText={errors.password?.message}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                onClick={() => setShowPassword(!showPassword)}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
                                             />
                                         )}
                                     />

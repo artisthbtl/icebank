@@ -18,6 +18,14 @@ export default function LandingPage() {
     const container = useRef(null);
 
     useGSAP(() => {
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (prefersReducedMotion) {
+            gsap.set(".hero-img", { scale: 1 });
+            gsap.set(".header h1", { clipPath: "inset(0% 0 0 0)" });
+            gsap.set([document.documentElement, document.body], { overflow: "auto" });
+            return;
+        }
         
         const splits = {
             logoChars: new SplitText(".preloader-logo h1", { type: "chars" }),

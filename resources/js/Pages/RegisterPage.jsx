@@ -3,12 +3,18 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
 import { Link } from '@inertiajs/react';
-import { Typography, TextField, Button, CircularProgress, Box} from '@mui/material';
+import { Typography, TextField, Button, CircularProgress, Box, IconButton, InputAdornment } from '@mui/material';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import '../../css/RegisterPage.css';
 
 const RegisterImage = () => (
@@ -28,8 +34,10 @@ minAgeDate.setFullYear(minAgeDate.getFullYear() - 17);
 const registerSchema = z.object({
     firstName: z.string().min(1, 'First name is required').max(50, 'First name is too long'),
     lastName: z.string().min(1, 'Last name is required').max(50, 'Last name is too long'),
-    dateOfBirth: z.string().min(1, 'Date of birth is required')
-        .refine((val) => new Date(val) <= minAgeDate, 'You must be at least 17 years old'),
+    dateOfBirth: z.any()
+    .refine((val) => val, 'Date of birth is required')
+    .refine((val) => dayjs(val).isValid(), 'Invalid date format')
+    .refine((val) => dayjs(val).toDate() <= minAgeDate, 'You must be at least 17 years old'),
     city: z.string().min(2, 'City is required').max(100, 'City name is too long'),
     email: z.email('Invalid email address').min(1, 'Email is required'),
     password: z.string()
@@ -41,7 +49,12 @@ const registerSchema = z.object({
 });
 
 const registerUser = async (userData) => {
-    const { data } = await axios.post('/api/auth/register', userData);
+    const dataToSend = {
+      ...userData,
+      dateOfBirth: dayjs(userData.dateOfBirth).format('YYYY-MM-DD'),
+    };
+
+    const { data } = await axios.post('/api/auth/register', dataToSend);
     return data;
 };
 
@@ -77,6 +90,9 @@ export default function RegisterPage() {
     const [formHeight, setFormHeight] = useState(null);
     const formSectionRef = useRef(null);
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     useLayoutEffect(() => {
         if (formSectionRef.current && !statusState.open && !formHeight) {
             setFormHeight(formSectionRef.current.offsetHeight);
@@ -93,7 +109,7 @@ export default function RegisterPage() {
         resolver: zodResolver(registerSchema),
         mode: 'onChange',
         defaultValues: {
-            firstName: '', lastName: '', dateOfBirth: '', city: '',
+            firstName: '', lastName: '', dateOfBirth: null, city: '',
             email: '', password: '', passwordConfirmation: '',
         }
     });
@@ -156,6 +172,7 @@ export default function RegisterPage() {
 
     return (
         <>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
             <div className="register-page-wrapper">
                 <div className="register-content-area">
                     <div className="register-image-section">
@@ -219,18 +236,25 @@ export default function RegisterPage() {
                                             name="dateOfBirth"
                                             control={control}
                                             render={({ field }) => (
-                                                <TextField
+                                                <DatePicker
                                                     {...field}
                                                     label="Date of Birth"
-                                                    type="date"
-                                                    fullWidth
-                                                    required
-                                                    slotProps={{ inputLabel: { shrink: true } }}
-                                                    error={!!errors.dateOfBirth}
-                                                    helperText={errors.dateOfBirth?.message}
+                                                    maxDate={dayjs(minAgeDate)} 
+                                                    openTo="year"
+                                                    views={['year', 'month', 'day']}
+                                                    sx={{ width: '100%' }}
+                                                    slotProps={{
+                                                        textField: {
+                                                            required: true,
+                                                            fullWidth: true,
+                                                            error: !!errors.dateOfBirth,
+                                                            helperText: errors.dateOfBirth?.message,
+                                                        },
+                                                    }}
                                                 />
                                             )}
                                         />
+
                                         <Controller
                                             name="city"
                                             control={control}
@@ -271,10 +295,24 @@ export default function RegisterPage() {
                                                 <TextField
                                                     {...field}
                                                     label="Password"
-                                                    type="password"
+                                                    type={showPassword ? "text" : "password"}
                                                     fullWidth
                                                     required
                                                     error={!!errors.password && dirtyFields.password}
+                                                    slotProps={{
+                                                        input: {
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                        onClick={() => setShowPassword(!showPassword)}
+                                                                        edge="end"
+                                                                    >
+                                                                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                            ),
+                                                        },
+                                                    }}
                                                 />
                                                 <PasswordHelper
                                                     isDirty={dirtyFields.password}
@@ -293,10 +331,24 @@ export default function RegisterPage() {
                                                 <TextField
                                                     {...field}
                                                     label="Confirm Password"
-                                                    type="password"
+                                                    type={showConfirmPassword ? "text" : "password"}
                                                     fullWidth
                                                     required
                                                     error={!!errors.passwordConfirmation && dirtyFields.passwordConfirmation}
+                                                    slotProps={{
+                                                        input: {
+                                                            endAdornment: (
+                                                                <InputAdornment position="end">
+                                                                    <IconButton
+                                                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                                        edge="end"
+                                                                    >
+                                                                        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                                                                    </IconButton>
+                                                                </InputAdornment>
+                                                            ),
+                                                        },
+                                                    }}
                                                 />
                                                 <PasswordHelper
                                                     isDirty={dirtyFields.passwordConfirmation}
@@ -343,6 +395,7 @@ export default function RegisterPage() {
                     </div>
                 </div>
             </div>
+        </LocalizationProvider>
         </>
     );
 }
