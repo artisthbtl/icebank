@@ -29,8 +29,7 @@ export default function AccountInfoCard({ user, account }) {
             </Box>
 
             <Box className="dashboard-account-details">
-                <Typography 
-                    variant="h5" 
+                <Typography
                     className="dashboard-account-name"
                 >
                     {user?.first_name} {user?.last_name}
@@ -41,15 +40,13 @@ export default function AccountInfoCard({ user, account }) {
                 </Typography>
 
                 <Box className="dashboard-balance-wrapper">
-                    <Typography 
-                        variant="h6"
-                        className="dashboard-balance-label"
+                    <Typography
+                        className="dashboard-balance-amount"
                     >
                         Balance:
                     </Typography>
                     
-                    <Typography 
-                        variant="h6"
+                    <Typography
                         className="dashboard-balance-amount"
                     >
                         {showBalance ? `${Number(account?.balance || 0).toLocaleString('id-ID')}` : '•••••••••'}
@@ -58,9 +55,11 @@ export default function AccountInfoCard({ user, account }) {
                     <IconButton 
                         onClick={toggleBalance} 
                         className="dashboard-balance-toggle"
-                        size="small"
                     >
-                        {showBalance ? <VisibilityOff /> : <Visibility />}
+                        {showBalance ? 
+                            <VisibilityOff className="dashboard-balance-icon" /> : 
+                            <Visibility className="dashboard-balance-icon" />
+                        }
                     </IconButton>
                 </Box>
             </Box>

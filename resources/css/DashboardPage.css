@@ -47,62 +47,86 @@
     border-radius: 8px !important;
 }
 
+.dashboard-account-card-loading {
+    background-color: #1E293B;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 130px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94A3B8;
+}
+
 .dashboard-account-card {
     background-color: #1E293B;
     border-radius: 12px;
-    padding: 24px;
+    padding: 20px;
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 20px;
+    min-width: 350px;
 }
 
 .dashboard-account-avatar-section {
     flex-shrink: 0;
 }
 
+.dashboard-account-avatar {
+    width: 100px !important;
+    height: 100px !important;
+    font-size: 2rem !important;
+    background-color: #0ea5e9 !important;
+}
+
 .dashboard-account-avatar .MuiAvatar-fallback {
-    font-size: 2.5rem;
+    font-size: 2rem;
 }
 
 .dashboard-account-details {
+    padding-top: 4px;
     flex-grow: 1;
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
 }
 
 .dashboard-account-name {
     color: #E2E8F0 !important;
-    font-weight: 500 !important;
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+    line-height: 1.2;
 }
 
 .dashboard-account-number {
-    color: #94A3B8 !important;
-    font-size: 1rem !important;
+    color: #E2E8F0 !important;
+    font-size: 1.1rem !important;
     font-weight: 500 !important;
-    margin-top: 4px;
 }
 
 .dashboard-balance-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-top: 8px !important;
-}
-
-.dashboard-balance-label {
-    color: #94A3B8 !important;
-    font-size: 1.1rem !important;
-    font-weight: 500 !important;
 }
 
 .dashboard-balance-amount {
     color: #E2E8F0 !important;
     font-weight: 500 !important;
+    font-size: 1.1rem !important;
 }
 
 .dashboard-balance-toggle {
     color: #94A3B8 !important;
+    padding: 4px !important;
 }
 .dashboard-balance-toggle:hover {
     color: #E2E8F0 !important;
+}
+
+.dashboard-balance-icon {
+    font-size: 0.8rem !important;
 }
 
 .dashboard-features-container {
