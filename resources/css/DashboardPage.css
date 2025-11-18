@@ -34,14 +34,68 @@
     color: #E2E8F0 !important;
 }
 
-.dashboard-nav-link {
-    color: #94A3B8;
+.dashboard-nav-link-profile {
+    position: relative;
+    color: #E2E8F0;
     text-decoration: none;
     font-size: 1.1rem;
     font-weight: 500;
+    display: inline-block;
+    transition: transform 0.1s ease;
 }
-.dashboard-nav-link:hover {
-    color: #E2E8F0;
+
+.dashboard-nav-link-logout {
+    position: relative;
+    color: #EE4B2B;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    display: inline-block;
+    
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    padding: 0;
+    transition: transform 0.1s ease;
+}
+
+.dashboard-nav-link-profile::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #E2E8F0;
+    bottom: -2px;
+    left: 0;
+    
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.dashboard-nav-link-logout::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #EE4B2B;
+    bottom: -2px;
+    left: 0;
+    
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.dashboard-nav-link-profile:hover::after,
+.dashboard-nav-link-logout:hover::after {
+    transform: scaleX(1);
+}
+
+.dashboard-nav-link-profile:active,
+.dashboard-nav-link-logout:active {
+    transform: scale(0.95);
 }
 
 .dashboard-alert {
@@ -167,14 +221,25 @@
     border-radius: 8px !important;
     color: #0F172A !important;
     text-transform: none !important;
+    transition: filter 0.2s ease, transform 0.1s ease !important;
+}
+
+.dashboard-feature-btn:hover {
+    filter: brightness(1.1) !important;
+}
+
+.dashboard-feature-btn:active {
+    transform: scale(0.95) !important;
 }
 
 .feature-btn-add {
     background-color: #10B981 !important;
 }
+
 .feature-btn-transfer {
     background-color: #3B82F6 !important;
 }
+
 .feature-btn-subscribe {
     background-color: #38BDF8 !important;
 }

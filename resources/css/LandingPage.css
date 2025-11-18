@@ -152,7 +152,7 @@ img {
     font-size: 1.3rem;
     font-weight: 400;
     line-height: 1;
-    position: relative; /* Add this line */
+    position: relative;
 }
 
 .btn-label span::after {

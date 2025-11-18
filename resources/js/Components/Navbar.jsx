@@ -29,21 +29,20 @@ export default function Navbar() {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <Link 
                                 href="/profile"
-                                className="dashboard-nav-link"
+                                className="dashboard-nav-link-profile"
                             >
                                 Profile
                             </Link>
                             
                             <Link 
                                 href="/logout" 
-                                method="post" 
+                                method="get" 
                                 as="button" 
-                                className="dashboard-nav-link"
+                                className="dashboard-nav-link-logout"
                                 style={{ 
                                     background: 'none', 
                                     border: 'none', 
-                                    cursor: 'pointer', 
-                                    color: '#f87171'
+                                    cursor: 'pointer'
                                 }}
                             >
                                 Logout

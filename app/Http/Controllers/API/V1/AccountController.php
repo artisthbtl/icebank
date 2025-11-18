@@ -5,32 +5,49 @@ namespace App\Http\Controllers\API\V1;
 use App\Models\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\AddBalanceRequest;
-use App\Http\Resources\V1\AccountResource;
-use App\Http\Resources\V1\AccountCollection;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Http\Request;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function validateAmount(Request $request)
     {
-        return new AccountCollection(Account::paginate());
-    }
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01|max:1000000.00',
+        ]);
 
-    public function show(Account $account)
-    {
-        return new AccountResource($account);
+        $user = Auth::user();
+        
+        if (!$user->account) {
+            return response()->json(['error' => 'User account not found.'], 404);
+        }
+        
+        $account = $user->account;
+        $amount = $request->amount;
+
+        $maxBalance = 99999999999.99;
+        if ($account->balance + $amount > $maxBalance) {
+            return response()->json(['error' => 'Balance limit exceeded.'], 400);
+        }
+
+        return response()->json(['message' => 'Amount is valid.'], 200);
     }
 
     public function addBalance(AddBalanceRequest $request)
     {
         $user = Auth::user();
+
+        if (!$user->account) {
+            return response()->json(['error' => 'User account not found.'], 404);
+        }
+
         $account = $user->account;
         $amount = $request->amount;
 
-        $maxBalance = 999999999999.99; 
+        $maxBalance = 99999999999.99;
         if ($account->balance + $amount > $maxBalance) {
             return response()->json(['error' => 'Balance limit exceeded.'], 400);
         }
