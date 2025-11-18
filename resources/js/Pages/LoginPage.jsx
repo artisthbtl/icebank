@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
 import OtpForm from '@/Components/OtpForm';
+import EmailVerificationPoller from '@/Components/EmailVerificationPoller';
 import { Link } from '@inertiajs/react';
 import { Typography, TextField, Button, CircularProgress, Box, IconButton, InputAdornment } from '@mui/material';
 import Visibility from "@mui/icons-material/Visibility";
@@ -33,7 +34,6 @@ const loginUser = async (userData) => {
     return data;
 };
 
-
 export default function LoginPage() {
     const [currentView, setCurrentView] = useState('login');
     const [loginUserId, setLoginUserId] = useState(null);
@@ -41,6 +41,8 @@ export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [formHeight, setFormHeight] = useState(null);
     const formSectionRef = useRef(null);
+    const [pollToken, setPollToken] = useState(null);
+    const [loginData, setLoginData] = useState(null);
 
     useLayoutEffect(() => {
         if (formSectionRef.current && currentView === 'login' && !formHeight) {
@@ -67,9 +69,15 @@ export default function LoginPage() {
         mutationFn: loginUser,
         
         onSuccess: (data) => {
-            setLoginUserId(data.userId);
-            setCurrentView('otp');
-            reset();
+            if (data.pollToken) {
+                setPollToken(data.pollToken);
+                setCurrentView('polling');
+                reset();
+            } 
+            else if (data.userId) {
+                setLoginUserId(data.userId);
+                setCurrentView('otp');
+            }
         },
         
         onError: (error) => {
@@ -85,7 +93,6 @@ export default function LoginPage() {
                 setCriticalError(error.response.data.message || 'An unexpected error occurred.');
                 setCurrentView('error');
             } else {
-                // Handle network errors
                 setCriticalError('A network error occurred. Please try again.');
                 setCurrentView('error');
             }
@@ -94,12 +101,23 @@ export default function LoginPage() {
 
     const onSubmit = (data) => {
         setError('root.serverError', null); 
+        setLoginData(data);
         mutation.mutate(data);
+    };
+
+    const handleVerificationSuccess = () => {
+        if (loginData) {
+            mutation.mutate(loginData);
+        } else {
+            resetToLogin();
+        }
     };
 
     const resetToLogin = () => {
         setCurrentView('login');
         setCriticalError(null);
+        setLoginData(null);
+        setPollToken(null);
     };
 
     return (
@@ -213,6 +231,13 @@ export default function LoginPage() {
                                     </Typography>
                                 </Box>
                             </>
+                        )}
+
+                        {currentView === 'polling' && (
+                            <EmailVerificationPoller 
+                                pollToken={pollToken}
+                                onVerified={handleVerificationSuccess}
+                            />
                         )}
 
                         {currentView === 'otp' && (

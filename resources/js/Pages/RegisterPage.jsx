@@ -248,7 +248,7 @@ export default function RegisterPage() {
                                                             required: true,
                                                             fullWidth: true,
                                                             error: !!errors.dateOfBirth,
-                                                            helperText: errors.dateOfBirth?.message,
+                                                            helperText: errors.dateOfBirth?.message
                                                         },
                                                     }}
                                                 />
