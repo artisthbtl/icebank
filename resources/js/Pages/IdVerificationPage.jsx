@@ -116,7 +116,7 @@ export default function IdVerificationPage() {
             setStatusState({
                 open: true,
                 status: 'success',
-                message: 'Verification request submitted successfully. We will notify you once your ID is verified.',
+                message: 'Verification request submitted successfully.',
             });
             setTimeout(() => {
                  router.visit('/dashboard');
@@ -165,7 +165,7 @@ export default function IdVerificationPage() {
                             Verify Your Identity
                         </Typography>
                         <Typography variant="subtitle1" className="verification-subtitle">
-                            Please upload your KTP/ID and a selfie to unlock all features.
+                            Please upload your KTP and a selfie holding your KTP.
                         </Typography>
                         
                         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate className="verification-form">
@@ -177,7 +177,7 @@ export default function IdVerificationPage() {
                                         render={({ field }) => (
                                             <FileUploadField
                                                 field={field}
-                                                label="Upload KTP / ID Card"
+                                                label="Upload KTP"
                                                 error={errors.ktpImage}
                                                 helperText={errors.ktpImage?.message}
                                                 control={control}
@@ -193,7 +193,7 @@ export default function IdVerificationPage() {
                                         render={({ field }) => (
                                             <FileUploadField
                                                 field={field}
-                                                label="Upload Selfie (Holding ID)"
+                                                label="Upload Selfie (Holding KTP)"
                                                 error={errors.selfieImage}
                                                 helperText={errors.selfieImage?.message}
                                                 control={control}
@@ -217,7 +217,7 @@ export default function IdVerificationPage() {
                                 className="verification-submit-btn"
                                 disabled={!isFormValid || mutation.isPending}
                             >
-                                {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Submit for Verification'}
+                                {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Submit'}
                             </Button>
                         </Box>
                     </>
