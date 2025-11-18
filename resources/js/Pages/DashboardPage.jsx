@@ -18,11 +18,10 @@ export default function DashboardPage() {
 
     const isVerified = account?.isVerified === 'yes';
 
-    // Called when user clicks "Continue" on AddBalanceModal
     const handleAddBalanceSuccess = (amount) => {
         setPendingAmount(amount);
-        setIsAddBalanceOpen(false); // Close first modal
-        setTimeout(() => setIsEnterPinOpen(true), 150); // Open second modal smoothly
+        setIsAddBalanceOpen(false);
+        setTimeout(() => setIsEnterPinOpen(true), 150);
     };
 
     return (
@@ -35,7 +34,7 @@ export default function DashboardPage() {
                     
                     {!isVerified && (
                         <Alert severity="warning" className="dashboard-alert">
-                            Verify your ID at Profile Settings to unlock all features.
+                            Verify your ID at the Profile Page to unlock all features.
                         </Alert>
                     )}
 

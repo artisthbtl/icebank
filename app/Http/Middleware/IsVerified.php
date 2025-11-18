@@ -11,9 +11,7 @@ class IsVerified
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::user()->account->is_verified) {
-            return response()->json([
-                'message' => 'Your account is not verified. Please complete the verification process to access this feature.'
-            ], 403);
+            return redirect()->route('verify.id');
         }
 
         return $next($request);

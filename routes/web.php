@@ -22,8 +22,15 @@ Route::middleware('has.account')->group(function () {
 
         Route::middleware('check.pin')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
             Route::post('/account/validate-amount', [AccountController::class, 'validateAmount'])->middleware('throttle:10,1');
             Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin']);
+
+            Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
+
+            Route::middleware('is.verified')->group(function () {
+                // Protected routes for verified users can be added here
+            });
         });
     });
 });
