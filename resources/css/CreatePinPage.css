@@ -39,7 +39,7 @@
 .pin-form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
     width: 100%;
 }
 
@@ -67,7 +67,13 @@
 }
 
 .pin-form .MuiInputBase-input {
-    color: #E2E8F0 !important; 
+    color: #38BDF8 !important;
+    text-align: center !important;
+    letter-spacing: 0.5em !important;
+    font-size: 1.5rem !important;
+    padding: 12px !important;
+    -webkit-text-fill-color: #38BDF8 !important; 
+    caret-color: #38BDF8 !important;
 }
 
 .pin-form .MuiInputLabel-root {
@@ -76,6 +82,7 @@
 
 .pin-form .MuiFormHelperText-root {
     color: #94A3B8 !important;
+    text-align: center;
 }
 
 .pin-form .Mui-error .MuiFormHelperText-root,
@@ -93,7 +100,7 @@
 }
 
 .pin-form .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #94A3B8 !important; 
+    border-color: #38BDF8 !important; 
 }
 
 .pin-form .Mui-focused .MuiInputLabel-root {
@@ -105,6 +112,7 @@
     border-width: 2px !important;
 }
 
+/* Status Card Styles */
 .status-card-container {
     display: flex;
     flex-direction: column;

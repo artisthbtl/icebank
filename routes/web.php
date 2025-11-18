@@ -13,6 +13,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
 
 Route::middleware('has.account')->group(function () {
     Route::middleware('auth')->group(function () {

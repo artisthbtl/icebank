@@ -1,0 +1,99 @@
+.enter-pin-modal-paper {
+    background-color: #1E293B !important;
+    color: #E2E8F0 !important;
+    border-radius: 12px !important;
+    max-width: 450px !important;
+    width: 100% !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.enter-pin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.enter-pin-title {
+    font-weight: 700 !important;
+    color: #E2E8F0 !important;
+    font-size: 1.5rem !important;
+}
+
+.add-balance-close-btn {
+    color: #94A3B8 !important;
+    margin-right: -12px !important; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.add-balance-close-btn:hover {
+    color: #E2E8F0 !important;
+    transform: rotate(90deg);
+}
+
+.add-balance-close-btn:active {
+    transform: scale(0.85) !important;
+}
+
+.enter-pin-subtitle {
+    color: #94A3B8 !important;
+    margin-bottom: 24px !important;
+    text-align: center;
+}
+
+.confirm-amount-text {
+    color: #38BDF8;
+    font-weight: bold;
+}
+
+.pin-input-container {
+    margin-bottom: 24px;
+}
+
+.pin-textfield .MuiInputBase-input {
+    color: #38BDF8 !important;
+    text-align: center !important;
+    letter-spacing: 0.5em !important;
+    font-size: 1.5rem !important;
+    padding: 12px !important;
+}
+
+.pin-textfield .MuiInputLabel-root {
+    color: #94A3B8 !important;
+}
+
+.pin-textfield .MuiOutlinedInput-root {
+    background-color: #2a3a50;
+    border-radius: 8px !important;
+}
+
+.pin-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #334155 !important;
+}
+
+.pin-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #38BDF8 !important;
+}
+
+.pin-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #38BDF8 !important;
+}
+
+.pin-submit-btn {
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important;
+    color: #0F172A !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+}
+
+.pin-submit-btn:hover {
+    background-color: #0ea5e9 !important;
+}
+
+.pin-submit-btn:disabled {
+    background-color: #334155 !important;
+    color: #94A3B8 !important;
+}

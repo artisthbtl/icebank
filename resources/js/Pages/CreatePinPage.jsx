@@ -96,6 +96,16 @@ export default function CreatePinPage() {
         setStatusState({ open: false, status: 'error', message: '' });
     };
 
+    // Helper to strictly enforce numeric input
+    const handleNumericChange = (e, onChange) => {
+        // Remove any non-digit characters
+        const numericValue = e.target.value.replace(/\D/g, '');
+        // Limit to 6 characters
+        const limitedValue = numericValue.slice(0, 6);
+        // Update the form state
+        onChange(limitedValue);
+    };
+
     return (
         <>
             <div className="pin-page-wrapper">
@@ -123,16 +133,21 @@ export default function CreatePinPage() {
                                     render={({ field }) => (
                                         <TextField
                                             {...field}
+                                            // Override onChange to enforce numeric restrictions
+                                            onChange={(e) => handleNumericChange(e, field.onChange)}
                                             label="6-Digit PIN"
+                                            placeholder="••••••"
                                             type="password"
                                             fullWidth
                                             required
                                             error={!!errors.pin}
                                             helperText={errors.pin?.message}
-                                            sx={{
-                                                '&.MuiInputBase-input': { 
+                                            // Correct slotProps structure: htmlInput targets the native <input>
+                                            slotProps={{ 
+                                                htmlInput: {
                                                     inputMode: 'numeric',
-                                                    maxLength: 6
+                                                    maxLength: 6,
+                                                    autoComplete: "off"
                                                 }
                                             }}
                                         />
@@ -145,16 +160,21 @@ export default function CreatePinPage() {
                                     render={({ field }) => (
                                         <TextField
                                             {...field}
+                                            // Override onChange to enforce numeric restrictions
+                                            onChange={(e) => handleNumericChange(e, field.onChange)}
                                             label="Confirm 6-Digit PIN"
+                                            placeholder="••••••"
                                             type="password"
                                             fullWidth
                                             required
                                             error={!!errors.pinConfirmation}
                                             helperText={errors.pinConfirmation?.message}
-                                            sx={{
-                                                '&.MuiInputBase-input': { 
+                                            // Correct slotProps structure
+                                            slotProps={{ 
+                                                htmlInput: {
                                                     inputMode: 'numeric',
-                                                    maxLength: 6
+                                                    maxLength: 6,
+                                                    autoComplete: "off"
                                                 }
                                             }}
                                         />
@@ -168,13 +188,14 @@ export default function CreatePinPage() {
                                     className="pin-submit-btn"
                                     disabled={!isFormValid || mutation.isPending}
                                     sx={{
+                                        textTransform: 'none', // Disable uppercase text
                                         '&.Mui-disabled': {
                                             cursor: 'not-allowed',
                                             pointerEvents: 'auto' 
                                         }
                                     }}
                                 >
-                                    {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Save and Continue'}
+                                    {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Continue'}
                                 </Button>
                             </Box>
                         </>

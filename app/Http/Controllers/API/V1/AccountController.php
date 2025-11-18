@@ -18,6 +18,9 @@ class AccountController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:0.01|max:1000000.00',
+        ], [
+            'amount.max' => 'The amount entered is too large.',
+            'amount.min' => 'The amount must be at least 0.01.',
         ]);
 
         $user = Auth::user();

@@ -18,4 +18,12 @@ class AddBalanceRequest extends FormRequest
             'amount' => 'required|numeric|min:0.01|max:1000000.00',
         ];
     }
+    
+    public function messages(): array
+    {
+        return [
+            'amount.max' => 'The amount entered is too large.',
+            'amount.min' => 'The amount must be at least 0.01.',
+        ];
+    }
 }

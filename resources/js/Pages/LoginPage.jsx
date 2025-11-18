@@ -176,7 +176,7 @@ export default function LoginPage() {
                                                 required
                                                 error={!!errors.password}
                                                 helperText={errors.password?.message}
-                                                InputProps={{
+                                                slotProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
                                                             <IconButton

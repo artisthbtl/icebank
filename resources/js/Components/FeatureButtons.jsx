@@ -6,12 +6,11 @@ import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import { Link } from '@inertiajs/react';
 import '../../css/DashboardPage.css';
 
-export default function FeatureButtons() {
+export default function FeatureButtons({ onAddBalance }) {
     return (
         <Box className="dashboard-features-container">
             <Button
-                component={Link}
-                href="/topup"
+                onClick={onAddBalance} 
                 variant="contained"
                 className="dashboard-feature-btn feature-btn-add"
                 startIcon={<AddCardIcon />}

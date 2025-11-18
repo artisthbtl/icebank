@@ -1,7 +1,7 @@
 import React from 'react';
 import '../../css/IceCubeIcon.css';
 
-export default function IceCubeIcon({ className }) {
+export default function IceCubeIcon({ className, ...props }) {
     const combinedClassName = `dashboard-ices-icon ${className || ''}`.trim();
 
     return (
@@ -15,6 +15,7 @@ export default function IceCubeIcon({ className }) {
             strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round"
+            {...props}
         >
             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
             <line x1="3.27" y1="6.96" x2="12" y2="12.01"></line>
