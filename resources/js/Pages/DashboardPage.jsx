@@ -7,10 +7,9 @@ import { Alert, Box, Container } from '@mui/material';
 import '../../css/DashboardPage.css'; 
 
 export default function DashboardPage() {
-    const { auth, account, recentTransactions } = usePage().props;
-    const user = auth.user;
+    const { user, account, recentTransactions } = usePage().props;
 
-    const isVerified = account?.is_verified === 'yes';
+    const isVerified = account?.isVerified === 'yes';
 
     return (
         <>

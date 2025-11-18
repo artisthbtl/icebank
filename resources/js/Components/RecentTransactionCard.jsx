@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import '../../css/DashboardPage.css';
+import IceCubeIcon from './IceCubeIcon';
 
 export default function RecentTransactionCard({ transactions }) {
     const recentTxns = transactions?.data || []; 
@@ -24,7 +25,9 @@ export default function RecentTransactionCard({ transactions }) {
                                     })}
                                 </Typography>
                             </div>
+
                             <div className="txn-amount">
+                                <IceCubeIcon />
                                 <Typography 
                                     className={`txn-value ${txn.amount < 0 ? 'txn-expense' : 'txn-income'}`}
                                 >

@@ -1,8 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
+
 .dashboard-page-wrapper {
     background-color: #04040b;
     color: #E2E8F0;
     min-height: 100vh;
     width: 100%;
+    font-family: "Host Grotesk", sans-serif; 
 }
 
 .dashboard-content-container {
@@ -12,7 +15,7 @@
 
 .dashboard-section-title {
     color: #E2E8F0 !important;
-    font-weight: 600 !important;
+    font-weight: 550 !important;
     margin-bottom: 16px !important;
 }
 
@@ -89,12 +92,12 @@
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    gap: 5px;
+    gap: 5px; 
 }
 
 .dashboard-account-name {
     color: #E2E8F0 !important;
-    font-weight: 700 !important;
+    font-weight: 550 !important;
     font-size: 1.2rem !important;
     line-height: 1.2;
 }
@@ -102,7 +105,7 @@
 .dashboard-account-number {
     color: #E2E8F0 !important;
     font-size: 1.1rem !important;
-    font-weight: 500 !important;
+    font-weight: 400 !important;
 }
 
 .dashboard-balance-wrapper {
@@ -113,8 +116,16 @@
 
 .dashboard-balance-amount {
     color: #E2E8F0 !important;
-    font-weight: 500 !important;
+    font-weight: 400 !important;
     font-size: 1.1rem !important;
+}
+
+.dashboard-balance-value {
+    color: #38BDF8 !important;
+    font-weight: 400 !important;
+    font-size: 1.1rem !important;
+    display: flex;
+    align-items: center;
 }
 
 .dashboard-balance-toggle {
@@ -129,9 +140,18 @@
     font-size: 0.8rem !important;
 }
 
-.dashboard-balance-value {
-    display: flex;
-    align-items: center;
+
+.dashboard-snackbar-alert {
+    background-color: #1E293B !important;
+    color: #E2E8F0 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4) !important;
+    font-weight: 500 !important;
+}
+
+.dashboard-snackbar-alert .MuiAlert-icon {
+    color: #38BDF8 !important;
 }
 
 .dashboard-features-container {
@@ -197,6 +217,9 @@
 }
 
 .txn-amount {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
 }
 
 .txn-value {

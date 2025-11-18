@@ -4,11 +4,22 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+// 1. Import Theme tools from MUI
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout';
 
 const queryClient = new QueryClient();
 const appName = 'Icebank';
+
+const theme = createTheme({
+    typography: {
+        fontFamily: [
+            '"Host Grotesk"',
+            'sans-serif',
+        ].join(','),
+    },
+});
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
@@ -36,7 +47,9 @@ createInertiaApp({
         const root = createRoot(el);
         root.render(
             <QueryClientProvider client={queryClient}>
-                <App {...props} />
+                <ThemeProvider theme={theme}>
+                    <App {...props} />
+                </ThemeProvider>
             </QueryClientProvider>
         );
     },

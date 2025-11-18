@@ -12,12 +12,12 @@ class UserResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'first_name' => $this->first_name,
-            'last_name' => $this->last_name,
+            'firstName' => $this->first_name,
+            'lastName' => $this->last_name,
             'dateOfBirth' => $this->date_of_birth,
             'city' => $this->city,
             'email' => $this->email,
-            'profilePhotoPath' => Storage::url($this->photo_url),
+            'profilePhotoPath' => $this->photo_url,
             'emailVerifiedAt' => $this->email_verified_at,
         ];
     }

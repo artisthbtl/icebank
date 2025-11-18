@@ -1,21 +1,26 @@
-import React from 'react';
-import { Box, Typography, Avatar, IconButton } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Box, Typography, Avatar, IconButton, Snackbar, Alert } from '@mui/material';
+import { Visibility, VisibilityOff, ContentCopy } from '@mui/icons-material';
 import '../../css/DashboardPage.css';
 import IceCubeIcon from './IceCubeIcon';
 
 export default function AccountInfoCard({ user, account }) {
-    const [showBalance, setShowBalance] = React.useState(true);
+    const [showBalance, setShowBalance] = useState(true);
+    const [copyFeedback, setCopyFeedback] = useState(false);
     
     const toggleBalance = () => {
         setShowBalance(!showBalance);
     };
 
-    const getInitials = (user) => {
-        if (user?.first_name) {
-            return user.first_name.substring(0, 1).toUpperCase();
+    const handleCopyAccountNumber = () => {
+        if (account?.accountNumber) {
+            navigator.clipboard.writeText(account.accountNumber);
+            setCopyFeedback(true);
         }
-        return user?.email ? user.email.substring(0, 2).toUpperCase() : '...';
+    };
+
+    const handleCloseFeedback = () => {
+        setCopyFeedback(false);
     };
 
     return (
@@ -24,21 +29,32 @@ export default function AccountInfoCard({ user, account }) {
                 <Avatar 
                     className="dashboard-account-avatar"
                     sx={{ width: 64, height: 64, bgcolor: '#38BDF8' }}
-                >
-                    {getInitials(user)}
-                </Avatar>
+                    src={user?.profilePhotoPath}
+                    alt={user?.firstName}
+                />
             </Box>
 
             <Box className="dashboard-account-details">
                 <Typography
                     className="dashboard-account-name"
                 >
-                    {user?.first_name} {user?.last_name}
+                    {user?.firstName} {user?.lastName}
                 </Typography>
                 
-                <Typography className="dashboard-account-number">
-                    Account: {account?.account_number}
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography className="dashboard-account-number" sx={{ mb: 0 }}>
+                        Account: {account?.accountNumber}
+                    </Typography>
+                    
+                    <IconButton 
+                        onClick={handleCopyAccountNumber} 
+                        size="small"
+                        className="dashboard-balance-toggle"
+                        sx={{ padding: '4px' }}
+                    >
+                        <ContentCopy className="dashboard-balance-icon" sx={{ fontSize: '1.2rem' }} />
+                    </IconButton>
+                </Box>
 
                 <Box className="dashboard-balance-wrapper">
                     <Typography
@@ -48,7 +64,7 @@ export default function AccountInfoCard({ user, account }) {
                     </Typography>
                     
                     <Typography
-                        className="dashboard-balance-amount dashboard-balance-value" 
+                        className="dashboard-balance-value" 
                     >
                         <IceCubeIcon /> 
                         {showBalance ? (
@@ -69,6 +85,22 @@ export default function AccountInfoCard({ user, account }) {
                     </IconButton>
                 </Box>
             </Box>
+
+            <Snackbar
+                open={copyFeedback}
+                autoHideDuration={2000}
+                onClose={handleCloseFeedback}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            >
+                <Alert 
+                    onClose={handleCloseFeedback} 
+                    severity="success" 
+                    className="dashboard-snackbar-alert"
+                    sx={{ width: '100%' }}
+                >
+                    Account number copied!
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
