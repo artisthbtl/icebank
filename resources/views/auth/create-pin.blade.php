@@ -63,7 +63,7 @@
         }
 
         try {
-            const response = await fetch('/api/v1/users/store-pin', {
+            const response = await fetch('/users/store-pin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

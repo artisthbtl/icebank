@@ -11,9 +11,7 @@ class CheckPin
     public function handle(Request $request, Closure $next)
     {
         if (Auth::user()->pin === null) {
-            return response()->json([
-                'message' => 'You must create a PIN to access this feature.'
-            ], 403);
+            return redirect()->route('pin.create');
         }
 
         return $next($request);

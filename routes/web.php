@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,7 +29,7 @@ Route::middleware('auth')->group(function () {
     })->name('pin.create');
     
     Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-    
+    Route::post('/users/store-pin', [UserController::class, 'storePin']);
     Route::middleware('check.pin')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
              ->name('dashboard');

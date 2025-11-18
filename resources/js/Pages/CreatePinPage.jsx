@@ -21,7 +21,7 @@ const pinSchema = z.object({
 });
 
 const storePin = async (pinData) => {
-    const { data } = await axios.post('/api/v1/users/store-pin', pinData);
+    const { data } = await axios.post('/users/store-pin', pinData);
     return data;
 };
 
