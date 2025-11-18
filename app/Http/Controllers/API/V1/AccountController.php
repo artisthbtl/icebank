@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
@@ -20,17 +21,12 @@ class AccountController extends Controller
         ]);
 
         $user = Auth::user();
-        
-        if (!$user->account) {
-            return response()->json(['error' => 'User account not found.'], 404);
-        }
-        
         $account = $user->account;
         $amount = $request->amount;
 
         $maxBalance = 99999999999.99;
-        if ($account->balance + $amount > $maxBalance) {
-            return response()->json(['error' => 'Balance limit exceeded.'], 400);
+        if (($account->balance + $amount) > $maxBalance) {
+            return response()->json(['error' => 'Balance limit exceeded.'], 422);
         }
 
         return response()->json(['message' => 'Amount is valid.'], 200);
@@ -39,16 +35,11 @@ class AccountController extends Controller
     public function addBalance(AddBalanceRequest $request)
     {
         $user = Auth::user();
-
-        if (!$user->account) {
-            return response()->json(['error' => 'User account not found.'], 404);
-        }
-
         $account = $user->account;
         $amount = $request->amount;
 
         $maxBalance = 99999999999.99;
-        if ($account->balance + $amount > $maxBalance) {
+        if (($account->balance + $amount) > $maxBalance) {
             return response()->json(['error' => 'Balance limit exceeded.'], 400);
         }
 
