@@ -14,7 +14,7 @@ use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\VerificationController;
 
-Route::middleware('throttle:6,1')->prefix('auth')->name('auth.')->group(function () {
+Route::middleware('throttle:60,1')->prefix('auth')->name('auth.')->group(function () {
     Route::post('register', [AuthController::class, 'register'])->name('register');
     Route::post('login', [AuthController::class, 'login'])->name('login');
     Route::post('verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react'; // Import useRef and useState
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Typography, Box, CircularProgress } from '@mui/material';
@@ -9,17 +9,27 @@ const checkStatus = async (pollToken) => {
 };
 
 export default function EmailVerificationPoller({ pollToken, onVerified }) {
+    
+    const onVerifiedCalled = useRef(false);
+    
+    const [isPolling, setIsPolling] = useState(true);
 
     const { data } = useQuery({
         queryKey: ['verificationStatus', pollToken],
         queryFn: () => checkStatus(pollToken),
+        
+        enabled: isPolling,
+        
         refetchInterval: 10000, 
+        
         refetchOnWindowFocus: false,
         retry: true, 
     });
 
     useEffect(() => {
-        if (data?.verified === true) {
+        if (data?.verified === true && !onVerifiedCalled.current) {
+            onVerifiedCalled.current = true; 
+            setIsPolling(false); 
             onVerified();
         }
     }, [data, onVerified]);
@@ -38,11 +48,11 @@ export default function EmailVerificationPoller({ pollToken, onVerified }) {
                 flexDirection: 'column', 
                 alignItems: 'center', 
                 width: '100%',
-                mt: 4,
+                mt: 2,
                 mb: 2,
             }}>
                 <CircularProgress sx={{ mb: 2 }} />
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                <Typography variant="body2" className="login-subtitle">
                     Waiting for verification...
                 </Typography>
             </Box>

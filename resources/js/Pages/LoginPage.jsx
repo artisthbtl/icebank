@@ -72,7 +72,6 @@ export default function LoginPage() {
             if (data.pollToken) {
                 setPollToken(data.pollToken);
                 setCurrentView('polling');
-                reset();
             } 
             else if (data.userId) {
                 setLoginUserId(data.userId);

@@ -23,7 +23,6 @@ Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])
     ->name('otp.verify');
 
 Route::middleware('auth')->group(function () {
-    
     Route::get('/create-pin', function () {
         return inertia('CreatePinPage');
     })->name('pin.create');
@@ -34,5 +33,4 @@ Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])
              ->name('dashboard');
     });
-
 });
