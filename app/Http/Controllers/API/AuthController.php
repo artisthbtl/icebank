@@ -191,22 +191,10 @@ class AuthController extends Controller
 
     private function generateUniqueAccountNumber(): string
     {
-        for ($i = 0; $i < 5; $i++) {
-            $timeComponent = substr((string) (microtime(true) * 1000), -9);
-            $randomComponent = random_int(100, 999);
-            $candidate = $timeComponent . $randomComponent;
-
-            if (!Account::where('account_number', $candidate)->exists()) {
-                return $candidate;
-            }
-
-            usleep(1000);
-        }
-
         do {
-            $accountNumber = random_int(100000000000, 999999999999);
+            $accountNumber = (string) random_int(100000000000, 999999999999);
         } while (Account::where('account_number', $accountNumber)->exists());
 
-        return (string) $accountNumber;
+        return $accountNumber;
     }
-}
+    }

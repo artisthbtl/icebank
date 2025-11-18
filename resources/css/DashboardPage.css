@@ -129,6 +129,11 @@
     font-size: 0.8rem !important;
 }
 
+.dashboard-balance-value {
+    display: flex;
+    align-items: center;
+}
+
 .dashboard-features-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);

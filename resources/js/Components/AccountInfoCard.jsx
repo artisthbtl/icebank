@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Typography, Avatar, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import '../../css/DashboardPage.css';
+import IceCubeIcon from './IceCubeIcon';
 
 export default function AccountInfoCard({ user, account }) {
     const [showBalance, setShowBalance] = React.useState(true);
@@ -47,9 +48,14 @@ export default function AccountInfoCard({ user, account }) {
                     </Typography>
                     
                     <Typography
-                        className="dashboard-balance-amount"
+                        className="dashboard-balance-amount dashboard-balance-value" 
                     >
-                        {showBalance ? `${Number(account?.balance || 0).toLocaleString('id-ID')}` : '•••••••••'}
+                        <IceCubeIcon /> 
+                        {showBalance ? (
+                            <>
+                                {`${Number(account?.balance || 0).toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                            </>
+                        ) : '•••••'}
                     </Typography>
 
                     <IconButton 
@@ -57,8 +63,8 @@ export default function AccountInfoCard({ user, account }) {
                         className="dashboard-balance-toggle"
                     >
                         {showBalance ? 
-                            <VisibilityOff className="dashboard-balance-icon" /> : 
-                            <Visibility className="dashboard-balance-icon" />
+                            <Visibility className="dashboard-balance-icon" /> : 
+                            <VisibilityOff className="dashboard-balance-icon" />
                         }
                     </IconButton>
                 </Box>
