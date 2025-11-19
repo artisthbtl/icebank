@@ -249,7 +249,6 @@ export default function LoginPage() {
                             </>
                         )}
 
-                        {/* New Forgot Password View */}
                         {currentView === 'forgot-password' && (
                             <ForgotPasswordForm onCancel={() => setCurrentView('login')} />
                         )}

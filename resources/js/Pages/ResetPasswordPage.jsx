@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
-import { router, Head } from '@inertiajs/react';
-import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
+import { Head } from '@inertiajs/react';
+import { Typography, TextField, Button, CircularProgress, Box, IconButton, InputAdornment } from '@mui/material';
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import Navbar from '@/Components/Navbar';
-import '../../css/CreatePinPage.css';
+import '../../css/ResetPasswordPage.css';
+import '../../css/CreatePinPage.css'; 
 
 const resetSchema = z.object({
     password: z.string().min(8, 'Password must be at least 8 characters'),
@@ -24,6 +26,9 @@ const resetPasswordApi = async (data) => {
 };
 
 export default function ResetPasswordPage({ token, email }) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const [statusState, setStatusState] = useState({
         open: false,
         status: 'error',
@@ -62,14 +67,14 @@ export default function ResetPasswordPage({ token, email }) {
             token: token,
             email: email,
             password: data.password,
-            password_confirmation: data.passwordConfirmation,
+            passwordConfirmation: data.passwordConfirmation,
         });
     };
 
     return (
         <>
             <Head title="Reset Password" />
-            <Navbar />
+            
             <div className="pin-page-wrapper">
                 <div className="pin-content-area">
                     {!statusState.open ? (
@@ -81,7 +86,7 @@ export default function ResetPasswordPage({ token, email }) {
                                 Enter your new password below.
                             </Typography>
 
-                            <Box component="form" onSubmit={handleSubmit(onSubmit)} className="pin-form">
+                            <Box component="form" onSubmit={handleSubmit(onSubmit)} className="reset-form">
                                 <Controller
                                     name="password"
                                     control={control}
@@ -89,17 +94,22 @@ export default function ResetPasswordPage({ token, email }) {
                                         <TextField
                                             {...field}
                                             label="New Password"
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             fullWidth
                                             error={!!errors.password}
                                             helperText={errors.password?.message}
-                                            sx={{
-                                                '& .MuiInputBase-input': { color: '#E2E8F0' },
-                                                '& .MuiInputLabel-root': { color: '#94A3B8' },
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: '#334155' },
-                                                    '&:hover fieldset': { borderColor: '#38BDF8' },
-                                                }
+                                            slotProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowPassword(!showPassword)}
+                                                            edge="end"
+                                                            sx={{ color: '#94A3B8' }}
+                                                        >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
                                             }}
                                         />
                                     )}
@@ -112,17 +122,22 @@ export default function ResetPasswordPage({ token, email }) {
                                         <TextField
                                             {...field}
                                             label="Confirm Password"
-                                            type="password"
+                                            type={showConfirmPassword ? "text" : "password"}
                                             fullWidth
                                             error={!!errors.passwordConfirmation}
                                             helperText={errors.passwordConfirmation?.message}
-                                            sx={{
-                                                '& .MuiInputBase-input': { color: '#E2E8F0' },
-                                                '& .MuiInputLabel-root': { color: '#94A3B8' },
-                                                '& .MuiOutlinedInput-root': {
-                                                    '& fieldset': { borderColor: '#334155' },
-                                                    '&:hover fieldset': { borderColor: '#38BDF8' },
-                                                }
+                                            slotProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                            edge="end"
+                                                            sx={{ color: '#94A3B8' }}
+                                                        >
+                                                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
                                             }}
                                         />
                                     )}
@@ -132,7 +147,7 @@ export default function ResetPasswordPage({ token, email }) {
                                     type="submit"
                                     fullWidth
                                     variant="contained"
-                                    className="pin-submit-btn"
+                                    className="reset-submit-btn"
                                     disabled={!isValid || mutation.isPending}
                                 >
                                     {mutation.isPending ? <CircularProgress size={24} color="inherit" /> : 'Reset Password'}

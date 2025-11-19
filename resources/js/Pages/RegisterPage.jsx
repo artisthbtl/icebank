@@ -242,14 +242,26 @@ export default function RegisterPage() {
                                                     maxDate={dayjs(minAgeDate)} 
                                                     openTo="year"
                                                     views={['year', 'month', 'day']}
-                                                    sx={{ width: '100%' }}
+                                                    sx={{
+                                                        width: '100%',
+                                                        background: '#2A3A50',
+                                                        borderRadius: '8px',
+                                                        borderColor: 'white',
+                                                    }}
                                                     slotProps={{
-                                                        textField: {
-                                                            required: true,
-                                                            fullWidth: true,
-                                                            error: !!errors.dateOfBirth,
-                                                            helperText: errors.dateOfBirth?.message
-                                                        },
+                                                        field:{
+                                                            sx:{
+                                                                '& .MuiPickersOutlinedInput-root': {
+                                                                    color: '#94A3B8'
+                                                                },
+                                                                '& .MuiOutlinedInput-root:hover': {
+                                                                    borderColor: '#0ea5e9',
+                                                                },
+                                                                '& .MuiOutlinedInput-notchedOutline': {
+                                                                    borderColor: 'white',
+                                                                }
+                                                            }
+                                                        }
                                                     }}
                                                 />
                                             )}

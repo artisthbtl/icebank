@@ -55,7 +55,7 @@
 }
 
 .pin-submit-btn:hover {
-    filter: brightness(1.1);
+    background-color: #0ea5e9 !important;
 }
 
 .pin-submit-btn:disabled,
@@ -151,7 +151,7 @@
 }
 
 .status-card-button:hover {
-    filter: brightness(1.1);
+    background-color: #0ea5e9 !important;
 }
 
 .status-card-button-try-again {

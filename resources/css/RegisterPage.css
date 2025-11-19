@@ -61,7 +61,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #1E293B; 
+    background-color: #1E293B;
     min-width: 60%;
     box-sizing: border-box;
 }
@@ -109,7 +109,7 @@
 }
 
 .register-submit-btn:hover {
-    filter: brightness(1.1);
+    background-color: #0ea5e9 !important;
 }
 
 .register-submit-btn:disabled {
@@ -234,7 +234,7 @@
 }
 
 .status-card-button:hover {
-    filter: brightness(1.1);
+    background-color: #0ea5e9 !important;
 }
 
 .status-card-button-try-again {
@@ -250,6 +250,19 @@
     border-color: #E2E8F0 !important;
     color: #E2E8F0 !important;
     background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+.MuiPickersOutlinedInput-root {
+    border-radius: 8px !important;
+    background-color: #2a3a50 !important;
+}
+
+.MuiPickersOutlinedInput-root:hover {
+    border-color: #94A3B8 !important;
+}
+
+.MuiPickersOutlinedInput-root:hover .MuiPickersOutlinedInput-notchedOutline {
+    border-color: #94A3B8 !important;
 }
 
 @media (max-width: 900px) {
