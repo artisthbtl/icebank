@@ -1,27 +1,36 @@
 import React, { useState } from 'react';
-import { usePage, Head } from '@inertiajs/react';
+import { usePage, Head, router } from '@inertiajs/react'; 
 import Navbar from "@/Components/Navbar";
 import AccountInfoCard from "@/Components/AccountInfoCard";
 import FeatureButtons from "@/Components/FeatureButtons";
 import RecentTransactionCard from '@/Components/RecentTransactionCard';
 import AddBalanceModal from '@/Components/AddBalanceModal';
-import EnterPinModal from '@/Components/EnterPinModal'; // Import the new modal
+import EnterPinModal from '@/Components/EnterPinModal';
+import VerificationRequiredModal from '@/Components/VerificationRequiredModal';
 import { Alert, Box, Container } from '@mui/material';
 import '../../css/DashboardPage.css'; 
 
 export default function DashboardPage() {
-    const { user, account, recentTransactions } = usePage().props;
+    const { user, account, recentTransactions, latestVerification } = usePage().props;
     
     const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false);
     const [isEnterPinOpen, setIsEnterPinOpen] = useState(false);
+    const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
     const [pendingAmount, setPendingAmount] = useState(null);
-
-    const isVerified = account?.isVerified === 'yes';
+    const isVerified = latestVerification?.status === 'approved';
 
     const handleAddBalanceSuccess = (amount) => {
         setPendingAmount(amount);
         setIsAddBalanceOpen(false);
         setTimeout(() => setIsEnterPinOpen(true), 150);
+    };
+
+    const handleRestrictedFeature = (url) => {
+        if (isVerified) {
+            router.visit(url);
+        } else {
+            setIsVerificationModalOpen(true);
+        }
     };
 
     return (
@@ -34,7 +43,10 @@ export default function DashboardPage() {
                     
                     {!isVerified && (
                         <Alert severity="warning" className="dashboard-alert">
-                            Verify your ID at the Profile Page to unlock all features.
+                            {latestVerification?.status === 'pending' 
+                                ? "Your identity verification is currently under review."
+                                : "Verify your ID at the Profile Page to unlock all features."
+                            }
                         </Alert>
                     )}
 
@@ -43,7 +55,10 @@ export default function DashboardPage() {
                     </Box>
 
                     <Box sx={{ my: 4 }}>
-                        <FeatureButtons onAddBalance={() => setIsAddBalanceOpen(true)} />
+                        <FeatureButtons 
+                            onAddBalance={() => setIsAddBalanceOpen(true)} 
+                            onRestrictedFeature={handleRestrictedFeature}
+                        />
                     </Box>
 
                     <Box sx={{ my: 4 }}>
@@ -62,6 +77,12 @@ export default function DashboardPage() {
                     open={isEnterPinOpen}
                     onClose={() => setIsEnterPinOpen(false)}
                     amount={pendingAmount}
+                />
+
+                <VerificationRequiredModal 
+                    open={isVerificationModalOpen}
+                    onClose={() => setIsVerificationModalOpen(false)}
+                    latestVerification={latestVerification}
                 />
             </div>
         </>

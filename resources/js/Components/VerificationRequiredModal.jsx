@@ -1,12 +1,12 @@
 import React from 'react';
-import { Modal, Box, Typography, Button } from '@mui/material';
+import { Dialog, DialogContent, Typography, Button, Box } from '@mui/material';
 import { router } from '@inertiajs/react';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import '../../css/VerificationRequired.css';
 
 export default function VerificationRequiredModal({ open, onClose, latestVerification }) {
-    const status = latestVerification?.data?.status;
+    const status = latestVerification?.status;
     const isPending = status === 'pending';
 
     const handleGetVerified = () => {
@@ -14,24 +14,24 @@ export default function VerificationRequiredModal({ open, onClose, latestVerific
     };
 
     return (
-        <Modal
+        <Dialog
             open={open}
             onClose={onClose}
             aria-labelledby="verification-modal-title"
             aria-describedby="verification-modal-description"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backdropFilter: 'blur(4px)', // Adds that nice blur effect
-            }}
+            classes={{ paper: 'verification-modal-paper' }} 
         >
-            <Box className="verification-modal-paper">
+            <DialogContent 
+                sx={{ 
+                    p: 4, 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    alignItems: 'center', 
+                    textAlign: 'center' 
+                }}
+            >
                 {isPending ? (
-                    <HourglassTopIcon className="verification-modal-icon" sx={{ color: '#FBBF24 !important' }} />
+                    <HourglassTopIcon className="verification-modal-icon" />
                 ) : (
                     <VerifiedUserIcon className="verification-modal-icon" />
                 )}
@@ -42,8 +42,8 @@ export default function VerificationRequiredModal({ open, onClose, latestVerific
 
                 <Typography id="verification-modal-description" className="verification-modal-subtitle">
                     {isPending 
-                        ? "We are currently reviewing your verification request. You will be notified once the process is complete."
-                        : "To access features like Transfers and Subscriptions, we need to verify your identity first."
+                        ? "We are currently reviewing your verification request."
+                        : "To access all features, we need to verify your identity first."
                     }
                 </Typography>
 
@@ -71,7 +71,7 @@ export default function VerificationRequiredModal({ open, onClose, latestVerific
                         Maybe Later
                     </Button>
                 )}
-            </Box>
-        </Modal>
+            </DialogContent>
+        </Dialog>
     );
 }

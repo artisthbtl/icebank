@@ -25,12 +25,10 @@ class DashboardController extends Controller
         $latestVerification = $user->verifications()->latest()->first();
 
         return Inertia::render('DashboardPage', [
-            'auth' => [
-                'user' => new UserResource($user),
-            ],
-            'account' => $user->account ? new AccountResource($user->account) : null,
+            'user' => (new UserResource($user))->resolve(),
+            'account' => $user->account ? (new AccountResource($user->account))->resolve() : null,
             'recentTransactions' => TransactionResource::collection($recentTransactions),
-            'latestVerification' => $latestVerification ? new VerificationResource($latestVerification) : null,
+            'latestVerification' => $latestVerification ? (new VerificationResource($latestVerification))->resolve() : null,
         ]);
     }
 }
