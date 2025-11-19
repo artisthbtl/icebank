@@ -4,6 +4,7 @@ import axios from 'axios';
 import StatusDisplayCard from '@/Components/StatusDisplayCard';
 import OtpForm from '@/Components/OtpForm';
 import EmailVerificationPoller from '@/Components/EmailVerificationPoller';
+import ForgotPasswordForm from '@/Components/ForgotPasswordForm';
 import { Link } from '@inertiajs/react';
 import { Typography, TextField, Button, CircularProgress, Box, IconButton, InputAdornment } from '@mui/material';
 import Visibility from "@mui/icons-material/Visibility";
@@ -45,7 +46,7 @@ export default function LoginPage() {
     const [loginData, setLoginData] = useState(null);
 
     useLayoutEffect(() => {
-        if (formSectionRef.current && currentView === 'login' && !formHeight) {
+        if (formSectionRef.current && !formHeight) {
             setFormHeight(formSectionRef.current.offsetHeight);
         }
     }, [currentView, formHeight]);
@@ -53,7 +54,6 @@ export default function LoginPage() {
     const { 
         control, 
         handleSubmit, 
-        reset, 
         setError, 
         formState: { errors, isValid: isFormValid } 
     } = useForm({
@@ -88,7 +88,6 @@ export default function LoginPage() {
                     });
                     return;
                 }
-
                 setCriticalError(error.response.data.message || 'An unexpected error occurred.');
                 setCurrentView('error');
             } else {
@@ -164,33 +163,50 @@ export default function LoginPage() {
                                         )}
                                     />
                                     
-                                    <Controller
-                                        name="password"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <TextField
-                                                {...field}
-                                                label="Password"
-                                                type={showPassword ? "text" : "password"}
-                                                fullWidth
-                                                required
-                                                error={!!errors.password}
-                                                helperText={errors.password?.message}
-                                                slotProps={{
-                                                    endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                onClick={() => setShowPassword(!showPassword)}
-                                                                edge="end"
-                                                            >
-                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                            />
-                                        )}
-                                    />
+                                    <Box>
+                                        <Controller
+                                            name="password"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <TextField
+                                                    {...field}
+                                                    label="Password"
+                                                    type={showPassword ? "text" : "password"}
+                                                    fullWidth
+                                                    required
+                                                    error={!!errors.password}
+                                                    helperText={errors.password?.message}
+                                                    slotProps={{
+                                                        endAdornment: (
+                                                            <InputAdornment position="end">
+                                                                <IconButton
+                                                                    onClick={() => setShowPassword(!showPassword)}
+                                                                    edge="end"
+                                                                >
+                                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                </IconButton>
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
+                                            )}
+                                        />
+                                        
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <Typography 
+                                                variant="body2" 
+                                                className="login-forgot-link"
+                                                sx={{ mt: '0 !important' }}
+                                            >
+                                                <span 
+                                                    style={{ cursor: 'pointer' }}
+                                                    onClick={() => setCurrentView('forgot-password')}
+                                                >
+                                                    <a href="#">Forgot Password?</a>
+                                                </span>
+                                            </Typography>
+                                        </Box>
+                                    </Box>
 
                                     <Button
                                         type="submit"
@@ -231,6 +247,11 @@ export default function LoginPage() {
                                     </Typography>
                                 </Box>
                             </>
+                        )}
+
+                        {/* New Forgot Password View */}
+                        {currentView === 'forgot-password' && (
+                            <ForgotPasswordForm onCancel={() => setCurrentView('login')} />
                         )}
 
                         {currentView === 'polling' && (

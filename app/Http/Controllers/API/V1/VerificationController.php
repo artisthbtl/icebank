@@ -34,6 +34,22 @@ class VerificationController extends Controller
             return response()->json(['message' => 'You already have a pending or approved verification request.'], 409);
         }
 
+        $rejectedVerifications = Verification::where('user_id', $user->id)
+            ->where('status', 'rejected')
+            ->get();
+
+        foreach ($rejectedVerifications as $rejectedVerification) {
+            if ($rejectedVerification->ktp_path && Storage::disk('local')->exists($rejectedVerification->ktp_path)) {
+                Storage::disk('local')->delete($rejectedVerification->ktp_path);
+            }
+            
+            if ($rejectedVerification->selfie_path && Storage::disk('local')->exists($rejectedVerification->selfie_path)) {
+                Storage::disk('local')->delete($rejectedVerification->selfie_path);
+            }
+
+            $rejectedVerification->delete();
+        }
+
         $ktpPath = $request->file('ktpImage')->store('verifications', 'local');
         $selfiePath = $request->file('selfieImage')->store('verifications', 'local');
 

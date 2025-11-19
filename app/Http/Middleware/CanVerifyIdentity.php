@@ -12,7 +12,8 @@ class CanVerifyIdentity
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if ($user->account && $user->account->is_verified) {
+        
+        if ($user->account && $user->account->is_verified === 'yes') { 
             return redirect()->route('dashboard');
         }
 

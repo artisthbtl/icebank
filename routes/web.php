@@ -11,13 +11,19 @@ Route::middleware('guest')->group(function () {
     Route::get('/', function () {return inertia('LandingPage');})->name('landing');
     Route::get('/register', function () {return inertia('RegisterPage');})->name('register');
     Route::get('/login', function () {return inertia('LoginPage');})->name('login');
-});
+    Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
 
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth')->name('logout');
-Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
+    Route::get('/reset-password', function (Illuminate\Http\Request $request) {
+        return inertia('ResetPasswordPage', [
+            'token' => $request->token,
+            'email' => $request->email,
+        ]);
+    })->name('password.reset');
+});
 
 Route::middleware('has.account')->group(function () {
     Route::middleware('auth')->group(function () {
+        Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->name('logout');
         Route::get('/create-pin', function () {return inertia('CreatePinPage');})->name('pin.create');
         Route::post('/users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
 

@@ -60,7 +60,7 @@ export default function DashboardPage() {
                     severity="info"
                     sx={{ 
                         backgroundColor: 'rgba(56, 189, 248, 0.15) !important',
-                        color: '#38BDF8 !important', // Icebank Blue
+                        color: '#38BDF8 !important',
                         border: '1px solid rgba(56, 189, 248, 0.3) !important',
                         borderRadius: '8px !important',
                         mb: 2
@@ -126,7 +126,6 @@ export default function DashboardPage() {
 
                 <Container maxWidth="md" className="dashboard-content-container">
                     
-                    {/* Alerts Section */}
                     {renderVerificationAlert()}
 
                     <Box sx={{ my: 4 }}>

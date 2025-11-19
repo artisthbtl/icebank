@@ -62,12 +62,9 @@
             <p>Hello,</p>
             <p>You are receiving this email because we received a password reset request for your account. Please click the button below to reset your password:</p>
             <div class="button-container">
-                {{-- 
-                  IMPORTANT: This URL must point to YOUR FRONTEND application.
-                  It passes the token and email, which your frontend will then
-                  use to make the API call to /reset-password.
-                --}}
-                <a href="{{ url('https://localhost:8000/reset-password?token=' . $token . '&email=' . rawurlencode($email)) }}" class="button">Reset Password</a>
+                <a href="{{ route('password.reset', ['token' => $token, 'email' => $email]) }}" class="button">
+                    Reset Password
+                </a>
             </div>
             <p>This password reset link will expire in 30 minutes.</p>
             <p>If you did not request a password reset, no further action is required.</p>
