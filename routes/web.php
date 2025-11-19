@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\VerificationController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -27,6 +28,7 @@ Route::middleware('has.account')->group(function () {
             Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin']);
 
             Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
+            Route::post('/users/verifications', [VerificationController::class, 'store']);
 
             Route::middleware('is.verified')->group(function () {
                 // Protected routes for verified users can be added here

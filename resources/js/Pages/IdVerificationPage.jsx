@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
-import StatusDisplayCard from '@/Components/StatusDisplayCard';
+import IdVerificationStatus from '@/Components/IdVerificationStatus';
 import { Typography, Button, CircularProgress, Box, Grid } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -32,7 +32,7 @@ const verificationSchema = z.object({
 });
 
 const uploadVerification = async (formData) => {
-    const { data } = await axios.post('/api/v1/verifications', formData, {
+    const { data } = await axios.post('/users/verifications', formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },
@@ -55,9 +55,7 @@ const FileUploadField = ({ field, label, error, helperText, control }) => {
                         variant="contained"
                         startIcon={<InsertPhotoIcon />}
                         className="file-upload-btn"
-                        sx={{
-                            borderColor: isError ? '#f44336 !important' : undefined
-                        }}
+                        sx={{ borderColor: isError ? '#f44336 !important' : undefined }}
                     >
                         {label}
                         <input
@@ -95,12 +93,7 @@ export default function IdVerificationPage() {
     });
     const [globalError, setGlobalError] = useState(null);
 
-    const { 
-        control, 
-        handleSubmit, 
-        setError: setFormError,
-        formState: { errors, isValid: isFormValid } 
-    } = useForm({
+    const { control, handleSubmit, setError: setFormError, formState: { errors, isValid: isFormValid } } = useForm({
         resolver: zodResolver(verificationSchema),
         mode: 'onChange',
         defaultValues: {
@@ -111,7 +104,7 @@ export default function IdVerificationPage() {
 
     const mutation = useMutation({
         mutationFn: uploadVerification,
-        
+
         onSuccess: () => {
             setStatusState({
                 open: true,
@@ -119,14 +112,14 @@ export default function IdVerificationPage() {
                 message: 'Verification request submitted successfully.',
             });
             setTimeout(() => {
-                 router.visit('/dashboard');
+                router.visit('/dashboard');
             }, 3000);
         },
-        
+
         onError: (error) => {
             if (error.response) {
                 const data = error.response.data;
-                
+
                 if (error.response.status === 422 && data.errors) {
                     Object.keys(data.errors).forEach((key) => {
                         setFormError(key, { type: 'server', message: data.errors[key][0] });
@@ -137,18 +130,18 @@ export default function IdVerificationPage() {
                     setGlobalError(data.message || data.error || 'An unexpected error occurred.');
                     return;
                 }
-            } 
+            }
             setGlobalError('A network error occurred or the server is unavailable.');
         },
     });
 
     const onSubmit = (data) => {
         setGlobalError(null);
-        
+
         const formData = new FormData();
         formData.append('ktpImage', data.ktpImage[0]);
         formData.append('selfieImage', data.selfieImage[0]);
-        
+
         mutation.mutate(formData);
     };
 
@@ -167,7 +160,7 @@ export default function IdVerificationPage() {
                         <Typography variant="subtitle1" className="verification-subtitle">
                             Please upload your KTP and a selfie holding your KTP.
                         </Typography>
-                        
+
                         <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate className="verification-form">
                             <Grid>
                                 <Grid item xs={12} sm={6} sx={{ height: { sm: '100%' } }}>
@@ -185,7 +178,7 @@ export default function IdVerificationPage() {
                                         )}
                                     />
                                 </Grid>
-                                
+
                                 <Grid item xs={12} sm={6} sx={{ height: { sm: '100%' } }}>
                                     <Controller
                                         name="selfieImage"
@@ -209,7 +202,7 @@ export default function IdVerificationPage() {
                                     {globalError}
                                 </Box>
                             )}
-                            
+
                             <Button
                                 type="submit"
                                 fullWidth
@@ -222,7 +215,7 @@ export default function IdVerificationPage() {
                         </Box>
                     </>
                 ) : (
-                    <StatusDisplayCard 
+                    <IdVerificationStatus 
                         status={statusState.status}
                         message={statusState.message}
                         redirectLink="/dashboard"
