@@ -199,6 +199,7 @@ export default function LoginPage() {
                                         className="login-submit-btn"
                                         disabled={!isFormValid || mutation.isPending}
                                         sx={{
+                                            textTransform: 'none',
                                             '&.Mui-disabled': {
                                                 cursor: 'not-allowed',
                                                 pointerEvents: 'auto' 

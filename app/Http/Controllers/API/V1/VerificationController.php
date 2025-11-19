@@ -78,17 +78,4 @@ class VerificationController extends Controller
 
         return new VerificationResource($verification);
     }
-
-    public function showLatest()
-    {
-        $user = Auth::user();
-
-        $latestVerification = $user->verifications()->latest()->first();
-
-        if (!$latestVerification) {
-            return response()->json(['message' => 'No verification history found.'], 404);
-        }
-
-        return new VerificationResource($latestVerification);
-    }
 }

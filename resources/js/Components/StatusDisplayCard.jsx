@@ -31,6 +31,7 @@ export default function StatusDisplayCard({ status, message, redirectLink, onRes
                     href={redirectLink}
                     variant="contained"
                     className="status-card-button"
+                    sx={{ textTransform: 'none' }}
                 >
                     Proceed to Login
                 </Button>
@@ -41,6 +42,7 @@ export default function StatusDisplayCard({ status, message, redirectLink, onRes
                     onClick={onReset}
                     variant="outlined"
                     className="status-card-button-try-again"
+                    sx={{ textTransform: 'none' }}
                 >
                     Try Again
                 </Button>

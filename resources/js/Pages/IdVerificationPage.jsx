@@ -113,7 +113,7 @@ export default function IdVerificationPage() {
             });
             setTimeout(() => {
                 router.visit('/dashboard');
-            }, 3000);
+            }, 10000000000);
         },
 
         onError: (error) => {

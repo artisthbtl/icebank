@@ -1,0 +1,70 @@
+.status-card-container {
+    align-items: center !important;
+    text-align: center !important;
+    padding-top: 0 !important; 
+    padding-bottom: 0 !important;
+}
+
+.idv-status-title {
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    color: #E2E8F0 !important;
+    margin-top: 16px !important;
+    margin-bottom: 12px !important;
+}
+
+.status-card-message {
+    font-size: 1.1rem !important;
+    color: #94A3B8 !important;
+    margin-bottom: 32px !important;
+    line-height: 1.6 !important;
+    max-width: 90%;
+}
+
+.status-card-icon {
+    font-size: 5.5rem !important;
+    margin-bottom: 16px !important;
+}
+
+.status-card-icon.success {
+    color: #38BDF8 !important;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.3));
+}
+
+.status-card-icon.error {
+    color: #FBBF24 !important;
+}
+
+.status-card-button {
+    width: 100% !important;
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important; 
+    color: #0F172A !important; 
+    border-radius: 8px !important;
+    text-transform: none !important; 
+    transition: background-color 0.2s ease !important;
+}
+
+.status-card-button:hover {
+    background-color: #0ea5e9 !important;
+}
+
+.status-card-button-try-again {
+    width: 100% !important;
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    color: #38BDF8 !important; 
+    border: 1px solid #38BDF8 !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    transition: all 0.2s ease !important;
+}
+
+.status-card-button-try-again:hover {
+    background-color: rgba(56, 189, 248, 0.1) !important;
+    border-color: #E2E8F0 !important;
+    color: #E2E8F0 !important;
+}

@@ -2,7 +2,7 @@ import React from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { Button, Typography, Box } from "@mui/material";
-import "../../css/LoginPage.css";
+import "../../css/IdVerificationStatus.css";
 
 export default function IdVerificationStatus({ status = "success", message, redirectLink, onReset }) {
     const isSuccess = status === "success";

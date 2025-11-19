@@ -52,14 +52,12 @@ export default function DashboardPage() {
 
                 </Container>
 
-                {/* Step 1: Add Amount */}
                 <AddBalanceModal 
                     open={isAddBalanceOpen} 
                     onClose={() => setIsAddBalanceOpen(false)}
                     onSuccess={handleAddBalanceSuccess}
                 />
 
-                {/* Step 2: Enter PIN */}
                 <EnterPinModal 
                     open={isEnterPinOpen}
                     onClose={() => setIsEnterPinOpen(false)}

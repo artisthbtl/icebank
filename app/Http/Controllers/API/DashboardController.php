@@ -4,29 +4,33 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\AccountResource;
-use App\Http\Resources\V1\TransactionCollection;
+use App\Http\Resources\V1\TransactionResource;
 use App\Http\Resources\V1\UserResource;
-use App\Models\Transaction;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\V1\VerificationResource;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = $request->user();
         
         $user->load('account');
 
-        $recentTransactions = Transaction::where('account_id', $user->account->id)
-            ->latest()
-            ->take(5)
-            ->get();
+        $recentTransactions = $user->account 
+            ? $user->account->transactions()->latest()->take(5)->get() 
+            : collect([]);
+
+        $latestVerification = $user->verifications()->latest()->first();
 
         return Inertia::render('DashboardPage', [
-            'user' => (new UserResource($user))->resolve(),
-            'account' => (new AccountResource($user->account))->resolve(),
-            'recentTransactions' => new TransactionCollection($recentTransactions)
+            'auth' => [
+                'user' => new UserResource($user),
+            ],
+            'account' => $user->account ? new AccountResource($user->account) : null,
+            'recentTransactions' => TransactionResource::collection($recentTransactions),
+            'latestVerification' => $latestVerification ? new VerificationResource($latestVerification) : null,
         ]);
     }
 }

@@ -366,6 +366,7 @@ export default function RegisterPage() {
                                         className="register-submit-btn"
                                         disabled={!isFormValid || mutation.isPending}
                                         sx={{
+                                            textTransform: 'none',
                                             '&.Mui-disabled': {
                                                 cursor: 'not-allowed',
                                                 pointerEvents: 'auto' 
