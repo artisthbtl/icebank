@@ -10,7 +10,7 @@ export default function VerificationRequiredModal({ open, onClose, latestVerific
     const isPending = status === 'pending';
 
     const handleGetVerified = () => {
-        router.visit('/verify-id');
+        router.visit(route('verify.id')); 
     };
 
     return (

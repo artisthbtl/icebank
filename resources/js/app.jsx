@@ -4,7 +4,6 @@ import { createRoot } from 'react-dom/client';
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-// 1. Import Theme tools from MUI
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import AuthenticatedLayout from './Layouts/AuthenticatedLayout';

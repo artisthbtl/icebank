@@ -7,7 +7,7 @@ export default function AuthenticatedLayout({ children }) {
     useEffect(() => {
         if (auth.user && auth.user.hasPin === false) {
             if (url !== '/create-pin') {
-                router.visit('/create-pin');
+                router.visit(route('pin.create'));
             }
         }
     }, [auth.user, url]);

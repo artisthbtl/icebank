@@ -14,10 +14,6 @@ class IsVerified
             return redirect()->route('verify.id');
         }
 
-        if (Auth::user()->account->is_verified || request()->routeIs('verify.id')) {
-            return redirect()->route('dashboard');
-        }
-
         return $next($request);
     }
 }

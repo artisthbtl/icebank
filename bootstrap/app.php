@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CanVerifyIdentity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'is.verified' => IsVerified::class,
             'validate.pin' => ValidatePin::class,
             'has.account' => HasAccount::class,
+            'can.verify' => CanVerifyIdentity::class,
         ]);
         $middleware->web(append: [
             HandleInertiaRequests::class,

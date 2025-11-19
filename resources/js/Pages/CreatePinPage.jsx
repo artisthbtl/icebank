@@ -59,7 +59,7 @@ export default function CreatePinPage() {
         mutationFn: storePin,
         
         onSuccess: () => {
-            router.visit('/dashboard');
+            router.visit(route('dashboard'));
         },
         
         onError: (error) => {

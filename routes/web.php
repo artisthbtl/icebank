@@ -27,8 +27,13 @@ Route::middleware('has.account')->group(function () {
             Route::post('/account/validate-amount', [AccountController::class, 'validateAmount'])->middleware('throttle:10,1')->name('account.validate-amount');
             Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin'])->name('account.add-balance');
 
-            Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
-            Route::post('/users/verifications', [VerificationController::class, 'store'])->name('verification.store');
+            Route::get('/verification-file/{filename}', [VerificationController::class, 'showFile'])->name('verification.file');
+
+            Route::middleware(['can.verify'])->group(function () {
+                Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
+                Route::post('/users/verifications', [VerificationController::class, 'store'])->name('verification.store');
+            });
+
             Route::middleware('is.verified')->group(function () {
                 // Protected routes for verified users can be added here
             });

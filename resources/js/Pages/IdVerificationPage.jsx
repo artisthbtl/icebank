@@ -112,7 +112,7 @@ export default function IdVerificationPage() {
                 message: 'Verification request submitted successfully.',
             });
             setTimeout(() => {
-                router.visit('/dashboard');
+                router.visit(route('dashboard'));
             }, 10000000000);
         },
 
