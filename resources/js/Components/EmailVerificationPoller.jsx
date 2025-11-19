@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Typography, Box, CircularProgress } from '@mui/material';
 
 const checkStatus = async (pollToken) => {
-    const { data } = await axios.get(`/api/auth/check-verification/${pollToken}`);
+    const { data } = await axios.get(route('auth.poll-verification', { pollToken }));
     return data;
 };
 

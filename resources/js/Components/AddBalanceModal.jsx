@@ -52,7 +52,7 @@ export default function AddBalanceModal({ open, onClose, onSuccess }) {
         setLoading(true);
 
         try {
-            await axios.post('/account/validate-amount', { 
+            await axios.post(route('account.validate-amount'), { 
                 amount: parseFloat(amount) 
             });
             

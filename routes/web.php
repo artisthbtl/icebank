@@ -13,23 +13,22 @@ Route::middleware('guest')->group(function () {
     Route::get('/login', function () {return inertia('LoginPage');})->name('login');
 });
 
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth')->name('logout');
 Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
 
 Route::middleware('has.account')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/create-pin', function () {return inertia('CreatePinPage');})->name('pin.create');
-        Route::post('/users/store-pin', [UserController::class, 'storePin']);
+        Route::post('/users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
 
         Route::middleware('check.pin')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-            Route::post('/account/validate-amount', [AccountController::class, 'validateAmount'])->middleware('throttle:10,1');
-            Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin']);
+            Route::post('/account/validate-amount', [AccountController::class, 'validateAmount'])->middleware('throttle:10,1')->name('account.validate-amount');
+            Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin'])->name('account.add-balance');
 
             Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
-            Route::post('/users/verifications', [VerificationController::class, 'store']);
-
+            Route::post('/users/verifications', [VerificationController::class, 'store'])->name('verification.store');
             Route::middleware('is.verified')->group(function () {
                 // Protected routes for verified users can be added here
             });

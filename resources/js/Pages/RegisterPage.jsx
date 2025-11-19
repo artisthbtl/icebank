@@ -54,7 +54,7 @@ const registerUser = async (userData) => {
       dateOfBirth: dayjs(userData.dateOfBirth).format('YYYY-MM-DD'),
     };
 
-    const { data } = await axios.post('/api/auth/register', dataToSend);
+    const { data } = await axios.post(route('auth.register'), dataToSend);
     return data;
 };
 

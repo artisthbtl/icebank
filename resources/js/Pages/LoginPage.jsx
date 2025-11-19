@@ -30,7 +30,7 @@ const loginSchema = z.object({
 });
 
 const loginUser = async (userData) => {
-    const { data } = await axios.post('/api/auth/login', userData);
+    const { data } = await axios.post(route('auth.login'), userData);
     return data;
 };
 

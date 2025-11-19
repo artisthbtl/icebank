@@ -11,7 +11,7 @@ const otpSchema = z.object({
 });
 
 const verifyOtp = async (otpData) => {
-    const { data } = await axios.post('/auth/verify-otp', otpData);
+    const { data } = await axios.post(route('verify-otp'), otpData);
     return data;
 };
 

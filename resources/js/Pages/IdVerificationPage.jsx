@@ -32,7 +32,7 @@ const verificationSchema = z.object({
 });
 
 const uploadVerification = async (formData) => {
-    const { data } = await axios.post('/users/verifications', formData, {
+    const { data } = await axios.post(route('verification.store'), formData, {
         headers: {
             'Content-Type': 'multipart/form-data',
         },

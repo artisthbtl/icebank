@@ -39,7 +39,7 @@ export default function EnterPinModal({ open, onClose, amount }) {
         setLoading(true);
 
         try {
-            await axios.post('/account/add-balance', { 
+            await axios.post(route('account.add-balance'), { 
                 amount: parseFloat(amount),
                 pin: pin
             });
