@@ -63,7 +63,6 @@ class RenewSubscription extends Command
                     });
                     
                     $this->info("Renewed Sub ID: {$sub->id} for User ID: {$user->id}");
-                    // send email
 
                 } catch (Exception $e) {
                     Log::error("Failed to renew Sub ID: {$sub->id} - " . $e->getMessage());
@@ -73,7 +72,6 @@ class RenewSubscription extends Command
                 $sub->status = 'expired';
                 $sub->save();
                 $this->warn("Expired Sub ID: {$sub->id} for User ID: {$user->id} (Insufficient funds)");
-                // send expired email
             }
         }
 

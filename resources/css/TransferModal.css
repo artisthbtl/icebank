@@ -1,0 +1,108 @@
+.transfer-modal-paper {
+    background-color: #1E293B !important;
+    color: #E2E8F0 !important;
+    border-radius: 12px !important;
+    max-width: 500px !important;
+    width: 100% !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.transfer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.transfer-title {
+    font-weight: 700 !important;
+    color: #E2E8F0 !important;
+}
+
+.transfer-close-btn {
+    color: #94A3B8 !important;
+    margin-right: -12px !important; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.transfer-close-btn:hover {
+    color: #E2E8F0 !important;
+    transform: rotate(90deg);
+}
+
+.transfer-close-btn:active {
+    transform: scale(0.85) !important;
+}
+
+.transfer-subtitle {
+    color: #94A3B8 !important;
+    margin-bottom: 24px !important;
+}
+
+.transfer-input-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.input-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.transfer-textfield {
+    width: 100%;
+}
+
+.transfer-textfield .MuiInputBase-input {
+    color: #E2E8F0 !important;
+}
+
+.transfer-textfield .MuiInputLabel-root {
+    color: #94A3B8 !important;
+}
+
+.transfer-textfield .MuiOutlinedInput-root {
+    background-color: #2a3a50;
+    border-radius: 8px !important;
+}
+
+.transfer-textfield .MuiOutlinedInput-root fieldset {
+    border-color: #334155 !important;
+}
+
+.transfer-textfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: #38BDF8 !important;
+}
+
+.transfer-textfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #38BDF8 !important;
+}
+
+.transfer-textfield .MuiFormHelperText-root {
+    color: #f44336 !important;
+}
+
+.transfer-continue-btn {
+    padding: 14px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important;
+    color: #0F172A !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    margin-top: 8px !important;
+}
+
+.transfer-continue-btn:hover {
+    background-color: #0ea5e9 !important;
+}
+
+.transfer-continue-btn:disabled {
+    background-color: #334155 !important;
+    color: #94A3B8 !important;
+}

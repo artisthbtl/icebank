@@ -1,0 +1,138 @@
+.transfer-conf-paper {
+    background-color: #1E293B !important;
+    color: #E2E8F0 !important;
+    border-radius: 12px !important;
+    max-width: 450px !important;
+    width: 100% !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+}
+
+.transfer-conf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.transfer-conf-title {
+    font-weight: 700 !important;
+    color: #E2E8F0 !important;
+}
+
+.transfer-conf-close-btn {
+    color: #94A3B8 !important;
+    margin-right: -12px !important; 
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.transfer-conf-close-btn:hover {
+    color: #E2E8F0 !important;
+    transform: rotate(90deg);
+}
+
+.transfer-conf-close-btn:active {
+    transform: scale(0.85) !important;
+}
+
+.transfer-conf-subtitle {
+    color: #94A3B8 !important;
+    margin-bottom: 24px !important;
+    font-size: 0.95rem !important;
+}
+
+.transfer-details-box {
+    background-color: #0F172A;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-label {
+    color: #94A3B8 !important;
+    font-size: 0.9rem !important;
+}
+
+.detail-value {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+}
+
+.detail-value.highlight {
+    color: #38BDF8 !important;
+}
+
+.detail-value.text-yellow {
+    color: #FBBF24 !important;
+}
+
+.detail-label.total {
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.detail-value.total {
+    color: #38BDF8 !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+}
+
+.enter-pin-label {
+    color: #E2E8F0 !important;
+    margin-bottom: 8px !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+}
+
+.conf-pin-field .MuiOutlinedInput-root {
+    background-color: #0F172A;
+    border-radius: 8px !important;
+    color: #E2E8F0 !important;
+}
+
+.conf-pin-field .MuiOutlinedInput-root fieldset {
+    border-color: #334155 !important;
+}
+
+.conf-pin-field .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: #38BDF8 !important;
+}
+
+.conf-submit-btn {
+    padding: 12px 0 !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    background-color: #38BDF8 !important;
+    color: #0F172A !important;
+    border-radius: 8px !important;
+    text-transform: none !important;
+    margin-top: 24px !important;
+}
+
+.conf-submit-btn:hover {
+    background-color: #0ea5e9 !important;
+}
+
+.conf-submit-btn:disabled {
+    background-color: #334155 !important;
+    color: #94A3B8 !important;
+}
+/* 
+.conf-error-text {
+    color: #FBBF24;
+    font-size: 0.7rem;
+    text-align: center;
+    margin-top: 16px !important;
+    font-weight: 500;
+} */

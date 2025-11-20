@@ -6,6 +6,7 @@ use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\V1\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->middleware('signed')->name('auth.verify-update');
@@ -53,7 +54,8 @@ Route::middleware('has.account')->group(function () {
             });
 
             Route::middleware('is.verified')->group(function () {
-                // Protected routes for verified users can be added here
+                Route::post('/transfer/validate', [TransactionController::class, 'validateTransfer'])->name('transfer.validate');
+                Route::post('/transfer', [TransactionController::class, 'transfer'])->middleware('validate.pin')->name('transfer');
             });
         });
     });

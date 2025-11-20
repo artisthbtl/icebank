@@ -11,6 +11,7 @@ use App\Http\Resources\V1\TransactionCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Http\Request as HttpRequest;
 
 class TransactionController extends Controller
 {
@@ -47,26 +48,65 @@ class TransactionController extends Controller
         return new TransactionResource($transaction);
     }
 
+    public function validateTransfer(HttpRequest $request)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:1',
+            'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
+        ]);
+
+        $user = Auth::user();
+        $sender = $user->account;
+        $receiver = Account::where('account_number', $request->receiverAccountNumber)->first();
+
+        if ($sender->id === $receiver->id) {
+            return response()->json(['errors' => ['receiverAccountNumber' => ['You cannot transfer to your own account.']]], 422);
+        }
+
+        $fee = 0.5;
+        if ($sender->balance < ($request->amount + $fee)) {
+            return response()->json(['errors' => ['amount' => ['Insufficient balance for transfer + fee.']]], 422);
+        }
+
+        return response()->json([
+            'receiver_name' => $receiver->user->first_name . ' ' . $receiver->user->last_name,
+            'account_number' => $receiver->account_number,
+            'amount' => (float) $request->amount,
+            'fee' => $fee,
+            'total' => (float) $request->amount + $fee
+        ]);
+    }
+
     public function transfer(TransferRequest $request)
     {
         $user = Auth::user();
-        $sender = $user->account;
         $amount = $request->amount;
-        $receiver = Account::where('account_number', $request->receiverAccountNumber)->first();
         $fee = 0.5;
 
-        if ($sender->id === $receiver->id) {
-            return response()->json(['error' => 'You cannot transfer money to your own account.'], 400);
-        }
-
-        if ($sender->balance < ($amount + $fee)) {
-            return response()->json(['error' => 'Insufficient balance.'], 400);
-        }
-
         try {
-            DB::transaction(function () use ($sender, $receiver, $amount, $fee) {
+            return DB::transaction(function () use ($user, $request, $amount, $fee) {
+                
+                $sender = $user->account()->lockForUpdate()->first();
+                
+                $receiver = Account::where('account_number', $request->receiverAccountNumber)
+                                    ->lockForUpdate()
+                                    ->first();
+
+                if (!$sender || !$receiver) {
+                    return response()->json(['error' => 'Account not found.'], 404);
+                }
+
+                if ($sender->id === $receiver->id) {
+                    return response()->json(['error' => 'You cannot transfer money to your own account.'], 400);
+                }
+
+                if ($sender->balance < ($amount + $fee)) {
+                    return response()->json(['error' => 'Insufficient balance.'], 400);
+                }
+
                 $sender->balance -= ($amount + $fee);
                 $receiver->balance += $amount;
+                
                 $sender->save();
                 $receiver->save();
                 
@@ -85,14 +125,15 @@ class TransactionController extends Controller
                     'description' => "Received $amount from " . $sender->user->first_name,
                     'related_account_id' => $sender->id,
                 ]);
+
+                return response()->json([
+                    'message' => 'Transfer successful.',
+                    'newBalance' => $sender->balance
+                ], 200);
             });
+
         } catch (Exception $e) {
             return response()->json(['error' => 'An error occurred during the transfer.'], 500);
         }
-
-        return response()->json([
-            'message' => 'Transfer successful.',
-            'newBalance' => $sender->balance
-        ], 200);
     }
 }

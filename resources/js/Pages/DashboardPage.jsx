@@ -8,6 +8,8 @@ import LatestVerificationCard from '@/Components/LatestVerificationCard';
 import AddBalanceModal from '@/Components/AddBalanceModal';
 import EnterPinModal from '@/Components/EnterPinModal';
 import VerificationRequiredModal from '@/Components/VerificationRequiredModal';
+import TransferModal from '@/Components/TransferModal';
+import TransferConfirmationModal from '@/Components/TransferConfirmationModal';
 import { Alert, Box, Container } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
@@ -21,6 +23,9 @@ export default function DashboardPage() {
     const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false);
     const [isEnterPinOpen, setIsEnterPinOpen] = useState(false);
     const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+    const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+    const [isTransferConfirmOpen, setIsTransferConfirmOpen] = useState(false);
+    const [transferData, setTransferData] = useState(null); 
     const [pendingAmount, setPendingAmount] = useState(null);
     
     const isVerified = latestVerification?.status === 'approved';
@@ -29,12 +34,10 @@ export default function DashboardPage() {
     const showApprovedAlert = () => {
         if (status !== 'approved') return false;
         if (!latestVerification.updatedAt) return false;
-
         const approvedDate = new Date(latestVerification.updatedAt);
         const now = new Date();
         const diffTime = Math.abs(now - approvedDate);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
-        
         return diffDays <= 3;
     };
 
@@ -46,14 +49,28 @@ export default function DashboardPage() {
 
     const handleRestrictedFeature = (url) => {
         if (isVerified) {
-            router.visit(url);
+            if (url === '/transfer') {
+                setIsTransferModalOpen(true);
+            } else {
+                router.visit(url);
+            }
         } else {
             setIsVerificationModalOpen(true);
         }
     };
 
+    const handleTransferContinue = (data) => {
+        setTransferData(data);
+        setIsTransferModalOpen(false);
+        setIsTransferConfirmOpen(true);
+    };
+
+    const handleTransferSuccess = () => {
+        console.log("Transfer Completed");
+    };
+
     const renderVerificationAlert = () => {
-        if (status === 'approved' && showApprovedAlert()) {
+         if (status === 'approved' && showApprovedAlert()) {
             return (
                 <Alert 
                     icon={<CheckCircleIcon fontSize="inherit" />} 
@@ -161,6 +178,19 @@ export default function DashboardPage() {
                     open={isEnterPinOpen}
                     onClose={() => setIsEnterPinOpen(false)}
                     amount={pendingAmount}
+                />
+
+                <TransferModal 
+                    open={isTransferModalOpen}
+                    onClose={() => setIsTransferModalOpen(false)}
+                    onContinue={handleTransferContinue} 
+                />
+
+                <TransferConfirmationModal
+                    open={isTransferConfirmOpen}
+                    onClose={() => setIsTransferConfirmOpen(false)}
+                    data={transferData}
+                    onSuccess={handleTransferSuccess}
                 />
 
                 <VerificationRequiredModal 
