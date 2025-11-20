@@ -14,7 +14,16 @@ class UpdateEmailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'newEmail' => 'required|email|unique:users,email',
+            'newEmail' => [
+                'required',
+                'email',
+                'unique:users,email',
+                function ($attribute, $value, $fail) {
+                    if ($value === $this->user()->email) {
+                        $fail('The new email must be different from your current email.');
+                    }
+                },
+            ],
             'pin' => 'required|string|digits:6'
         ];
     }

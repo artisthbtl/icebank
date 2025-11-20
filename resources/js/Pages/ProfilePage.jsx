@@ -3,38 +3,148 @@ import { usePage, Head, router, useForm } from '@inertiajs/react';
 import Navbar from "@/Components/Navbar";
 import { 
     Container, Box, Typography, Grid, Button, Avatar, 
-    Divider, TextField, Alert, IconButton 
+    Divider, TextField, Alert, IconButton, InputAdornment
 } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import '../../css/ProfilePage.css';
+import '../../css/DashboardPage.css';
 import { transform } from 'zod';
 
 export default function ProfilePage() {
     const { user } = usePage().props;
-    
-    const fileInputRef = useRef(null);
+    const [emailStatus, setEmailStatus] = useState({ type: null, message: '' });
     const [showEmailForm, setShowEmailForm] = useState(false);
+    const [pinStatus, setPinStatus] = useState({ type: null, message: '' });
+    const [passwordStatus, setPasswordStatus] = useState({ type: null, message: '' });
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [photoStatus, setPhotoStatus] = useState({ type: null, message: '' });
+    const [photoValidation, setPhotoValidation] = useState('');
+    const fileInputRef = useRef(null);
+    
+    const emailForm = useForm({
+        newEmail: '',
+        pin: '',
+    });
 
     const pinForm = useForm({
         currentPin: '',
         newPin: '',
-        newPin_confirmation: '',
+        newPinConfirmation: '',
     });
 
     const passwordForm = useForm({
         currentPassword: '',
         newPassword: '',
-        newPassword_confirmation: '',
+        newPasswordConfirmation: '', 
     });
 
-    const emailForm = useForm({
-        newEmail: '',
-        pin: '',
-    });
+    const isValidEmailFormat = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
+    const isEmailInputInvalid = emailForm.data.newEmail.length > 0 && !isValidEmailFormat(emailForm.data.newEmail);
+
+    const arePinsMismatched = pinForm.data.newPin && 
+                            pinForm.data.newPinConfirmation && 
+                            pinForm.data.newPin !== pinForm.data.newPinConfirmation;
+
+    const arePasswordsMismatched = passwordForm.data.newPassword && 
+                                   passwordForm.data.newPasswordConfirmation && 
+                                   passwordForm.data.newPassword !== passwordForm.data.newPasswordConfirmation;
+
+    const handlePinFormChange = (field) => (e) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        pinForm.setData(field, value);
+    };
+    
+    const handlePinChange = (e) => {
+        const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+        emailForm.setData('pin', value);
+    };
+
+    const handleUpdateEmail = (e) => {
+        e.preventDefault();
+        setEmailStatus({ type: null, message: '' }); // Reset status
+        
+        emailForm.put(route('profile.update-email'), {
+            onSuccess: () => {
+                emailForm.reset();
+                setEmailStatus({ 
+                    type: 'success', 
+                    message: 'Please verify your new email in order to apply the changes.' 
+                });
+            },
+            onError: () => {
+                setEmailStatus({ 
+                    type: 'error', 
+                    message: 'Failed to update email. Please correct the errors below.' 
+                });
+            },
+            preserveScroll: true
+        });
+    };
+    
+    const handleUpdatePin = (e) => {
+        e.preventDefault();
+        setPinStatus({ type: null, message: '' });
+
+        if (pinForm.data.newPin !== pinForm.data.newPinConfirmation) {
+            pinForm.setError('newPinConfirmation', 'PINs do not match');
+            return;
+        }
+
+        pinForm.put(route('profile.update-pin'), {
+            onSuccess: () => {
+                pinForm.reset();
+                setPinStatus({ 
+                    type: 'success', 
+                    message: 'Your PIN has been successfully updated.' 
+                });
+            },
+            onError: () => {
+                setPinStatus({ 
+                    type: 'error', 
+                    message: 'Failed to update PIN. Please correct the errors below.' 
+                });
+            },
+            preserveScroll: true
+        });
+    };
+
+    const handleUpdatePassword = (e) => {
+        e.preventDefault();
+        setPasswordStatus({ type: null, message: '' });
+
+        if (passwordForm.data.newPassword !== passwordForm.data.newPasswordConfirmation) {
+            passwordForm.setError('newPasswordConfirmation', 'Passwords do not match');
+            return;
+        }
+
+        passwordForm.put(route('profile.update-password'), {
+            onSuccess: () => {
+                passwordForm.reset();
+                setPasswordStatus({ 
+                    type: 'success', 
+                    message: 'Password updated successfully.' 
+                });
+            },
+            onError: () => {
+                setPasswordStatus({ 
+                    type: 'error', 
+                    message: 'Failed to update password. Please correct the errors below.' 
+                });
+            },
+            preserveScroll: true
+        });
+    };
 
     const handlePhotoClick = () => {
         fileInputRef.current.click();
@@ -43,45 +153,56 @@ export default function ProfilePage() {
     const handlePhotoChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setPhotoValidation('');
+            setPhotoStatus({ type: null, message: '' });
+
+            if (file.size > 2 * 1024 * 1024) {
+                setPhotoValidation('The photo must not be greater than 2MB.');
+                return;
+            }
+
+            if (!['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                setPhotoValidation('The photo must be a file of type: jpeg, png, jpg.');
+                return;
+            }
+
             const formData = new FormData();
             formData.append('photo', file);
+            
             router.post(route('profile.update-photo'), formData, {
                 forceFormData: true,
-                onSuccess: () => console.log('Photo updated'),
+                preserveScroll: true,
+                onSuccess: () => {
+                    setPhotoStatus({ type: 'success', message: 'Profile photo updated successfully.' });
+                    setPhotoValidation(''); 
+                },
+                onError: (errors) => {
+                    setPhotoStatus({ 
+                        type: 'error', 
+                        message: errors.photo || 'Failed to update profile photo.' 
+                    });
+                },
             });
         }
     };
 
     const handleDeletePhoto = () => {
-        if (confirm('Are you sure you want to delete your profile photo?')) {
-            router.delete(route('profile.delete-photo'));
+        setPhotoStatus({ type: null, message: '' });
+        setPhotoValidation('');
+
+        if (!user.profilePhotoPath) {
+            setPhotoStatus({ type: 'error', message: 'No profile photo to delete.' });
+            return;
         }
-    };
 
-    const handleUpdatePin = (e) => {
-        e.preventDefault();
-        pinForm.put(route('profile.update-pin'), {
-            onSuccess: () => pinForm.reset(),
-            preserveScroll: true
-        });
-    };
-
-    const handleUpdatePassword = (e) => {
-        e.preventDefault();
-        passwordForm.put(route('profile.update-password'), {
-            onSuccess: () => passwordForm.reset(),
-            preserveScroll: true
-        });
-    };
-
-    const handleUpdateEmail = (e) => {
-        e.preventDefault();
-        emailForm.put(route('profile.update-email'), {
+        router.delete(route('profile.delete-photo'), {
+            preserveScroll: true,
             onSuccess: () => {
-                emailForm.reset();
-                setShowEmailForm(false);
+                setPhotoStatus({ type: 'success', message: 'Profile photo deleted successfully.' });
             },
-            preserveScroll: true
+            onError: () => {
+                setPhotoStatus({ type: 'error', message: 'You have no profile photo to delete.' });
+            },
         });
     };
 
@@ -99,20 +220,20 @@ export default function ProfilePage() {
     return (
         <>
             <Head title="Profile" />
-            <div className="profile-page-wrapper">
+            <div className="dashboard-page-wrapper">
                 <Navbar />
 
                 <Container maxWidth="md" className="profile-container">
-                    
                     <div className="profile-section-card">
-                        <Box className="profile-photo-section">
+                        <Box className="profile-photo-section" >
                             <input 
                                 type="file" 
-                                accept="image/*" 
+                                accept="image/png, image/jpeg, image/jpg" 
                                 hidden 
                                 ref={fileInputRef} 
                                 onChange={handlePhotoChange} 
                             />
+                            
                             <div style={{ position: 'relative' }}>
                                 <Avatar 
                                     src={user.profilePhotoPath} 
@@ -136,20 +257,56 @@ export default function ProfilePage() {
                                     <PhotoCamera sx={{ fontSize: 20 }} />
                                 </IconButton>
                             </div>
+
+                            {photoValidation && (
+                                <Typography sx={{ color: '#d32f2f', fontSize: '0.85rem', mt: 1, fontWeight: 500 }}>
+                                    {photoValidation}
+                                </Typography>
+                            )}
                             
                             {user.profilePhotoPath && (
                                 <Button 
-                                    startIcon={<DeleteIcon />} 
+                                    startIcon={<DeleteIcon />}
                                     onClick={handleDeletePhoto}
                                     color="error"
                                     size="small"
+                                    sx={{ mt: 1 }}
                                 >
                                     Remove Photo
                                 </Button>
                             )}
+
+                            {photoStatus.type && (
+                                <Grid container sx={{ mt: 2, width: '100%' }}>
+                                    <Grid size={12}>
+                                        <Alert 
+                                            severity={photoStatus.type === 'success' ? 'info' : 'error'}
+                                            icon={photoStatus.type === 'success' 
+                                                ? <CheckCircleIcon fontSize="inherit" /> 
+                                                : <ErrorOutlineIcon fontSize="inherit" />
+                                            }
+                                            sx={{ 
+                                                backgroundColor: photoStatus.type === 'success' 
+                                                    ? 'rgba(56, 189, 248, 0.15) !important' 
+                                                    : 'rgba(211, 47, 47, 0.1) !important', 
+                                                color: photoStatus.type === 'success' 
+                                                    ? '#38BDF8 !important' 
+                                                    : '#d32f2f !important', 
+                                                border: photoStatus.type === 'success' 
+                                                    ? '1px solid rgba(56, 189, 248, 0.3) !important' 
+                                                    : '1px solid rgba(211, 47, 47, 0.3) !important',
+                                                borderRadius: '8px !important',
+                                                fontWeight: 500
+                                            }}
+                                        >
+                                            {photoStatus.message}
+                                        </Alert>
+                                    </Grid>
+                                </Grid>
+                            )}
                         </Box>
 
-                        <Divider className="divider-dashed" />
+                        <Divider className="divider-dashed" sx={{ mt: 0 }} />
 
                         <Grid container spacing={3}>
                             <Grid size={4}>
@@ -220,32 +377,68 @@ export default function ProfilePage() {
                             </Box>
 
                             {showEmailForm && (
-                                <Box component="form" onSubmit={handleUpdateEmail} sx={{ mt: 1 }}>
+                                <Box component="form" onSubmit={handleUpdateEmail}>
                                     <Grid container spacing={2}>
+                                        {emailStatus.type && (
+                                            <Grid size={12}>
+                                                <Alert 
+                                                    severity={emailStatus.type === 'success' ? 'info' : 'error'}
+                                                    icon={emailStatus.type === 'success' 
+                                                        ? <CheckCircleIcon fontSize="inherit" /> 
+                                                        : <ErrorOutlineIcon fontSize="inherit" />
+                                                    }
+                                                    sx={{ 
+                                                        backgroundColor: emailStatus.type === 'success' 
+                                                            ? 'rgba(56, 189, 248, 0.15) !important' 
+                                                            : 'rgba(211, 47, 47, 0.1) !important', 
+                                                        color: emailStatus.type === 'success' 
+                                                            ? '#38BDF8 !important' 
+                                                            : '#d32f2f !important', 
+                                                        border: emailStatus.type === 'success' 
+                                                            ? '1px solid rgba(56, 189, 248, 0.3) !important' 
+                                                            : '1px solid rgba(211, 47, 47, 0.3) !important',
+                                                        borderRadius: '8px !important',
+                                                        mb: 1,
+                                                        fontWeight: 500
+                                                    }}
+                                                >
+                                                    {emailStatus.message}
+                                                </Alert>
+                                            </Grid>
+                                        )}
+
                                         <Grid size={6}>
                                             <TextField
                                                 fullWidth
                                                 label="New Email Address"
                                                 value={emailForm.data.newEmail}
                                                 onChange={e => emailForm.setData('newEmail', e.target.value)}
-                                                error={!!emailForm.errors.newEmail}
-                                                helperText={emailForm.errors.newEmail}
+                                                error={!!emailForm.errors.newEmail || isEmailInputInvalid}
+                                                helperText={emailForm.errors.newEmail || (isEmailInputInvalid ? "Invalid email format" : "")}
                                                 className="profile-input-field"
                                             />
                                         </Grid>
+
                                         <Grid size={6}>
                                             <TextField
                                                 fullWidth
                                                 label="6-Digit PIN"
                                                 type="password"
-                                                slotProps={{ maxLength: 6, pattern: '[0-9]*' }}
+                                                slotProps={{ 
+                                                    htmlInput: { 
+                                                        maxLength: 6, 
+                                                        pattern: '[0-9]*',
+                                                        inputMode: 'numeric'
+                                                    } 
+                                                }}
                                                 value={emailForm.data.pin}
-                                                onChange={e => emailForm.setData('pin', e.target.value)}
+                                                onChange={handlePinChange}
                                                 error={!!emailForm.errors.pin}
                                                 helperText={emailForm.errors.pin}
                                                 className="profile-input-field"
                                             />
                                         </Grid>
+
                                         <Grid size={9.8} />
                                         <Grid size={2.2}>   
                                             <Button
@@ -268,15 +461,46 @@ export default function ProfilePage() {
 
                         <Box component="form" onSubmit={handleUpdatePin}>
                             <Typography className="profile-form-title" sx={{ mb: 2 }}>Change PIN</Typography>
+                            
                             <Grid container spacing={2}>
+                                {pinStatus.type && (
+                                    <Grid size={12}>
+                                        <Alert 
+                                            severity={pinStatus.type === 'success' ? 'info' : 'error'}
+                                            icon={pinStatus.type === 'success' 
+                                                ? <CheckCircleIcon fontSize="inherit" /> 
+                                                : <ErrorOutlineIcon fontSize="inherit" />
+                                            }
+                                            sx={{ 
+                                                backgroundColor: pinStatus.type === 'success' 
+                                                    ? 'rgba(56, 189, 248, 0.15) !important' 
+                                                    : 'rgba(211, 47, 47, 0.1) !important', 
+                                                color: pinStatus.type === 'success' 
+                                                    ? '#38BDF8 !important' 
+                                                    : '#d32f2f !important', 
+                                                border: pinStatus.type === 'success' 
+                                                    ? '1px solid rgba(56, 189, 248, 0.3) !important' 
+                                                    : '1px solid rgba(211, 47, 47, 0.3) !important',
+                                                borderRadius: '8px !important',
+                                                mb: 1,
+                                                fontWeight: 500
+                                            }}
+                                        >
+                                            {pinStatus.message}
+                                        </Alert>
+                                    </Grid>
+                                )}
+
                                 <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Current PIN"
                                         type="password"
-                                        slotProps={{ maxLength: 6 }}
+                                        slotProps={{ 
+                                            htmlInput: { maxLength: 6, pattern: '[0-9]*', inputMode: 'numeric' } 
+                                        }}
                                         value={pinForm.data.currentPin}
-                                        onChange={e => pinForm.setData('currentPin', e.target.value)}
+                                        onChange={handlePinFormChange('currentPin')}
                                         error={!!pinForm.errors.currentPin}
                                         helperText={pinForm.errors.currentPin}
                                         className="profile-input-field"
@@ -287,9 +511,11 @@ export default function ProfilePage() {
                                         fullWidth
                                         label="New PIN"
                                         type="password"
-                                        slotProps={{ maxLength: 6 }}
+                                        slotProps={{ 
+                                            htmlInput: { maxLength: 6, pattern: '[0-9]*', inputMode: 'numeric' } 
+                                        }}
                                         value={pinForm.data.newPin}
-                                        onChange={e => pinForm.setData('newPin', e.target.value)}
+                                        onChange={handlePinFormChange('newPin')}
                                         error={!!pinForm.errors.newPin}
                                         helperText={pinForm.errors.newPin}
                                         className="profile-input-field"
@@ -300,11 +526,16 @@ export default function ProfilePage() {
                                         fullWidth
                                         label="Confirm New PIN"
                                         type="password"
-                                        slotProps={{ maxLength: 6 }}
-                                        value={pinForm.data.newPin_confirmation}
-                                        onChange={e => pinForm.setData('newPin_confirmation', e.target.value)}
-                                        error={!!pinForm.errors.newPin_confirmation}
-                                        helperText={pinForm.errors.newPin_confirmation}
+                                        slotProps={{ 
+                                            htmlInput: { maxLength: 6, pattern: '[0-9]*', inputMode: 'numeric' } 
+                                        }}
+                                        value={pinForm.data.newPinConfirmation}
+                                        onChange={handlePinFormChange('newPinConfirmation')}
+                                        error={!!pinForm.errors.newPinConfirmation || arePinsMismatched}
+                                        helperText={
+                                            pinForm.errors.newPinConfirmation || 
+                                            (arePinsMismatched ? "PINs do not match" : "")
+                                        }
                                         className="profile-input-field"
                                     />
                                 </Grid>
@@ -328,43 +559,120 @@ export default function ProfilePage() {
 
                         <Box component="form" onSubmit={handleUpdatePassword}>
                             <Typography className="profile-form-title" sx={{ mb: 2 }} >Change Password</Typography>
+                            
                             <Grid container spacing={2}>
+                                {passwordStatus.type && (
+                                    <Grid size={12}>
+                                        <Alert 
+                                            severity={passwordStatus.type === 'success' ? 'info' : 'error'}
+                                            icon={passwordStatus.type === 'success' 
+                                                ? <CheckCircleIcon fontSize="inherit" /> 
+                                                : <ErrorOutlineIcon fontSize="inherit" />
+                                            }
+                                            sx={{ 
+                                                backgroundColor: passwordStatus.type === 'success' 
+                                                    ? 'rgba(56, 189, 248, 0.15) !important' 
+                                                    : 'rgba(211, 47, 47, 0.1) !important', 
+                                                color: passwordStatus.type === 'success' 
+                                                    ? '#38BDF8 !important' 
+                                                    : '#d32f2f !important', 
+                                                border: passwordStatus.type === 'success' 
+                                                    ? '1px solid rgba(56, 189, 248, 0.3) !important' 
+                                                    : '1px solid rgba(211, 47, 47, 0.3) !important',
+                                                borderRadius: '8px !important',
+                                                mb: 1,
+                                                fontWeight: 500
+                                            }}
+                                        >
+                                            {passwordStatus.message}
+                                        </Alert>
+                                    </Grid>
+                                )}
+
                                 <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Current Password"
-                                        type="password"
+                                        type={showCurrentPassword ? "text" : "password"}
                                         value={passwordForm.data.currentPassword}
                                         onChange={e => passwordForm.setData('currentPassword', e.target.value)}
                                         error={!!passwordForm.errors.currentPassword}
                                         helperText={passwordForm.errors.currentPassword}
                                         className="profile-input-field"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                                            edge="end"
+                                                        >
+                                                            {showCurrentPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }
+                                        }}
                                     />
                                 </Grid>
+
                                 <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="New Password"
-                                        type="password"
+                                        type={showNewPassword ? "text" : "password"}
                                         value={passwordForm.data.newPassword}
                                         onChange={e => passwordForm.setData('newPassword', e.target.value)}
                                         error={!!passwordForm.errors.newPassword}
                                         helperText={passwordForm.errors.newPassword}
                                         className="profile-input-field"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowNewPassword(!showNewPassword)}
+                                                            edge="end"
+                                                        >
+                                                            {showNewPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }
+                                        }}
                                     />
                                 </Grid>
+
                                 <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Confirm New Password"
-                                        type="password"
-                                        value={passwordForm.data.newPassword_confirmation}
-                                        onChange={e => passwordForm.setData('newPassword_confirmation', e.target.value)}
-                                        error={!!passwordForm.errors.newPassword_confirmation}
-                                        helperText={passwordForm.errors.newPassword_confirmation}
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        value={passwordForm.data.newPasswordConfirmation}
+                                        onChange={e => passwordForm.setData('newPasswordConfirmation', e.target.value)}
+                                        error={!!passwordForm.errors.newPasswordConfirmation || arePasswordsMismatched}
+                                        helperText={
+                                            passwordForm.errors.newPasswordConfirmation || 
+                                            (arePasswordsMismatched ? "Passwords do not match" : "")
+                                        }
                                         className="profile-input-field"
+                                        slotProps={{
+                                            input: {
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                            edge="end"
+                                                        >
+                                                            {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                ),
+                                            }
+                                        }}
                                     />
                                 </Grid>
+
                                 <Grid size={9.8} />
                                 <Grid size={2.2}>
                                     <Button 

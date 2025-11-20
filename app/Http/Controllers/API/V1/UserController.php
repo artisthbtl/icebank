@@ -87,17 +87,17 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         if (!Hash::check($request->currentPin, $user->pin)) {
-            return response()->json(['message' => 'Current PIN is incorrect.'], 400);
+            return back()->withErrors(['currentPin' => 'Current PIN is incorrect.']);
         }
 
         if (Hash::check($request->newPin, $user->pin)) {
-            return response()->json(['message' => 'The new PIN cannot be the same as the old one.'], 400);
+            return back()->withErrors(['newPin' => 'The new PIN cannot be the same as the old one.']);
         }
 
         $user->pin = Hash::make($request->newPin);
         $user->save();
 
-        return response()->json(['message' => 'PIN updated successfully.']);
+        return back();
     }
 
     public function updatePassword(UpdatePasswordRequest $request)
@@ -107,17 +107,17 @@ class UserController extends Controller
         $this->authorize('update', $user);
 
         if (!Hash::check($request->currentPassword, $user->password)) {
-            return response()->json(['message' => 'Current password is incorrect.'], 400);
+            return back()->withErrors(['currentPassword' => 'Current password is incorrect.']);
         }
 
         if (Hash::check($request->newPassword, $user->password)) {
-            return response()->json(['message' => 'The new password cannot be the same as the old one.'], 400);
+            return back()->withErrors(['newPassword' => 'The new password cannot be the same as the old one.']);
         }
 
         $user->password = Hash::make($request->newPassword);
         $user->save();
 
-        return response()->json(['message' => 'Password updated successfully.']);
+        return back();
     }
 
     public function updateEmail(UpdateEmailRequest $request)
@@ -130,11 +130,11 @@ class UserController extends Controller
         $newEmail = $request->newEmail;
 
         if (!Hash::check($request->pin, $user->pin)) {
-            return response()->json(['message' => 'PIN is incorrect.'], 400);
+            return back()->withErrors(['pin' => 'PIN is incorrect.']);
         }
 
         if($oldEmail === $newEmail) {
-            return response()->json(['message' => 'The new email cannot be the same as the old one.'], 400);
+            return back()->withErrors(['newEmail' => 'The new email cannot be the same as the old one.']);
         }
 
         $verificationLink = URL::temporarySignedRoute(
@@ -149,15 +149,11 @@ class UserController extends Controller
         Mail::to($request->newEmail)->send(new UpdateEmailMail($user, $verificationLink));
         Mail::to($oldEmail)->send(new EmailChangeMail($user, $newEmail));
 
-        return response()->json([
-            'message' => 'A verification link has been sent to your new email. Please verify to complete the update.'
-        ], 201);
+        return back();
     }
 
     public function verifyEmailUpdate(Request $request, User $user)
     {
-        $this->authorize('update', $user);
-        
         $newEmail = $request->query('newEmail');
         
         $user->email = $newEmail;
@@ -187,13 +183,10 @@ class UserController extends Controller
                 'profile_photo_path' => $newPhotoPath
             ]);
 
-            return response()->json([
-                'message' => 'Profile photo updated successfully.',
-                'profilePhotoPath' => $user->fresh()->photo_url
-            ], 200);
+            return back()->with('message', 'Profile photo updated successfully.');
 
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to update profile photo.'], 500);
+            return back()->withErrors(['photo' => 'Failed to update profile photo.']);
         }
     }
 
@@ -213,17 +206,13 @@ class UserController extends Controller
                     'profile_photo_path' => null
                 ]);
 
-                return response()->json([
-                    'message' => 'Profile photo deleted successfully.'
-                ], 200);
+                return back()->with('message', 'Profile photo deleted successfully.');
             }
 
-            return response()->json([
-                'message' => 'No profile photo to delete.'
-            ], 400);
+            return back()->withErrors(['photo' => 'No profile photo to delete.']);
 
         } catch (Exception $e) {
-            return response()->json(['error' => 'Failed to delete profile photo.'], 500);
+            return back()->withErrors(['photo' => 'Failed to delete profile photo.']);
         }
     }
 }

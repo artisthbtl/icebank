@@ -8,6 +8,8 @@ use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->middleware('signed')->name('auth.verify-update');
+
 Route::middleware('guest')->group(function () {
     Route::get('/', function () {return inertia('LandingPage');})->name('landing');
     Route::get('/register', function () {return inertia('RegisterPage');})->name('register');
@@ -28,9 +30,6 @@ Route::middleware('has.account')->group(function () {
         Route::get('/create-pin', function () {return inertia('CreatePinPage');})->name('pin.create');
         Route::post('/users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
 
-        Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])
-            ->middleware('signed')
-            ->name('auth.verify-update');
 
         Route::middleware('check.pin')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
