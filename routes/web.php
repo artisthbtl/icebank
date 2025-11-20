@@ -7,6 +7,7 @@ use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\SubscribeController;
+use App\Http\Controllers\API\TransactionHistoryController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,8 @@ Route::middleware('has.account')->group(function () {
             Route::post('/profile/photo', [UserController::class, 'updateProfilePhoto'])->name('profile.update-photo');
             Route::delete('/profile/photo', [UserController::class, 'deleteProfilePhoto'])->name('profile.delete-photo');
             Route::delete('/profile', [UserController::class, 'destroy'])->name('profile.destroy');
+
+            Route::get('/transactions', [TransactionHistoryController::class, 'index'])->name('transactions.index');
 
             Route::middleware(['can.verify'])->group(function () {
                 Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');

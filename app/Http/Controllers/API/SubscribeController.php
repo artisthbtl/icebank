@@ -8,6 +8,8 @@ use App\Http\Resources\V1\ServiceCollection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
 
 class SubscribeController extends Controller
@@ -16,10 +18,17 @@ class SubscribeController extends Controller
     {
         $user = Auth::user();
         
-        $search = $request->input('search');
-        $type = $request->input('type');
+        $availableTypes = Service::select('type')->distinct()->pluck('type')->toArray();
 
-        $services = Service::query()
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:100'], 
+            'type'   => ['nullable', 'string', Rule::in(array_merge(['all'], $availableTypes))],
+        ]);
+
+        $search = isset($validated['search']) ? strip_tags($validated['search']) : null;
+        $type = $validated['type'] ?? 'all';
+
+        $query = Service::query()
             ->with(['company', 'plans'])
             
             ->whereDoesntHave('plans.subscriptions', function (Builder $query) use ($user) {
@@ -33,20 +42,45 @@ class SubscribeController extends Controller
                 });
             })
 
-            ->when($type && $type !== 'all', function (Builder $query, $type) {
+            ->when($type && $type !== 'all', function (Builder $query) use ($type) {
                 $query->where('type', $type);
             })
             
-            ->latest() 
-            ->paginate(10)
-            ->withQueryString();
+            ->latest();
 
-        $serviceTypes = Service::select('type')->distinct()->pluck('type');
+        $page = $request->integer('page', 1);
+        $perPage = 10;
+        
+        $isPartial = $request->header('X-Inertia-Partial-Data') !== null;
+
+        if (!$isPartial && $page > 1) {
+            $totalItemsToFetch = $page * $perPage;
+            
+            $total = $query->clone()->count();
+            
+            $items = $query->take($totalItemsToFetch)->get();
+
+            $services = new LengthAwarePaginator(
+                $items,
+                $total,
+                $perPage,
+                $page,
+                [
+                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+                    'query' => $request->query(), // Preserve search/filter params
+                ]
+            );
+        } else {
+            $services = $query->paginate($perPage)->withQueryString();
+        }
 
         return Inertia::render('SubscribePage', [
             'services' => new ServiceCollection($services),
-            'filters' => $request->only(['search', 'type']),
-            'types' => $serviceTypes,
+            'filters' => [
+                'search' => $search,
+                'type' => $type
+            ],
+            'types' => $availableTypes,
         ]);
     }
 }

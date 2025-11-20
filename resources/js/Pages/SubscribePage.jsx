@@ -1,4 +1,3 @@
-// resources/js/Pages/SubscribePage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Head, usePage, router } from '@inertiajs/react';
 import { 
@@ -12,9 +11,7 @@ import {
     Button,
     Collapse,
     Avatar,
-    IconButton,
-    Snackbar,
-    Alert
+    IconButton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -102,7 +99,6 @@ export default function SubscribePage() {
     const [type, setType] = useState(filters.type || 'all');
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
 
     useEffect(() => {
         if (services.meta.current_page === 1) {
@@ -240,19 +236,7 @@ export default function SubscribePage() {
                     open={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     plan={selectedPlan}
-                    onSuccess={(name) => setSuccessMessage(`Subscribed to ${name}!`)}
                 />
-
-                <Snackbar
-                    open={!!successMessage}
-                    autoHideDuration={6000}
-                    onClose={() => setSuccessMessage('')}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                >
-                    <Alert onClose={() => setSuccessMessage('')} severity="success" sx={{ width: '100%' }}>
-                        {successMessage}
-                    </Alert>
-                </Snackbar>
             </div>
         </>
     );

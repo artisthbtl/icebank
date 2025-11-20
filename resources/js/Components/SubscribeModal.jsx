@@ -94,8 +94,8 @@ export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
                     
                     <div className="detail-row total-row">
                         <Typography className="detail-label total">Total Price</Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <IceCubeIcon width={24} height={24} color="#38BDF8" />
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <IceCubeIcon width={20} height={20} color="#38BDF8" />
                             <Typography className="detail-value total">{plan.price} Ices</Typography>
                         </Box>
                     </div>

@@ -1,0 +1,121 @@
+@import './DashboardPage.css'; 
+
+.transaction-page-wrapper {
+    background-color: #04040b;
+    color: #E2E8F0;
+    min-height: 100vh;
+    width: 100%;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.transaction-content-container {
+    padding-top: 32px;
+    padding-bottom: 48px;
+}
+
+.transaction-header-section {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.page-subtitle {
+    color: #94A3B8 !important;
+}
+
+.transaction-list-container {
+    background-color: #1E293B;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid #334155;
+    transition: background-color 0.2s ease;
+}
+
+.transaction-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.transaction-item:first-child {
+    padding-top: 0;
+}
+
+.txn-title {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    margin-bottom: 4px !important;
+}
+
+.txn-date {
+    color: #94A3B8 !important;
+    font-size: 0.85rem !important;
+}
+
+.txn-amount-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.txn-main-amount-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.txn-sign {
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.txn-value {
+    font-weight: 700 !important;
+    font-size: 1.2rem !important;
+}
+
+.txn-fee-text {
+    color: #64748B;
+    font-size: 0.75rem !important;
+    margin-top: 2px !important;
+    font-style: italic;
+}
+
+.txn-expense {
+    color: #FBBF24 !important;
+}
+
+.txn-income {
+    color: #38BDF8 !important;
+}
+
+.load-more-btn {
+    border-color: #334155 !important;
+    color: #94A3B8 !important;
+    text-transform: none !important;
+    padding: 8px 24px !important;
+}
+
+.load-more-btn:hover {
+    background-color: #1E293B !important;
+    border-color: #94A3B8 !important;
+    color: #E2E8F0 !important;
+}

@@ -355,6 +355,79 @@
     font-weight: 700 !important;
 }
 
+.dashboard-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.dashboard-section-title {
+    margin-bottom: 0 !important;
+}
+
+.view-all-link {
+    position: relative;
+    color: #94A3B8;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.view-all-link:hover {
+    color: #E2E8F0;
+}
+
+.view-all-link::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #38BDF8;
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.view-all-link:hover::after {
+    transform: scaleX(1);
+}
+
+.view-all-link:active {
+    transform: scale(0.95);
+}
+
+.txn-amount-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.txn-main-amount-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.txn-sign {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.txn-fee-text {
+    color: #64748B;
+    font-size: 0.75rem !important;
+    margin-top: 2px !important;
+    font-style: italic;
+}
+
+.txn-main-amount-row svg {
+    display: block;
+}
+
 @media (max-width: 600px) {
     .dashboard-navbar {
         padding: 16px;

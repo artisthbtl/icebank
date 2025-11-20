@@ -15,6 +15,8 @@ class ServiceResource extends JsonResource
             'name' => $this->name,
             'type' => $this->type,
             'description' => $this->description,
+            'company' => new CompanyResource($this->whenLoaded('company')),
+            'plans' => PlanResource::collection($this->whenLoaded('plans')),
         ];
     }
 }
