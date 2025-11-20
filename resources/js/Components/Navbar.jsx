@@ -26,8 +26,6 @@ export default function Navbar() {
                     </Link>
 
                     <Box sx={{ flexGrow: 1 }} />
-
-                    {user ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <Link 
                                 href={route('profile')}
@@ -45,7 +43,6 @@ export default function Navbar() {
                                 Logout
                             </Link>
                         </Box>
-                    ) : null}
                 </Toolbar>
             </Container>
         </AppBar>

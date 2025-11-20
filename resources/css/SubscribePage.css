@@ -167,3 +167,34 @@
     border-color: #334155 !important;
     color: #94A3B8 !important;
 }
+
+.services-container-card {
+    background-color: #1E293B;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.service-list-item {
+    background-color: transparent;
+    border-bottom: 1px dashed #334155;
+    transition: background-color 0.2s ease;
+}
+
+.service-list-item:last-child {
+    border-bottom: none;
+}
+
+.service-list-item:hover {
+    background-color: #1e293b;
+}
+
+.service-header {
+    padding: 24px;
+}
+
+.service-details {
+    background-color: rgba(15, 23, 42, 0.3);
+    border-top: 1px dashed #334155;
+}

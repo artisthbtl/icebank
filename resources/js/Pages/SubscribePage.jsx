@@ -1,3 +1,4 @@
+// resources/js/Pages/SubscribePage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { Head, usePage, router } from '@inertiajs/react';
 import { 
@@ -27,9 +28,8 @@ import '../../css/DashboardPage.css';
 
 const ServiceItem = ({ service, onSelectPlan }) => {
     const [expanded, setExpanded] = useState(false);
-
     return (
-        <div className="service-card">
+        <div className="service-list-item"> 
             <div className="service-header" onClick={() => setExpanded(!expanded)}>
                 <div className="service-info-left">
                     <Avatar 
@@ -97,11 +97,9 @@ const ServiceItem = ({ service, onSelectPlan }) => {
 
 export default function SubscribePage() {
     const { services, filters, types } = usePage().props;
-    
     const [allServices, setAllServices] = useState(services.data);
     const [search, setSearch] = useState(filters.search || '');
     const [type, setType] = useState(filters.type || 'all');
-    
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -159,14 +157,12 @@ export default function SubscribePage() {
     return (
         <>
             <Head title="Subscribe" />
-            <div className="dashboard-page-wrapper">
-                <Navbar />
-                
+            <Navbar />
+            <div className="dashboard-page-wrapper"> 
                 <Container maxWidth="md" className="subscribe-content-container">
-                    
                     <Box className="subscribe-header-section">
                         <Typography variant="h4" className="page-title">
-                            Marketplace
+                            Subscribe
                         </Typography>
                         <Typography variant="body1" className="page-subtitle">
                             Discover services and subscribe to premium plans.
@@ -214,13 +210,15 @@ export default function SubscribePage() {
 
                     <div className="services-list">
                         {allServices.length > 0 ? (
-                            allServices.map((service) => (
-                                <ServiceItem 
-                                    key={service.id} 
-                                    service={service} 
-                                    onSelectPlan={handlePlanClick} 
-                                />
-                            ))
+                            <div className="services-container-card">
+                                {allServices.map((service) => (
+                                    <ServiceItem 
+                                        key={service.id} 
+                                        service={service} 
+                                        onSelectPlan={handlePlanClick} 
+                                    />
+                                ))}
+                            </div>
                         ) : (
                             <Box sx={{ textAlign: 'center', py: 8, color: '#64748B' }}>
                                 <Typography variant="h6">No services found.</Typography>
