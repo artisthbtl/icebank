@@ -5,7 +5,7 @@ use App\Http\Controllers\API\DashboardController;
 use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\VerificationController;
-use App\Http\Resources\V1\UserResource;
+use App\Http\Controllers\API\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -34,7 +34,7 @@ Route::middleware('has.account')->group(function () {
 
         Route::middleware('check.pin')->group(function () {
             Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-            Route::get('/profile', function () { return inertia('ProfilePage', ['user' => new UserResource(Auth::user())]); })->name('profile');
+            Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
 
             Route::post('/account/validate-amount', [AccountController::class, 'validateAmount'])->middleware('throttle:10,1')->name('account.validate-amount');
             Route::post('/account/add-balance', [AccountController::class, 'addBalance'])->middleware(['throttle:5,1', 'validate.pin'])->name('account.add-balance');

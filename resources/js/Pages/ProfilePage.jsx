@@ -18,29 +18,22 @@ export default function ProfilePage() {
     const fileInputRef = useRef(null);
     const [showEmailForm, setShowEmailForm] = useState(false);
 
-    // --- Forms ---
-
-    // 1. Update PIN Form
     const pinForm = useForm({
         currentPin: '',
         newPin: '',
         newPin_confirmation: '',
     });
 
-    // 2. Update Password Form
     const passwordForm = useForm({
         currentPassword: '',
         newPassword: '',
         newPassword_confirmation: '',
     });
 
-    // 3. Update Email Form
     const emailForm = useForm({
         newEmail: '',
         pin: '',
     });
-
-    // --- Handlers ---
 
     const handlePhotoClick = () => {
         fileInputRef.current.click();
@@ -92,12 +85,10 @@ export default function ProfilePage() {
     };
 
     const handleDeleteAccount = () => {
-        // Placeholder for future functionality
         // Typically you'd open a modal to ask for password confirmation here
         console.log("Delete account clicked");
     };
 
-    // Helper to format dates
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         return new Date(dateString).toLocaleDateString('en-US', {
@@ -113,10 +104,7 @@ export default function ProfilePage() {
 
                 <Container maxWidth="md" className="profile-container">
                     
-                    {/* Main Card */}
                     <div className="profile-section-card">
-                        
-                        {/* --- Profile Photo Section --- */}
                         <Box className="profile-photo-section">
                             <input 
                                 type="file" 
