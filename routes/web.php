@@ -6,6 +6,8 @@ use App\Http\Controllers\API\V1\AccountController;
 use App\Http\Controllers\API\V1\UserController;
 use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\API\SubscribeController;
+use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,10 @@ Route::middleware('has.account')->group(function () {
             Route::middleware('is.verified')->group(function () {
                 Route::post('/transfer/validate', [TransactionController::class, 'validateTransfer'])->name('transfer.validate');
                 Route::post('/transfer', [TransactionController::class, 'transfer'])->middleware('validate.pin')->name('transfer');
+                Route::get('/subscribe', [SubscribeController::class, 'index'])->name('subscribe.index');                
+                Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])
+                    ->middleware('validate.pin')
+                    ->name('subscribe.store');
             });
         });
     });

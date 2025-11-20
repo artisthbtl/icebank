@@ -51,7 +51,11 @@ export default function DashboardPage() {
         if (isVerified) {
             if (url === '/transfer') {
                 setIsTransferModalOpen(true);
-            } else {
+            } 
+            else if (url === '/subscriptions') {
+                router.visit(route('subscribe.index'));
+            } 
+            else {
                 router.visit(url);
             }
         } else {
@@ -140,11 +144,8 @@ export default function DashboardPage() {
             <Head title="Dashboard" />
             <div className="dashboard-page-wrapper">
                 <Navbar />
-
                 <Container maxWidth="md" className="dashboard-content-container">
-                    
                     {renderVerificationAlert()}
-
                     <Box sx={{ my: 4 }}>
                         <AccountInfoCard user={user} account={account} />
                     </Box>

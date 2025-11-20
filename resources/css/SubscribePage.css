@@ -1,0 +1,169 @@
+.subscribe-page-wrapper {
+    background-color: #0F172A;
+    min-height: 100vh;
+    padding-bottom: 40px;
+}
+
+.subscribe-content-container {
+    padding-top: 32px;
+}
+
+.subscribe-header-section {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.page-subtitle {
+    color: #94A3B8 !important;
+}
+
+.search-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background-color: #1E293B;
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    margin-bottom: 32px;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    gap: 12px;
+}
+
+.search-icon { color: #64748B; }
+.search-input { width: 100%; }
+.search-input input { color: #E2E8F0 !important; }
+
+.type-filter {
+    min-width: 140px;
+    border-left: 1px solid #334155;
+    padding-left: 16px !important;
+}
+
+.type-select {
+    color: #38BDF8 !important;
+    font-weight: 500 !important;
+}
+
+.type-select .MuiSelect-icon { color: #38BDF8 !important; }
+
+/* Service Card */
+.service-card {
+    background-color: #1E293B;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    margin-bottom: 16px;
+    transition: all 0.2s ease;
+}
+
+.service-card:hover {
+    border-color: #475569;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+}
+
+.service-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.service-info-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.company-logo {
+    width: 48px !important;
+    height: 48px !important;
+    background-color: #334155 !important;
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.service-name {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+}
+
+.company-name {
+    color: #94A3B8 !important;
+}
+
+.service-type-tag {
+    color: #38BDF8;
+    background-color: rgba(56, 189, 248, 0.1);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.expand-btn { color: #64748B !important; }
+.expand-btn.expanded {
+    color: #38BDF8 !important;
+    background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+.service-details {
+    padding: 0 20px 24px 84px;
+    border-top: 1px solid #334155;
+}
+
+.service-description {
+    color: #CBD5E1 !important;
+    margin: 16px 0 24px 0 !important;
+}
+
+.plans-header {
+    color: #94A3B8 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 12px !important;
+}
+
+.plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+}
+
+.plan-card {
+    background-color: #0F172A;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 12px 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.plan-card:hover {
+    border-color: #38BDF8;
+    transform: translateY(-2px);
+}
+
+.plan-name { color: #E2E8F0 !important; font-weight: 600 !important; }
+.plan-duration { color: #64748B !important; font-size: 0.8rem !important; }
+.plan-price-wrapper { display: flex; align-items: center; gap: 4px; }
+.plan-price { color: #38BDF8 !important; font-weight: 700 !important; }
+
+.load-more-btn {
+    border-color: #334155 !important;
+    color: #94A3B8 !important;
+}

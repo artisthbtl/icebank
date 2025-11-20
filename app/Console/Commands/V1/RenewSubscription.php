@@ -5,26 +5,28 @@ namespace App\Console\Commands\V1;
 use Illuminate\Console\Command;
 use App\Models\Subscription;
 use App\Models\Transaction;
+use App\Mail\SubscriptionRenewedMail;
+use App\Mail\SubscriptionExpiredMail;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 use Exception;
 
 class RenewSubscription extends Command
 {
     protected $signature = 'subscriptions:renew';
-
-    protected $description = 'Renew all active subscriptions that are due';
+    protected $description = 'Renew active subscriptions or expire them if balance is insufficient';
 
     public function handle()
     {
         $subscriptionsToRenew = Subscription::where('status', 'active')
-                                    ->where('end_date', '<=', Carbon::now())
-                                    ->with('user.account', 'plan')
-                                    ->get();
+                                            ->where('end_date', '<=', Carbon::now())
+                                            ->with(['user.account', 'plan']) // Eager load relationships
+                                            ->get();
 
         if ($subscriptionsToRenew->isEmpty()) {
-            $this->info('No subscriptions to renew.');
+            $this->info('No subscriptions pending renewal.');
             return 0;
         }
 
@@ -32,20 +34,21 @@ class RenewSubscription extends Command
 
         foreach ($subscriptionsToRenew as $sub) {
             $user = $sub->user;
-            $account = $user->account;
             $plan = $sub->plan;
-            $price = $plan->price;
 
-            if (!$user || !$account || !$plan) {
+            if (!$user || !$user->account || !$plan) {
                 $sub->status = 'expired';
                 $sub->save();
-                $this->warn("Skipped Sub ID: {$sub->id} (Missing User/Account/Plan)");
+                $this->warn("Skipped Sub ID: {$sub->id} (Missing User, Account, or Plan data)");
                 continue;
             }
 
-            if ($account->balance >= $price) {
-                try {
-                    DB::transaction(function () use ($sub, $account, $plan, $price) {
+            try {
+                DB::transaction(function () use ($sub, $user, $plan) {
+                    $account = $user->account()->lockForUpdate()->first();
+                    $price = $plan->price;
+
+                    if ($account->balance >= $price) {
                         $account->balance -= $price;
                         $account->save();
 
@@ -53,25 +56,32 @@ class RenewSubscription extends Command
                             'account_id' => $account->id,
                             'type' => 'pay_plan',
                             'amount' => -$price,
-                            'description' => "Renewed subscription for " . $plan->name,
+                            'description' => "Auto-renewal for " . $plan->name,
                             'related_plan_id' => $plan->id,
                         ]);
 
-                        $sub->end_date = Carbon::now()->addDays($plan->duration);
-                        $sub->transaction_id = $transaction->id;
-                        $sub->save();
-                    });
-                    
-                    $this->info("Renewed Sub ID: {$sub->id} for User ID: {$user->id}");
+                        $sub->update([
+                            'transaction_id' => $transaction->id,
+                            'end_date' => Carbon::now()->addDays($plan->duration),
+                        ]);
 
-                } catch (Exception $e) {
-                    Log::error("Failed to renew Sub ID: {$sub->id} - " . $e->getMessage());
-                }
+                        Mail::to($user->email)->send(new SubscriptionRenewedMail($user, $plan, $transaction));
 
-            } else {
-                $sub->status = 'expired';
-                $sub->save();
-                $this->warn("Expired Sub ID: {$sub->id} for User ID: {$user->id} (Insufficient funds)");
+                        $this->info("Renewed Sub ID: {$sub->id} for User: {$user->email}");
+
+                    } 
+                    else {
+                        $sub->update(['status' => 'expired']);
+
+                        Mail::to($user->email)->send(new SubscriptionExpiredMail($user, $plan));
+
+                        $this->warn("Expired Sub ID: {$sub->id} for User: {$user->email} (Insufficient funds)");
+                    }
+                });
+
+            } catch (Exception $e) {
+                Log::error("Failed to renew Sub ID: {$sub->id} - " . $e->getMessage());
+                $this->error("Error processing Sub ID: {$sub->id}");
             }
         }
 
