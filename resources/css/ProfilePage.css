@@ -43,7 +43,16 @@
     gap: 16px;
 }
 
-/* Grid Info Styling */
+.dashboard-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 32px; 
+    background-color: transparent !important; 
+    border-bottom: 1px solid #334155;
+    box-shadow: none !important;
+}
+
 .info-label {
     color: #94A3B8;
     font-size: 0.875rem;
@@ -97,7 +106,7 @@
 }
 
 .profile-input-field:hover .MuiOutlinedInput-notchedOutline {
-    border-color: #64748B;
+    border-color: rgb(177, 193, 216) !important;
 }
 
 .profile-input-field .Mui-focused .MuiOutlinedInput-notchedOutline {

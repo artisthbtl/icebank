@@ -9,7 +9,7 @@ import {
 } from '@mui/material';
 
 export default function Navbar() {
-    const { auth } = usePage().props;
+    const { user } = usePage().props;
 
     return (
         <AppBar position="static" className="dashboard-navbar" sx={{ boxShadow: 'none' }}>
@@ -27,7 +27,7 @@ export default function Navbar() {
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    {auth.user ? (
+                    {user ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <Link 
                                 href={route('profile')}

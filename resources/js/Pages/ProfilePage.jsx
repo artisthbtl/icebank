@@ -3,7 +3,7 @@ import { usePage, Head, router, useForm } from '@inertiajs/react';
 import Navbar from "@/Components/Navbar";
 import { 
     Container, Box, Typography, Grid, Button, Avatar, 
-    Divider, TextField, Alert, IconButton, CircularProgress 
+    Divider, TextField, Alert, IconButton 
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,6 +11,7 @@ import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import '../../css/ProfilePage.css';
+import { transform } from 'zod';
 
 export default function ProfilePage() {
     const { user } = usePage().props;
@@ -85,7 +86,6 @@ export default function ProfilePage() {
     };
 
     const handleDeleteAccount = () => {
-        // Typically you'd open a modal to ask for password confirmation here
         console.log("Delete account clicked");
     };
 
@@ -151,29 +151,28 @@ export default function ProfilePage() {
 
                         <Divider className="divider-dashed" />
 
-                        {/* --- Personal Information Grid --- */}
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} sm={6}>
+                        <Grid container spacing={3}>
+                            <Grid size={4}>
                                 <div className="info-label">First Name</div>
                                 <div className="info-value">{user.firstName}</div>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={4}>
                                 <div className="info-label">Last Name</div>
                                 <div className="info-value">{user.lastName}</div>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={4}>
                                 <div className="info-label">City</div>
                                 <div className="info-value">{user.city}</div>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={4}>
                                 <div className="info-label">Date of Birth</div>
                                 <div className="info-value">{formatDate(user.dateOfBirth)}</div>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={4}>
                                 <div className="info-label">Member Since</div>
                                 <div className="info-value">{formatDate(user.createdAt)}</div>
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            <Grid size={4}>
                                 <div className="info-label">Verification Status</div>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 0.5 }}>
                                     {user.emailVerifiedAt ? (
@@ -204,7 +203,6 @@ export default function ProfilePage() {
 
                         <Divider className="divider-dashed" />
 
-                        {/* --- Email Section --- */}
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Box>
@@ -215,75 +213,68 @@ export default function ProfilePage() {
                                     variant="outlined" 
                                     className="btn-secondary"
                                     onClick={() => setShowEmailForm(!showEmailForm)}
+                                    sx={{ textTransform: 'none' }}
                                 >
                                     {showEmailForm ? 'Cancel' : 'Change Email'}
                                 </Button>
                             </Box>
 
                             {showEmailForm && (
-                                <Box component="form" onSubmit={handleUpdateEmail} sx={{ mt: 3, maxWidth: '400px' }}>
-                                    {emailForm.hasErrors && (
-                                        <Alert severity="error" sx={{ mb: 2 }}>
-                                            {emailForm.errors.message || "Please fix the errors below."}
-                                        </Alert>
-                                    )}
-                                    <TextField
-                                        fullWidth
-                                        label="New Email Address"
-                                        type="email"
-                                        value={emailForm.data.newEmail}
-                                        onChange={e => emailForm.setData('newEmail', e.target.value)}
-                                        error={!!emailForm.errors.newEmail}
-                                        helperText={emailForm.errors.newEmail}
-                                        className="profile-input-field"
-                                        sx={{ mb: 2 }}
-                                    />
-                                    <TextField
-                                        fullWidth
-                                        label="6-Digit PIN"
-                                        type="password"
-                                        inputProps={{ maxLength: 6, pattern: '[0-9]*' }}
-                                        value={emailForm.data.pin}
-                                        onChange={e => emailForm.setData('pin', e.target.value)}
-                                        error={!!emailForm.errors.pin}
-                                        helperText={emailForm.errors.pin}
-                                        className="profile-input-field"
-                                        sx={{ mb: 2 }}
-                                    />
-                                    <Button 
-                                        type="submit" 
-                                        variant="contained" 
-                                        className="btn-primary"
-                                        disabled={emailForm.processing}
-                                    >
-                                        Update Email
-                                    </Button>
+                                <Box component="form" onSubmit={handleUpdateEmail} sx={{ mt: 1 }}>
+                                    <Grid container spacing={2}>
+                                        <Grid size={6}>
+                                            <TextField
+                                                fullWidth
+                                                label="New Email Address"
+                                                value={emailForm.data.newEmail}
+                                                onChange={e => emailForm.setData('newEmail', e.target.value)}
+                                                error={!!emailForm.errors.newEmail}
+                                                helperText={emailForm.errors.newEmail}
+                                                className="profile-input-field"
+                                            />
+                                        </Grid>
+                                        <Grid size={6}>
+                                            <TextField
+                                                fullWidth
+                                                label="6-Digit PIN"
+                                                type="password"
+                                                slotProps={{ maxLength: 6, pattern: '[0-9]*' }}
+                                                value={emailForm.data.pin}
+                                                onChange={e => emailForm.setData('pin', e.target.value)}
+                                                error={!!emailForm.errors.pin}
+                                                helperText={emailForm.errors.pin}
+                                                className="profile-input-field"
+                                            />
+                                        </Grid>
+                                        <Grid size={9.8} />
+                                        <Grid size={2.2}>   
+                                            <Button
+                                                type="submit" 
+                                                variant="contained" 
+                                                className="btn-primary"
+                                                disabled={emailForm.processing}
+                                                fullWidth
+                                                sx={{ textTransform: 'none' }}
+                                            >
+                                                Update
+                                            </Button>
+                                        </Grid>
+                                    </Grid>
                                 </Box>
                             )}
                         </Box>
 
                         <Divider className="divider-dashed" />
 
-                        {/* --- Change PIN Form --- */}
                         <Box component="form" onSubmit={handleUpdatePin}>
-                            <Typography className="profile-form-title">Change PIN</Typography>
-                            
-                            {pinForm.hasErrors && (
-                                <Alert severity="error" sx={{ mb: 2 }}>
-                                    {pinForm.errors.message || "Please check your inputs."}
-                                </Alert>
-                            )}
-                            {pinForm.recentlySuccessful && (
-                                <Alert severity="success" sx={{ mb: 2 }}>PIN updated successfully.</Alert>
-                            )}
-
+                            <Typography className="profile-form-title" sx={{ mb: 2 }}>Change PIN</Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12} md={4}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Current PIN"
                                         type="password"
-                                        inputProps={{ maxLength: 6 }}
+                                        slotProps={{ maxLength: 6 }}
                                         value={pinForm.data.currentPin}
                                         onChange={e => pinForm.setData('currentPin', e.target.value)}
                                         error={!!pinForm.errors.currentPin}
@@ -291,12 +282,12 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="New PIN"
                                         type="password"
-                                        inputProps={{ maxLength: 6 }}
+                                        slotProps={{ maxLength: 6 }}
                                         value={pinForm.data.newPin}
                                         onChange={e => pinForm.setData('newPin', e.target.value)}
                                         error={!!pinForm.errors.newPin}
@@ -304,12 +295,12 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={4}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Confirm New PIN"
                                         type="password"
-                                        inputProps={{ maxLength: 6 }}
+                                        slotProps={{ maxLength: 6 }}
                                         value={pinForm.data.newPin_confirmation}
                                         onChange={e => pinForm.setData('newPin_confirmation', e.target.value)}
                                         error={!!pinForm.errors.newPin_confirmation}
@@ -317,35 +308,28 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
+                                <Grid size={9.8} />
+                                <Grid size={2.2}>
+                                    <Button 
+                                        type="submit" 
+                                        variant="contained" 
+                                        className="btn-primary"
+                                        sx={{ textTransform: 'none' }}
+                                        disabled={pinForm.processing}
+                                        fullWidth
+                                    >
+                                        Change
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Button 
-                                type="submit" 
-                                variant="contained" 
-                                className="btn-primary"
-                                sx={{ mt: 2 }}
-                                disabled={pinForm.processing}
-                            >
-                                Change PIN
-                            </Button>
                         </Box>
 
                         <Divider className="divider-dashed" />
 
-                        {/* --- Change Password Form --- */}
                         <Box component="form" onSubmit={handleUpdatePassword}>
-                            <Typography className="profile-form-title">Change Password</Typography>
-                            
-                            {passwordForm.hasErrors && (
-                                <Alert severity="error" sx={{ mb: 2 }}>
-                                    {passwordForm.errors.message || "Please check your inputs."}
-                                </Alert>
-                            )}
-                            {passwordForm.recentlySuccessful && (
-                                <Alert severity="success" sx={{ mb: 2 }}>Password updated successfully.</Alert>
-                            )}
-
+                            <Typography className="profile-form-title" sx={{ mb: 2 }} >Change Password</Typography>
                             <Grid container spacing={2}>
-                                <Grid item xs={12}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Current Password"
@@ -357,7 +341,7 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="New Password"
@@ -369,7 +353,7 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid size={4}>
                                     <TextField
                                         fullWidth
                                         label="Confirm New Password"
@@ -381,21 +365,24 @@ export default function ProfilePage() {
                                         className="profile-input-field"
                                     />
                                 </Grid>
+                                <Grid size={9.8} />
+                                <Grid size={2.2}>
+                                    <Button 
+                                        type="submit" 
+                                        variant="contained"
+                                        className="btn-primary"
+                                        sx={{ textTransform: 'none' }}
+                                        disabled={passwordForm.processing}
+                                        fullWidth
+                                    >
+                                        Change
+                                    </Button>
+                                </Grid>
                             </Grid>
-                            <Button 
-                                type="submit" 
-                                variant="contained" 
-                                className="btn-primary"
-                                sx={{ mt: 2 }}
-                                disabled={passwordForm.processing}
-                            >
-                                Change Password
-                            </Button>
                         </Box>
 
                         <Divider className="divider-dashed" />
 
-                        {/* --- Delete Account --- */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Box>
                                 <Typography sx={{ color: '#F87171', fontWeight: 600, fontSize: '1.1rem' }}>
@@ -409,6 +396,7 @@ export default function ProfilePage() {
                                 variant="outlined" 
                                 className="btn-danger"
                                 onClick={handleDeleteAccount}
+                                sx={{ textTransform: 'none' }}
                             >
                                 Delete Account
                             </Button>
