@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'profilePhotoPath' => $this->photo_url,
             'emailVerifiedAt' => $this->email_verified_at,
+            'createdAt' => $this->created_at,
         ];
     }
 }

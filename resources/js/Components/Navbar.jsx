@@ -15,35 +15,32 @@ export default function Navbar() {
         <AppBar position="static" className="dashboard-navbar" sx={{ boxShadow: 'none' }}>
             <Container maxWidth="md">
                 <Toolbar disableGutters>
-                    <Typography 
-                        variant="h6"
-                        component="div"
-                        className="dashboard-logo-text"
-                    >
-                        Icebank
-                    </Typography>
+                    <Link href={route('dashboard')} style={{ textDecoration: 'none' }}>
+                        <Typography 
+                            variant="h6"
+                            component="div"
+                            className="dashboard-logo-text"
+                        >
+                            Icebank
+                        </Typography>
+                    </Link>
 
                     <Box sx={{ flexGrow: 1 }} />
 
                     {auth.user ? (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                             <Link 
-                                href="/profile"
+                                href={route('profile')}
                                 className="dashboard-nav-link-profile"
                             >
                                 Profile
                             </Link>
                             
                             <Link 
-                                href="/logout" 
+                                href={route('logout')} 
                                 method="get" 
                                 as="button" 
                                 className="dashboard-nav-link-logout"
-                                style={{ 
-                                    background: 'none', 
-                                    border: 'none', 
-                                    cursor: 'pointer'
-                                }}
                             >
                                 Logout
                             </Link>
