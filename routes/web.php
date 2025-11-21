@@ -69,3 +69,4 @@ Route::middleware('has.account')->group(function () {
         });
     });
 });
+
