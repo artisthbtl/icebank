@@ -15,12 +15,14 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import IceCubeIcon from '@/Components/IceCubeIcon';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
+import { useSnackbar } from '../Contexts/SnackbarContext';
 import '../../css/SubscribeModal.css'; 
 
 export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const { showSnackbar } = useSnackbar();
 
     if (!plan) return null;
 
@@ -40,6 +42,8 @@ export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
                 pin: pin
             });
             
+            showSnackbar(`Successfully subscribed to ${plan.name}!`);
+
             setPin('');
             
             if (onSuccess) {

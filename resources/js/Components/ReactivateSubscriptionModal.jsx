@@ -1,4 +1,3 @@
-// resources/js/Components/ReactivateSubscriptionModal.jsx
 import React, { useState } from 'react';
 import { 
     Dialog, 
@@ -13,10 +12,12 @@ import CloseIcon from '@mui/icons-material/Close';
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
+import { useSnackbar } from '../Contexts/SnackbarContext';
 import '../../css/ReactivateSubscriptionModal.css';
 
 export default function ReactivateSubscriptionModal({ open, onClose, plan, onSuccess }) {
     const [loading, setLoading] = useState(false);
+    const { showSnackbar } = useSnackbar();
 
     if (!plan) return null;
 
@@ -24,6 +25,8 @@ export default function ReactivateSubscriptionModal({ open, onClose, plan, onSuc
         setLoading(true);
         try {
             await axios.post(route('subscribe.reactivate', plan.id));
+            
+            showSnackbar(`Successfully reactivated ${plan.name}!`);
 
             if (onSuccess) {
                 onSuccess(plan.name);

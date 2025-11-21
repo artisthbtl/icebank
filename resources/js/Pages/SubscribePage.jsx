@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Head, usePage, router } from '@inertiajs/react';
+import axios from 'axios';
 import { 
     Container, 
     Box, 
@@ -12,8 +13,7 @@ import {
     Collapse,
     Avatar,
     IconButton,
-    Snackbar,
-    Alert
+    CircularProgress
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -21,7 +21,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import IceCubeIcon from '@/Components/IceCubeIcon';
 import Navbar from "@/Components/Navbar";
 import SubscribeModal from '@/Components/SubscribeModal';
-import ReactivateSubscriptionModal from '@/Components/ReactivateSubscriptionModal'; // Import the new modal
+import ReactivateSubscriptionModal from '@/Components/ReactivateSubscriptionModal';
 import { debounce } from 'lodash';
 import '../../css/SubscribePage.css';
 import '../../css/DashboardPage.css';
@@ -122,24 +122,15 @@ export default function SubscribePage() {
     const [allServices, setAllServices] = useState(services.data);
     const [search, setSearch] = useState(filters.search || '');
     const [type, setType] = useState(filters.type || 'all');
-    
+    const [nextUrl, setNextUrl] = useState(services.links.next);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
     const [isReactivateModalOpen, setIsReactivateModalOpen] = useState(false);
     
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMsg, setSnackbarMsg] = useState('');
-
     useEffect(() => {
-        if (services.meta.current_page === 1) {
-            setAllServices(services.data);
-        } else {
-            setAllServices(prev => {
-                const newIds = new Set(services.data.map(s => s.id));
-                const existing = prev.filter(s => !newIds.has(s.id));
-                return [...existing, ...services.data];
-            });
-        }
+        setAllServices(services.data);
+        setNextUrl(services.links.next);
     }, [services]);
 
     const debouncedSearch = useCallback(
@@ -165,13 +156,25 @@ export default function SubscribePage() {
         );
     };
 
-    const handleLoadMore = () => {
-        if (services.links.next) {
-            router.visit(services.links.next, {
-                preserveState: true,
-                preserveScroll: true,
-                only: ['services']
+    const handleLoadMore = async () => {
+        if (!nextUrl || loadingMore) return;
+
+        setLoadingMore(true);
+        try {
+            const response = await axios.get(nextUrl, {
+                headers: { 'X-Inertia': 'true' }
             });
+            
+            const newServicesData = response.data.props?.services;
+            
+            if (newServicesData) {
+                setAllServices(prev => [...prev, ...newServicesData.data]);
+                setNextUrl(newServicesData.links.next);
+            }
+        } catch (error) {
+            console.error("Failed to load more services", error);
+        } finally {
+            setLoadingMore(false);
         }
     };
 
@@ -182,14 +185,6 @@ export default function SubscribePage() {
         } else {
             setIsSubscribeModalOpen(true);
         }
-    };
-
-    const handleSuccess = (planName, isReactivation = false) => {
-        setSnackbarMsg(isReactivation 
-            ? `Successfully reactivated ${planName}` 
-            : `Successfully subscribed to ${planName}`
-        );
-        setSnackbarOpen(true);
     };
 
     return (
@@ -264,10 +259,15 @@ export default function SubscribePage() {
                         )}
                     </div>
 
-                    {services.links.next && (
+                    {nextUrl && (
                         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4, mb: 4 }}>
-                            <Button onClick={handleLoadMore} variant="outlined" className="load-more-btn">
-                                Load More
+                            <Button 
+                                onClick={handleLoadMore} 
+                                variant="outlined" 
+                                className="load-more-btn"
+                                disabled={loadingMore}
+                            >
+                                {loadingMore ? <CircularProgress size={24} color="inherit" /> : 'Load More'}
                             </Button>
                         </Box>
                     )}
@@ -278,26 +278,13 @@ export default function SubscribePage() {
                     open={isSubscribeModalOpen}
                     onClose={() => setIsSubscribeModalOpen(false)}
                     plan={selectedPlan}
-                    onSuccess={(name) => handleSuccess(name, false)}
                 />
 
                 <ReactivateSubscriptionModal 
                     open={isReactivateModalOpen}
                     onClose={() => setIsReactivateModalOpen(false)}
                     plan={selectedPlan}
-                    onSuccess={(name) => handleSuccess(name, true)}
                 />
-
-                <Snackbar 
-                    open={snackbarOpen} 
-                    autoHideDuration={6000} 
-                    onClose={() => setSnackbarOpen(false)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                >
-                    <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
-                        {snackbarMsg}
-                    </Alert>
-                </Snackbar>
             </div>
         </>
     );
