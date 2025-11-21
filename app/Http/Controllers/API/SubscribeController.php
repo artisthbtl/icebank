@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class SubscribeController extends Controller
 {
@@ -29,8 +30,14 @@ class SubscribeController extends Controller
         $type = $validated['type'] ?? 'all';
 
         $query = Service::query()
-            ->with(['company', 'plans'])
-            
+            ->with(['company'])
+            ->with(['plans' => function ($q) use ($user) {
+                $q->with(['subscriptions' => function ($subQ) use ($user) {
+                    $subQ->where('user_id', $user->id)->latest();
+                }]);
+            }])
+            ->has('plans') 
+
             ->whereDoesntHave('plans.subscriptions', function (Builder $query) use ($user) {
                 $query->where('user_id', $user->id)
                       ->where('status', 'active'); 
@@ -51,28 +58,31 @@ class SubscribeController extends Controller
         $page = $request->integer('page', 1);
         $perPage = 10;
         
-        $isPartial = $request->header('X-Inertia-Partial-Data') !== null;
-
-        if (!$isPartial && $page > 1) {
-            $totalItemsToFetch = $page * $perPage;
-            
-            $total = $query->clone()->count();
-            
-            $items = $query->take($totalItemsToFetch)->get();
-
-            $services = new LengthAwarePaginator(
-                $items,
-                $total,
-                $perPage,
-                $page,
-                [
-                    'path' => LengthAwarePaginator::resolveCurrentPath(),
-                    'query' => $request->query(), // Preserve search/filter params
-                ]
-            );
+        if ($request->header('X-Inertia-Partial-Data') !== null && $page > 1) {
+           $totalItemsToFetch = $page * $perPage;
+           $total = $query->clone()->count();
+           $items = $query->take($totalItemsToFetch)->get();
+           
+           $services = new LengthAwarePaginator(
+               $items, $total, $perPage, $page,
+               ['path' => LengthAwarePaginator::resolveCurrentPath(), 'query' => $request->query()]
+           );
         } else {
             $services = $query->paginate($perPage)->withQueryString();
         }
+
+        $services->getCollection()->transform(function ($service) {
+            $cancelledPlan = $service->plans->first(function ($plan) {
+                $sub = $plan->subscriptions->first(); 
+                return $sub && $sub->status === 'canceled' && Carbon::now()->lessThan($sub->end_date);
+            });
+
+            if ($cancelledPlan) {
+                $service->setRelation('plans', collect([$cancelledPlan]));
+            }
+
+            return $service;
+        });
 
         return Inertia::render('SubscribePage', [
             'services' => new ServiceCollection($services),

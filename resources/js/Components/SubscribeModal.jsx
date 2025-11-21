@@ -48,7 +48,9 @@ export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
             
             onClose(); 
             
-            router.reload({ only: ['user', 'account', 'recentTransactions'] });
+            router.reload({ 
+                only: ['user', 'account', 'recentTransactions', 'services'] 
+            });
 
         } catch (err) {
              if (err.response) {

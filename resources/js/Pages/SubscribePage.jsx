@@ -11,7 +11,9 @@ import {
     Button,
     Collapse,
     Avatar,
-    IconButton
+    IconButton,
+    Snackbar,
+    Alert
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -19,6 +21,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import IceCubeIcon from '@/Components/IceCubeIcon';
 import Navbar from "@/Components/Navbar";
 import SubscribeModal from '@/Components/SubscribeModal';
+import ReactivateSubscriptionModal from '@/Components/ReactivateSubscriptionModal'; // Import the new modal
 import { debounce } from 'lodash';
 import '../../css/SubscribePage.css';
 import '../../css/DashboardPage.css';
@@ -68,18 +71,40 @@ const ServiceItem = ({ service, onSelectPlan }) => {
                     
                     <div className="plans-grid">
                         {service.plans?.length > 0 ? (
-                            service.plans.map((plan) => (
-                                <div key={plan.id} className="plan-card" onClick={() => onSelectPlan({...plan, service})}>
-                                    <div className="plan-info">
-                                        <Typography className="plan-name">{plan.name}</Typography>
-                                        <Typography className="plan-duration">{plan.duration} Days</Typography>
+                            service.plans.map((plan) => {
+                                const isCancelled = plan.subscriptions && 
+                                                    plan.subscriptions.length > 0 && 
+                                                    plan.subscriptions[0].status === 'canceled';
+                                
+                                return (
+                                    <div key={plan.id} className="plan-card" onClick={() => onSelectPlan({...plan, service, isCancelled})}>
+                                        <div className="plan-info">
+                                            <Typography className="plan-name" sx={{ lineHeight: 1.2 }}>
+                                                {plan.name}
+                                            </Typography>
+                                            
+                                            {isCancelled && (
+                                                <span style={{
+                                                    color: '#FBBF24', 
+                                                    fontSize: '0.75rem', 
+                                                    fontWeight: 'bold',
+                                                    display: 'inline-block',
+                                                    marginTop: '2px',
+                                                    marginBottom: '2px'
+                                                }}>
+                                                    ● Restorable
+                                                </span>
+                                            )}
+
+                                            <Typography className="plan-duration">{plan.duration} Days</Typography>
+                                        </div>
+                                        <div className="plan-price-wrapper">
+                                            <IceCubeIcon width={16} height={16} color="#38BDF8" />
+                                            <Typography className="plan-price">{plan.price}</Typography>
+                                        </div>
                                     </div>
-                                    <div className="plan-price-wrapper">
-                                        <IceCubeIcon width={16} height={16} color="#38BDF8" />
-                                        <Typography className="plan-price">{plan.price}</Typography>
-                                    </div>
-                                </div>
-                            ))
+                                );
+                            })
                         ) : (
                             <Typography variant="body2" sx={{ color: '#64748B', fontStyle: 'italic' }}>
                                 No plans available.
@@ -97,8 +122,13 @@ export default function SubscribePage() {
     const [allServices, setAllServices] = useState(services.data);
     const [search, setSearch] = useState(filters.search || '');
     const [type, setType] = useState(filters.type || 'all');
+    
     const [selectedPlan, setSelectedPlan] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubscribeModalOpen, setIsSubscribeModalOpen] = useState(false);
+    const [isReactivateModalOpen, setIsReactivateModalOpen] = useState(false);
+    
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMsg, setSnackbarMsg] = useState('');
 
     useEffect(() => {
         if (services.meta.current_page === 1) {
@@ -147,7 +177,19 @@ export default function SubscribePage() {
 
     const handlePlanClick = (plan) => {
         setSelectedPlan(plan);
-        setIsModalOpen(true);
+        if (plan.isCancelled) {
+            setIsReactivateModalOpen(true);
+        } else {
+            setIsSubscribeModalOpen(true);
+        }
+    };
+
+    const handleSuccess = (planName, isReactivation = false) => {
+        setSnackbarMsg(isReactivation 
+            ? `Successfully reactivated ${planName}` 
+            : `Successfully subscribed to ${planName}`
+        );
+        setSnackbarOpen(true);
     };
 
     return (
@@ -233,10 +275,29 @@ export default function SubscribePage() {
                 </Container>
 
                 <SubscribeModal 
-                    open={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    open={isSubscribeModalOpen}
+                    onClose={() => setIsSubscribeModalOpen(false)}
                     plan={selectedPlan}
+                    onSuccess={(name) => handleSuccess(name, false)}
                 />
+
+                <ReactivateSubscriptionModal 
+                    open={isReactivateModalOpen}
+                    onClose={() => setIsReactivateModalOpen(false)}
+                    plan={selectedPlan}
+                    onSuccess={(name) => handleSuccess(name, true)}
+                />
+
+                <Snackbar 
+                    open={snackbarOpen} 
+                    autoHideDuration={6000} 
+                    onClose={() => setSnackbarOpen(false)}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                >
+                    <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+                        {snackbarMsg}
+                    </Alert>
+                </Snackbar>
             </div>
         </>
     );

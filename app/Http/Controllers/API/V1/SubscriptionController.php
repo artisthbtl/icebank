@@ -6,12 +6,9 @@ use App\Models\Plan;
 use App\Models\Transaction;
 use App\Models\Subscription;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\V1\SubscriptionResource;
-use App\Http\Resources\V1\SubscriptionCollection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Exception;
 
@@ -25,6 +22,24 @@ class SubscriptionController extends Controller
         try {
             return DB::transaction(function () use ($user, $plan, $price) {
                 
+                $hasSiblingSubscription = $user->subscriptions()
+                    ->whereHas('plan', function ($q) use ($plan) {
+                        $q->where('service_id', $plan->service_id);
+                    })
+                    ->where('plan_id', '!=', $plan->id)
+                    ->where(function ($q) {
+                        $q->where('status', 'active')
+                          ->orWhere(function ($subQ) {
+                              $subQ->where('status', 'canceled')
+                                   ->where('end_date', '>', Carbon::now());
+                          });
+                    })
+                    ->exists();
+
+                if ($hasSiblingSubscription) {
+                    return response()->json(['error' => 'You already have an active subscription for this service.'], 400);
+                }
+
                 $account = $user->account()->lockForUpdate()->first();
                 
                 $existingSubscription = $user->subscriptions()
@@ -33,7 +48,6 @@ class SubscriptionController extends Controller
                                              ->first();
 
                 if ($existingSubscription) {
-                    
                     if ($existingSubscription->status === 'active') {
                         return response()->json(['error' => 'You are already subscribed to this plan.'], 400);
                     }
@@ -44,8 +58,9 @@ class SubscriptionController extends Controller
                             $existingSubscription->save();
 
                             return response()->json([
-                                'message' => 'Your subscription has been reactivated. It will renew on ' . Carbon::parse($existingSubscription->end_date)->toFormattedDateString(),
-                                'new_balance' => $account->balance
+                                'message' => 'Your subscription has been reactivated.',
+                                'new_balance' => $account->balance,
+                                'status' => 'reactivated' // Frontend can use this flag if needed
                             ], 200);
                         }
                     }
@@ -94,6 +109,31 @@ class SubscriptionController extends Controller
             Log::error('Subscription failed for user ' . $user->id . ': ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred during the subscription.'], 500);
         }
+    }
+
+    public function reactivate(Plan $plan)
+    {
+        $user = Auth::user();
+
+        $subscription = $user->subscriptions()
+            ->where('plan_id', $plan->id)
+            ->where('status', 'canceled')
+            ->where('end_date', '>', Carbon::now())
+            ->first();
+
+        if (!$subscription) {
+            return response()->json([
+                'error' => 'No valid cancelled subscription found to reactivate.'
+            ], 400);
+        }
+
+        $subscription->update([
+            'status' => 'active'
+        ]);
+
+        return response()->json([
+            'message' => 'Subscription reactivated successfully!',
+        ]);
     }
 
     public function cancel(Subscription $subscription)

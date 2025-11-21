@@ -8,8 +8,8 @@ use App\Http\Controllers\API\V1\VerificationController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\API\SubscribeController;
 use App\Http\Controllers\API\TransactionHistoryController;
-use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\V1\TransactionController;
+use App\Http\Controllers\API\V1\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->middleware('signed')->name('auth.verify-update');
@@ -62,11 +62,9 @@ Route::middleware('has.account')->group(function () {
                 Route::post('/transfer/validate', [TransactionController::class, 'validateTransfer'])->name('transfer.validate');
                 Route::post('/transfer', [TransactionController::class, 'transfer'])->middleware('validate.pin')->name('transfer');
                 Route::get('/subscribe', [SubscribeController::class, 'index'])->name('subscribe.index');                
-                Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])
-                    ->middleware('validate.pin')
-                    ->name('subscribe.store');
-                Route::put('/subscribe/{subscription}/cancel', [SubscriptionController::class, 'cancel'])
-                    ->name('subscribe.cancel');
+                Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->middleware('validate.pin')->name('subscribe.store');
+                Route::put('/subscribe/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscribe.cancel');
+                Route::post('/subscribe/{plan}/reactivate', [SubscriptionController::class, 'reactivate'])->name('subscribe.reactivate');
             });
         });
     });

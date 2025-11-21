@@ -120,7 +120,7 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
                                 </div>
                                 
                                 <Typography className="active-sub-renew-date">
-                                    {`Renew: ${sub.end_date ? new Date(sub.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}`}
+                                    {`Renew: ${sub.endDate ? new Date(sub.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}`}
                                 </Typography>
 
                                 {sub.status === 'active' && (

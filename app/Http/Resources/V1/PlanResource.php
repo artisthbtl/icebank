@@ -16,6 +16,7 @@ class PlanResource extends JsonResource
             'price' => $this->price,
             'duration' => $this->duration,
             'deletedAt' => $this->deleted_at,
+            'subscriptions' => SubscriptionResource::collection($this->whenLoaded('subscriptions')),
         ];
     }
 }
