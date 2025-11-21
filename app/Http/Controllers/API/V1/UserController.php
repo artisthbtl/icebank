@@ -6,7 +6,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\DeleteUserRequest;
-use App\Http\Resources\V1\UserResource;
 use App\Http\Requests\V1\StorePinRequest;
 use App\Http\Requests\V1\UpdateEmailRequest;
 use App\Http\Requests\V1\UpdatePinRequest;
@@ -38,15 +37,21 @@ class UserController extends Controller
                 Storage::disk('public')->delete($user->profile_photo_path);
             }
 
-            $verifications = $user->verifications;
-            foreach ($verifications as $verification) {
+            foreach ($user->verifications as $verification) {
                 if ($verification->ktp_path) {
                     Storage::disk('local')->delete($verification->ktp_path);
                     Storage::disk('local')->delete($verification->selfie_path);
-                    break;
                 }
             }
             
+            if ($user->account) {
+                $user->account->delete();
+            }
+
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
             $user->delete();
 
             return response()->json(['message' => 'User deleted successfully.'], 200);

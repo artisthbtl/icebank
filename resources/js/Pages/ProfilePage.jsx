@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import DeleteUserModal from '@/Components/DeleteUserModal';
 import '../../css/ProfilePage.css';
 import '../../css/DashboardPage.css';
 
@@ -25,6 +26,7 @@ export default function ProfilePage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [photoStatus, setPhotoStatus] = useState({ type: null, message: '' });
     const [photoValidation, setPhotoValidation] = useState('');
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const fileInputRef = useRef(null);
     
     const emailForm = useForm({
@@ -205,7 +207,7 @@ export default function ProfilePage() {
     };
 
     const handleDeleteAccount = () => {
-        console.log("Delete account clicked");
+        setIsDeleteModalOpen(true);
     };
 
     const formatDate = (dateString) => {
@@ -330,7 +332,7 @@ export default function ProfilePage() {
                             <Grid size={4}>
                                 <div className="info-label">Verification Status</div>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 0.5 }}>
-                                    {user.emailVerifiedAt ? (
+                                    {user.isVerified === 'yes' ? (
                                         <span className="verify-status-badge status-verified">
                                             <CheckCircleIcon sx={{ fontSize: 14, mr: 0.5 }} />
                                             Verified
@@ -341,19 +343,25 @@ export default function ProfilePage() {
                                                 <ErrorOutlineIcon sx={{ fontSize: 14, mr: 0.5 }} />
                                                 Unverified
                                             </span>
-                                            <Button 
-                                                variant="contained" 
-                                                size="small" 
-                                                href={route('verify.id')}
-                                                className="btn-primary"
-                                                sx={{ py: 0.5, fontSize: '0.75rem' }}
-                                            >
-                                                Verify ID
-                                            </Button>
                                         </>
                                     )}
                                 </Box>
                             </Grid>
+                            {user.isVerified === 'no' && (
+                                <Grid size={12}>
+                                    <Button 
+                                        type="submit" 
+                                        variant="contained" 
+                                        className="btn-primary"
+                                        sx={{ textTransform: 'none' }}
+                                        href={route('verify.id')}
+                                        disabled={pinForm.processing}
+                                        fullWidth
+                                    >
+                                        Verify ID
+                                    </Button>
+                                </Grid>
+                            )}
                         </Grid>
 
                         <Divider className="divider-dashed" />
@@ -707,9 +715,15 @@ export default function ProfilePage() {
                                 Delete Account
                             </Button>
                         </Box>
+                        
+                        <DeleteUserModal 
+                            isOpen={isDeleteModalOpen} 
+                            onClose={() => setIsDeleteModalOpen(false)} 
+                        />
 
                     </div>
                 </Container>
+
             </div>
         </>
     );

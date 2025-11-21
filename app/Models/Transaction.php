@@ -21,26 +21,21 @@ class Transaction extends Model
 
     public function account()
     {
-        return $this->belongsTo(Account::class);
-    }
-
-    public function plan()
-    {
-        return $this->belongsTo(Plan::class, 'related_plan_id');
+        return $this->belongsTo(Account::class)->withTrashed();
     }
 
     public function relatedAccount()
     {
-        return $this->belongsTo(Account::class, 'related_account_id');
+        return $this->belongsTo(Account::class, 'related_account_id')->withTrashed();
     }
 
     public function receiverAccount()
     {
-        return $this->belongsTo(Account::class, 'related_account_id');
+        return $this->belongsTo(Account::class, 'related_account_id')->withTrashed();
     }
 
     public function senderAccount()
     {
-        return $this->belongsTo(Account::class, 'related_account_id');
+        return $this->belongsTo(Account::class, 'related_account_id')->withTrashed();
     }
 }
