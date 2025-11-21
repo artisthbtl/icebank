@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dialog, DialogContent, Typography, Button, Box } from '@mui/material';
+import { Dialog, DialogContent, Typography, Button } from '@mui/material';
 import { router } from '@inertiajs/react';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
@@ -47,30 +47,32 @@ export default function VerificationRequiredModal({ open, onClose, latestVerific
                     }
                 </Typography>
 
-                {isPending ? (
-                    <Button 
-                        onClick={onClose}
-                        className="verification-modal-btn"
-                    >
-                        Close
-                    </Button>
-                ) : (
-                    <Button 
-                        onClick={handleGetVerified}
-                        className="verification-modal-btn"
-                    >
-                        Get Verified
-                    </Button>
-                )}
-                
-                {!isPending && (
-                    <Button 
-                        onClick={onClose}
-                        className="verification-modal-btn-secondary"
-                    >
-                        Maybe Later
-                    </Button>
-                )}
+                <div className="verification-modal-actions">
+                    {isPending ? (
+                        <Button 
+                            onClick={onClose}
+                            className="verification-modal-btn"
+                        >
+                            Close
+                        </Button>
+                    ) : (
+                        <>
+                            <Button 
+                                onClick={onClose}
+                                className="verification-modal-btn-secondary"
+                            >
+                                Maybe Later
+                            </Button>
+
+                            <Button 
+                                onClick={handleGetVerified}
+                                className="verification-modal-btn"
+                            >
+                                Get Verified
+                            </Button>
+                        </>
+                    )}
+                </div>
             </DialogContent>
         </Dialog>
     );

@@ -65,6 +65,8 @@ Route::middleware('has.account')->group(function () {
                 Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])
                     ->middleware('validate.pin')
                     ->name('subscribe.store');
+                Route::put('/subscribe/{subscription}/cancel', [SubscriptionController::class, 'cancel'])
+                    ->name('subscribe.cancel');
             });
         });
     });

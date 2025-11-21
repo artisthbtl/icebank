@@ -29,8 +29,16 @@
     line-height: 1.5 !important;
 }
 
-.verification-modal-btn {
+
+.verification-modal-actions {
+    display: flex;
+    gap: 16px;
     width: 100%;
+    margin-top: 12px;
+}
+
+.verification-modal-btn {
+    flex: 1;
     padding: 12px 0 !important;
     font-size: 1rem !important;
     font-weight: bold !important;
@@ -46,7 +54,7 @@
 }
 
 .verification-modal-btn-secondary {
-    width: 100%;
+    flex: 1; 
     padding: 12px 0 !important;
     font-size: 1rem !important;
     font-weight: bold !important;
@@ -54,7 +62,7 @@
     color: #94A3B8 !important;
     border-radius: 8px !important;
     text-transform: none !important;
-    margin-top: 12px !important;
+    background-color: transparent !important;
 }
 
 .verification-modal-btn-secondary:hover {
