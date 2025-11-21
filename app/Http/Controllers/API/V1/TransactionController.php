@@ -17,15 +17,20 @@ class TransactionController extends Controller
     {
         $request->validate([
             'amount' => 'required|numeric|min:1|max:1000000.00',
-            'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
+            'receiverAccountNumber' => 'required|string|exists:accounts,account_number,deleted_at,NULL',
         ], [
             'amount.max' => 'The amount entered is too large.',
             'amount.min' => 'The amount must be at least 0.01.',
+            'receiverAccountNumber.exists' => 'That account number does not exist.',
         ]);
 
         $user = Auth::user();
         $sender = $user->account;
         $receiver = Account::where('account_number', $request->receiverAccountNumber)->first();
+
+        if (!$receiver) {
+            return response()->json(['errors' => ['receiverAccountNumber' => ['Account not found.']]], 404);
+        }
 
         if ($sender->id === $receiver->id) {
             return response()->json(['errors' => ['receiverAccountNumber' => ['You cannot transfer to your own account.']]], 422);

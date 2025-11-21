@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
@@ -37,5 +36,10 @@ class Transaction extends Model
     public function senderAccount()
     {
         return $this->belongsTo(Account::class, 'related_account_id')->withTrashed();
+    }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'related_plan_id');
     }
 }

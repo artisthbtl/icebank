@@ -16,7 +16,7 @@ class TransferRequest extends FormRequest
         return [
             'pin' => 'required|string|digits:6',
             'amount' => 'required|numeric|min:1|max:1000000.00',
-            'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
+            'receiverAccountNumber' => 'required|string|exists:accounts,account_number,deleted_at,NULL',
         ];
     }
 
@@ -25,6 +25,7 @@ class TransferRequest extends FormRequest
         return [
             'amount.max' => 'The amount entered is too large.',
             'amount.min' => 'The amount must be at least 0.01.',
+            'receiverAccountNumber.exists' => 'That account number does not exist.',
         ];
     }
 }
