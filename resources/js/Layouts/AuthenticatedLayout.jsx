@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { usePage, router } from '@inertiajs/react';
+import { SnackbarProvider } from '@/Contexts/SnackbarContext';
 
-export default function AuthenticatedLayout({ children }) {
+const LayoutContent = ({ children }) => {
     const { auth, url } = usePage().props;
 
     useEffect(() => {
@@ -16,5 +17,13 @@ export default function AuthenticatedLayout({ children }) {
         <main>
             {children}
         </main>
+    );
+};
+
+export default function AuthenticatedLayout({ children }) {
+    return (
+        <SnackbarProvider>
+            <LayoutContent>{children}</LayoutContent>
+        </SnackbarProvider>
     );
 }
