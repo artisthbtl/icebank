@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
 import { router } from '@inertiajs/react'; 
+import { useSnackbar } from '@/Contexts/SnackbarContext';
 import axios from 'axios';
 import '../../css/ActiveSubscriptionCard.css';
 import IceCubeIcon from './IceCubeIcon';
 import ConfirmCancellationModal from './ConfirmCancellationModal';
 
 export default function ActiveSubscriptionCard({ subscriptions }) {
+    const { showSnackbar } = useSnackbar();
     const subs = subscriptions?.data || [];
     const [page, setPage] = useState(0);
     
@@ -41,7 +43,8 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
         router.put(route('subscribe.cancel', selectedSub.id), {}, {
             onStart: () => setIsLoading(true),
             onSuccess: () => {
-                handleCloseModal(); 
+                handleCloseModal();
+                showSnackbar(`Successfully canceled subscription for ${selectedSub.plan?.service?.name}`);
             },
             onFinish: () => setIsLoading(false),
             preserveScroll: true,

@@ -13,11 +13,13 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import IceCubeIcon from '@/Components/IceCubeIcon';
+import { useSnackbar } from '@/Contexts/SnackbarContext';
 import axios from 'axios';
 import { router } from '@inertiajs/react';
 import '../../css/TransferConfirmationModal.css'; 
 
 export default function TransferConfirmationModal({ open, onClose, data, onSuccess }) {
+    const { showSnackbar } = useSnackbar();
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -43,8 +45,11 @@ export default function TransferConfirmationModal({ open, onClose, data, onSucce
             });
             
             setPin('');
-            onSuccess(); // Trigger success in parent
+            onSuccess();
             onClose(); 
+            
+            showSnackbar(`Successfully transferred ${data.amount} Ice to ${data.receiver_name}`);
+            
             router.reload({ only: ['user', 'account', 'recentTransactions'] });
 
         } catch (err) {

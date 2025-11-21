@@ -7,14 +7,12 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import '../../css/ProfilePage.css';
 import '../../css/DashboardPage.css';
-import { transform } from 'zod';
 
 export default function ProfilePage() {
     const { user } = usePage().props;
@@ -269,8 +267,8 @@ export default function ProfilePage() {
                                     startIcon={<DeleteIcon />}
                                     onClick={handleDeletePhoto}
                                     color="error"
-                                    size="small"
-                                    sx={{ mt: 1 }}
+                                    size="medium"
+                                    sx={{ mt: 1, textTransform: 'none' }}
                                 >
                                     Remove Photo
                                 </Button>

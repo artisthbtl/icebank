@@ -16,6 +16,7 @@ import { router } from '@inertiajs/react';
 import '../../css/EnterPin.css'; 
 
 export default function EnterPinModal({ open, onClose, amount }) {
+    const { showSnackbar } = useSnackbar();
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -47,6 +48,8 @@ export default function EnterPinModal({ open, onClose, amount }) {
             
             setPin('');
             onClose(); 
+            
+            showSnackbar(`Successfully added ${amount} Ice to your balance!`);
             
             router.reload({ only: ['user', 'account', 'recentTransactions'] });
             
