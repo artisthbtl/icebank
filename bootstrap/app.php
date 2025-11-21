@@ -4,10 +4,10 @@ use App\Http\Middleware\CanVerifyIdentity;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use App\Http\Middleware\IsAdmin;
 use App\Http\Middleware\CheckPin;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HasAccount;
+use App\Http\Middleware\IsIceman;
 use App\Http\Middleware\IsVerified;
 use App\Http\Middleware\ValidatePin;
 use Illuminate\Console\Scheduling\Schedule;
@@ -21,7 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'admin' => IsAdmin::class,
+            'iceman' => IsIceman::class,
             'check.pin' => CheckPin::class,
             'is.verified' => IsVerified::class,
             'validate.pin' => ValidatePin::class,

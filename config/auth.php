@@ -44,9 +44,9 @@ return [
             'driver' => 'jwt',
             'provider' => 'users',
         ],
-        'admin' => [
+        'icemen' => [
             'driver' => 'jwt',
-            'provider' => 'admins',
+            'provider' => 'icemen',
         ],
     ],
 
@@ -72,9 +72,9 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
-        'admins' => [
+        'icemen' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => App\Models\Iceman::class,
         ],
         // 'users' => [
         //     'driver' => 'database',

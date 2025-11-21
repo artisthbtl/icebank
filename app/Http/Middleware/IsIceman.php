@@ -6,14 +6,13 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class IsAdmin
+class IsIceman
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::guard('admin')->check()) {
+        if (!Auth::guard('iceman')->check()) {
             return response()->json(['error' => 'Forbidden.'], 403);
         }
-
         return $next($request);
     }
 }

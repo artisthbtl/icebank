@@ -70,3 +70,10 @@ Route::middleware('has.account')->group(function () {
     });
 });
 
+Route::prefix('iceman')->group(function () {
+    Route::middleware('guest')->group(function () {
+        Route::get('/', function () {return inertia('Iceman/Iceman');})->name('iceman.landing');
+        Route::get('/login', function () {return inertia('Iceman/LoginPage');})->name('iceman.login');
+        Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('iceman.verify-otp');
+    });
+});

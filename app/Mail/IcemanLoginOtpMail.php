@@ -8,32 +8,32 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Admin;
+use App\Models\Iceman;
 
-class AdminLoginOtpMail extends Mailable implements ShouldQueue
+class IcemanLoginOtpMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    public Admin $admin;
+    public Iceman $iceman;
     public string $otp;
 
-    public function __construct(Admin $admin, string $otp)
+    public function __construct(Iceman $iceman, string $otp)
     {
-        $this->admin = $admin;
+        $this->iceman = $iceman;
         $this->otp = $otp;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Admin One Time Verification Code!',
+            subject: 'Iceman One Time Verification Code!',
         );
     }
 
     public function content(): Content
     {
         return new Content(
-            view: 'emails.auth.login-otp-admin',
+            view: 'emails.auth.login-otp-iceman',
         );
     }
 

@@ -246,11 +246,14 @@ export default function LandingPage() {
                             <div className="header">
                                 <h1>Iceman</h1>
                             </div>
-                            <Link href={route('iceman.login')} className="btn">
-                                <div className="btn-label">
-                                    <span>Login</span>
-                                </div>
-                            </Link>
+
+                            <div className="header-buttons">
+                                <Link href={route('iceman.login')} className="btn btn-outline">
+                                    <div className="btn-label">
+                                        <span>Login</span>
+                                    </div>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </section>

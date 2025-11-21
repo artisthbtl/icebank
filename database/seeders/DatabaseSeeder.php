@@ -26,8 +26,6 @@ class DatabaseSeeder extends Seeder
                 'pin' => bcrypt('123456'),
             ]);
 
-        Admin::factory()->create();
-
         $randomUsers = User::factory()
             ->count(20)
             ->has(Account::factory())

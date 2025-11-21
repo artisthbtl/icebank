@@ -4,7 +4,7 @@
     <title>Your Login OTP</title>
 </head>
 <body>
-    <h2>Hello, {{ $admin->name }}!</h2>
+    <h2>Hello, Iceman!</h2>
     <p>Here is your One-Time Password (OTP) to log in to your Icebank account. This code is valid for 5 minutes.</p>
     <p style="font-size: 24px; font-weight: bold; letter-spacing: 5px; margin: 20px 0;">
         {{ $otp }}
