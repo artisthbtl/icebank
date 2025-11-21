@@ -23,14 +23,6 @@ use Illuminate\Support\Facades\URL;
 
 class UserController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-
-        $this->authorize('view', $user); 
-        return new UserResource($user);
-    }
-
     public function destroy(DeleteUserRequest $request)
     {
         $user = Auth::user();

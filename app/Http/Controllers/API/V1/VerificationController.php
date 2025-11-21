@@ -13,15 +13,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VerificationController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-
-        $verifications = $user->verifications()->latest()->paginate(10);
-
-        return new VerificationCollection($verifications);
-    }
-
     public function store(StoreVerificationRequest $request)
     {
         $user = Auth::user();

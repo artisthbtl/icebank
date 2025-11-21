@@ -10,7 +10,6 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
     const subs = subscriptions?.data || [];
     const [page, setPage] = useState(0);
     
-    // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedSub, setSelectedSub] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -26,38 +25,28 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
         if (page < totalPages - 1) setPage(page + 1);
     };
 
-    // Open the modal
     const handleCancelClick = (sub) => {
         setSelectedSub(sub);
         setIsModalOpen(true);
     };
 
-    // Close the modal
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedSub(null);
     };
 
-    // Execute Cancellation
-    const handleConfirmCancel = async () => {
+    const handleConfirmCancel = () => {
         if (!selectedSub) return;
 
-        setIsLoading(true);
-
-        try {
-            // Using axios because the controller returns JSON
-            await axios.put(route('subscribe.cancel', selectedSub.id));
-            
-            // Refresh the page data to show updated status
-            router.reload({ only: ['subscriptions'] });
-            
-            handleCloseModal();
-        } catch (error) {
-            console.error("Cancellation failed", error);
-            // Optional: Add toast notification here for error
-        } finally {
-            setIsLoading(false);
-        }
+        router.put(route('subscribe.cancel', selectedSub.id), {}, {
+            onStart: () => setIsLoading(true),
+            onSuccess: () => {
+                handleCloseModal(); 
+            },
+            onFinish: () => setIsLoading(false),
+            preserveScroll: true,
+            only: ['activeSubscriptions'],
+        });
     };
 
     if (subs.length === 0) return null;
@@ -128,10 +117,7 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
                                 </div>
                                 
                                 <Typography className="active-sub-renew-date">
-                                    {sub.status === 'canceled' 
-                                        ? `Ends: ${sub.end_date ? new Date(sub.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}`
-                                        : `Renew: ${sub.end_date ? new Date(sub.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}`
-                                    }
+                                    {`Renew: ${sub.end_date ? new Date(sub.end_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}`}
                                 </Typography>
 
                                 {sub.status === 'active' && (

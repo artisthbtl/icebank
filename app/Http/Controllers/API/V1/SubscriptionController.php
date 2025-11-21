@@ -17,25 +17,6 @@ use Exception;
 
 class SubscriptionController extends Controller
 {
-    public function index(Request $request)
-    {
-        $user = Auth::user();
-
-        $subscriptions = $user->subscriptions()
-                              ->with('plan.service.company')
-                              ->orderBy('created_at', 'desc')
-                              ->paginate();
-
-        return new SubscriptionCollection($subscriptions);
-    }
-
-    public function show(Subscription $subscription)
-    {
-        $this->authorize('view', $subscription);
-        $subscription->load('plan.service.company');
-        return new SubscriptionResource($subscription);
-    }
-
     public function subscribe(Plan $plan)
     {
         $user = Auth::user();
@@ -120,14 +101,12 @@ class SubscriptionController extends Controller
         $this->authorize('cancel', $subscription);
 
         if ($subscription->status !== 'active') {
-            return response()->json(['error' => 'This subscription is already inactive.'], 400);
+            return back()->withErrors(['message' => 'This subscription is already inactive.']);
         }
 
         $subscription->status = 'canceled';
         $subscription->save();
 
-        return response()->json([
-            'message' => 'Subscription cancelled. It remains active until ' . Carbon::parse($subscription->end_date)->toFormattedDateString()
-        ], 200);
+        return back()->with('message', 'Subscription cancelled successfully.');
     }
 }
