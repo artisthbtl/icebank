@@ -3,36 +3,42 @@ import { Box, Button } from '@mui/material';
 import AddCardIcon from '@mui/icons-material/AddCard';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
-import '../../css/DashboardPage.css';
+import '../../css/FeatureButtons.css'; // Importing the new dedicated CSS
 
 export default function FeatureButtons({ onAddBalance, onRestrictedFeature }) {
     return (
-        <Box className="dashboard-features-container">
+        <Box className="feature-btns-container">
             <Button
                 onClick={onAddBalance} 
                 variant="contained"
-                className="dashboard-feature-btn feature-btn-add"
+                className="feature-btn feature-btn-add"
                 startIcon={<AddCardIcon />}
             >
-                Add Balance
+                <span className="feature-btn-text">
+                    Add Balance
+                </span>
             </Button>
 
             <Button
                 onClick={() => onRestrictedFeature('/transfer')}
                 variant="contained"
-                className="dashboard-feature-btn feature-btn-transfer"
+                className="feature-btn feature-btn-transfer"
                 startIcon={<SwapHorizIcon />}
             >
-                Transfer
+                <span className="feature-btn-text">
+                    Transfer
+                </span>
             </Button>
 
             <Button
                 onClick={() => onRestrictedFeature('/subscriptions')}
                 variant="contained"
-                className="dashboard-feature-btn feature-btn-subscribe"
+                className="feature-btn feature-btn-subscribe"
                 startIcon={<SubscriptionsIcon />}
             >
-                Subscribe
+                <span className="feature-btn-text">
+                    Subscribe
+                </span>
             </Button>
         </Box>
     );

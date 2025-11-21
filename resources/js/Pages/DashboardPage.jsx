@@ -154,15 +154,16 @@ export default function DashboardPage() {
                         />
                     </Box>
 
+
+                    <Box sx={{ my: 4 }}>
+                        <RecentTransactionCard transactions={recentTransactions} />
+                    </Box>
+                    
                     {activeSubscriptions?.data?.length > 0 && (
                         <Box sx={{ my: 4 }}>
                             <ActiveSubscriptionCard subscriptions={activeSubscriptions} />
                         </Box>
                     )}
-
-                    <Box sx={{ my: 4 }}>
-                        <RecentTransactionCard transactions={recentTransactions} />
-                    </Box>
 
                     {latestVerification && status !== 'approved' && (
                         <Box sx={{ my: 4 }}>

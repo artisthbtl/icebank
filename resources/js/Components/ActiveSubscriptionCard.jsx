@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
-import '../../css/DashboardPage.css';
+import '../../css/ActiveSubscriptionCard.css';
 import IceCubeIcon from './IceCubeIcon';
 
 export default function ActiveSubscriptionCard({ subscriptions }) {
@@ -17,76 +17,86 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
         if (page < totalPages - 1) setPage(page + 1);
     };
 
-    const currentSubs = subs.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+    const handleCancelClick = (subId, planName) => {
+        alert(`Open ConfirmCancellationModal for: ${planName} (ID: ${subId})`);
+    };
 
     if (subs.length === 0) return null;
 
+    const currentSubs = subs.slice(page * itemsPerPage, (page + 1) * itemsPerPage);
+
     return (
-        <Box className="dashboard-recent-txn-container" sx={{ mb: 4 }}>
-            <div className="dashboard-section-header">
-                <Typography variant="h6" className="dashboard-section-title">
+        <Box className="active-sub-card-container">
+            <div className="active-sub-header">
+                <Typography variant="h6" className="active-sub-title">
                     Active Subscriptions
                 </Typography>
                 
-                <div style={{ display: 'flex', gap: '8px', userSelect: 'none' }}>
+                <div className="active-sub-nav">
                     <span 
-                        className="view-all-link" 
+                        className="active-sub-nav-btn" 
                         onClick={handlePrev}
-                        style={{ 
-                            cursor: page === 0 ? 'default' : 'pointer',
-                            opacity: page === 0 ? 0.3 : 1,
-                            fontSize: '1.2rem'
-                        }}
+                        style={{ opacity: page === 0 ? 0.3 : 1, cursor: page === 0 ? 'default' : 'pointer' }}
                     >
                         &lt;
                     </span>
-                    <span style={{ color: '#334155', fontSize: '1.2rem' }}>/</span>
+                    <span className="active-sub-nav-separator">/</span>
                     <span 
-                        className="view-all-link" 
+                        className="active-sub-nav-btn" 
                         onClick={handleNext}
-                        style={{ 
-                            cursor: page >= totalPages - 1 ? 'default' : 'pointer',
-                            opacity: page >= totalPages - 1 ? 0.3 : 1,
-                            fontSize: '1.2rem'
-                        }}
+                        style={{ opacity: page >= totalPages - 1 ? 0.3 : 1, cursor: page >= totalPages - 1 ? 'default' : 'pointer' }}
                     >
                         &gt;
                     </span>
                 </div>
             </div>
 
-            <div className="dashboard-txn-list">
+            <div className="active-sub-list">
                 {currentSubs.map((sub) => (
-                    <div key={sub.id} className="dashboard-txn-item">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div key={sub.id} className="active-sub-item">
+                        <div className="active-sub-left-group">
                             <Avatar 
+                                variant="rounded"
                                 src={sub.plan?.service?.company?.logo_path} 
                                 alt={sub.plan?.service?.company?.name}
-                                sx={{ width: 40, height: 40, bgcolor: '#334155', fontSize: '1rem' }}
+                                sx={{ 
+                                    width: 40, 
+                                    height: 40, 
+                                    bgcolor: '#334155',
+                                    borderRadius: '8px'
+                                }}
                             >
                                 {sub.plan?.service?.company?.name?.charAt(0)}
                             </Avatar>
                             
-                            <div className="txn-details">
-                                <Typography className="txn-title">
+                            <div className="active-sub-details">
+                                <Typography className="active-sub-service-name">
                                     {sub.plan?.service?.name}
                                 </Typography>
-                                <Typography className="txn-date">
+                                <Typography className="active-sub-plan-name">
                                     {sub.plan?.service?.company?.name} • {sub.plan?.name}
                                 </Typography>
                             </div>
                         </div>
 
-                        <div className="txn-amount-group">
-                            <div className="txn-main-amount-row">
+                        <div className="active-sub-right-group">
+                            <div className="active-sub-price-row">
                                 <IceCubeIcon width={16} height={16} color="#38BDF8" />
-                                <Typography className="txn-value txn-income" sx={{ fontSize: '1rem !important' }}>
+                                <Typography className="active-sub-price">
                                     {Number(sub.plan?.price).toLocaleString('id-ID')}
                                 </Typography>
                             </div>
-                            <Typography className="txn-fee-text">
-                                Renew: {new Date(sub.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
+                            
+                            <Typography className="active-sub-renew-date">
+                                Renew: {sub.endDate ? new Date(sub.endDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }) : 'N/A'}
                             </Typography>
+
+                            <button 
+                                className="active-sub-cancel-btn"
+                                onClick={() => handleCancelClick(sub.id, sub.plan?.service?.name)}
+                            >
+                                Cancel
+                            </button>
                         </div>
                     </div>
                 ))}

@@ -1,0 +1,172 @@
+.active-sub-card-container {
+    background-color: #1E293B;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.active-sub-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.active-sub-title {
+    color: #E2E8F0 !important;
+    font-weight: 550 !important;
+    margin-bottom: 0 !important;
+    font-size: 1.25rem !important;
+}
+
+.active-sub-nav {
+    display: flex;
+    gap: 8px;
+    user-select: none;
+}
+
+.active-sub-nav-btn {
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #94A3B8;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: inline-block;
+}
+
+.active-sub-nav-btn:hover {
+    color: #E2E8F0;
+}
+
+.active-sub-nav-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #38BDF8;
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.active-sub-nav-btn:hover::after {
+    transform: scaleX(1);
+}
+
+.active-sub-nav-btn:active {
+    transform: scale(0.95);
+}
+
+.active-sub-nav-separator {
+    color: #334155;
+    font-size: 1.2rem;
+}
+
+.active-sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.active-sub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #334155;
+}
+
+.active-sub-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.active-sub-left-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.active-sub-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.active-sub-service-name {
+    color: #E2E8F0 !important;
+    font-weight: 500 !important;
+    font-size: 1rem !important;
+}
+
+.active-sub-plan-name {
+    color: #94A3B8 !important;
+    font-size: 0.9rem !important;
+}
+
+.active-sub-right-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.active-sub-price-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.active-sub-price {
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    color: #38BDF8 !important;
+}
+
+.active-sub-renew-date {
+    color: #64748B;
+    font-size: 0.75rem !important;
+    margin-top: 2px !important;
+}
+
+.active-sub-cancel-btn {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin-top: 6px;
+    
+    color: #EF4444;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.active-sub-cancel-btn:hover {
+    text-decoration: none;
+}
+
+.active-sub-cancel-btn::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background-color: #EF4444;
+    bottom: -2px;
+    left: 0;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+}
+
+.active-sub-cancel-btn:hover::after {
+    transform: scaleX(1);
+}
+
+.active-sub-cancel-btn:active {
+    transform: scale(0.95);
+}
