@@ -1,4 +1,3 @@
-import React from 'react';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { Typography, TextField, Button, CircularProgress, Box } from '@mui/material';
@@ -10,12 +9,12 @@ const otpSchema = z.object({
     otp: z.string().min(6, 'Code must be 6 digits').max(6, 'Code must be 6 digits'),
 });
 
-const verifyOtp = async (otpData) => {
-    const { data } = await axios.post(route('verify-otp'), otpData);
-    return data;
-};
-
-export default function OtpForm({ userId }) {
+export default function OtpForm({ 
+    userId, 
+    idKey = 'userId',
+    submitRoute = 'verify-otp',
+    redirectRoute = '/dashboard'
+}) {
 
     const { 
         control, 
@@ -30,11 +29,16 @@ export default function OtpForm({ userId }) {
         }
     });
 
+    const verifyOtp = async (otpData) => {
+        const { data } = await axios.post(route(submitRoute), otpData);
+        return data;
+    };
+
     const mutation = useMutation({
         mutationFn: verifyOtp,
         
         onSuccess: (data) => {
-            window.location.href = '/dashboard'; 
+            window.location.href = redirectRoute; 
         },
         
         onError: (error) => {
@@ -54,7 +58,11 @@ export default function OtpForm({ userId }) {
 
     const onSubmit = (data) => {
         setError('root.serverError', { type: 'manual', message: undefined });
-        mutation.mutate({ otp: data.otp, userId: userId });
+        
+        const payload = { otp: data.otp };
+        payload[idKey] = userId;
+
+        mutation.mutate(payload);
     };
 
     return (

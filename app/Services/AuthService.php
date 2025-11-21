@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
+use App\Mail\IcemanLoginOtpMail;
 use App\Models\User;
-use App\Models\Admin;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\UserLoginOtpMail;
-use App\Mail\AdminLoginOtpMail;
+use App\Models\Iceman;
 
 class AuthService
 {
@@ -35,19 +35,19 @@ class AuthService
         return true;
     }
 
-    public function sendAdminOtp(Admin $admin): void
+    public function sendIcemanOtp(Iceman $iceman): void
     {
         $otp = random_int(100000, 999999);
-        $cacheKey = 'otp_for_admin_' . $admin->id;
+        $cacheKey = 'otp_for_iceman_' . $iceman->id;
 
         Cache::put($cacheKey, $otp, now()->addMinutes(5));
 
-        Mail::to($admin)->send(new AdminLoginOtpMail($admin, (string)$otp));
+        Mail::to($iceman)->send(new IcemanLoginOtpMail($iceman, (string)$otp));
     }
 
-    public function verifyAdminOtp(int $adminId, string $otp): bool
+    public function verifyIcemanOtp(int $icemanId, string $otp): bool
     {
-        $cacheKey = 'otp_for_admin_' . $adminId;
+        $cacheKey = 'otp_for_iceman_' . $icemanId;
         $storedOtp = Cache::get($cacheKey);
 
         if (!$storedOtp || $storedOtp != $otp) {

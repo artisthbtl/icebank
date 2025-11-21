@@ -10,11 +10,12 @@ use App\Http\Controllers\API\SubscribeController;
 use App\Http\Controllers\API\TransactionHistoryController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
+use App\Http\Controllers\IcemanAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->middleware('signed')->name('auth.verify-update');
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:web', 'guest:icemen')->group(function () {
     Route::get('/', function () {return inertia('LandingPage');})->name('landing');
     Route::get('/register', function () {return inertia('RegisterPage');})->name('register');
     Route::get('/login', function () {return inertia('LoginPage');})->name('login');
@@ -29,7 +30,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('has.account')->group(function () {
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:web')->group(function () {
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
         Route::get('/create-pin', function () {return inertia('CreatePinPage');})->name('pin.create');
         Route::post('/users/store-pin', [UserController::class, 'storePin'])->name('pin.store');
@@ -70,10 +71,23 @@ Route::middleware('has.account')->group(function () {
     });
 });
 
+
+
 Route::prefix('iceman')->group(function () {
-    Route::middleware('guest')->group(function () {
+    
+    Route::middleware('guest:icemen', 'guest:web')->group(function () {
         Route::get('/', function () {return inertia('Iceman/Iceman');})->name('iceman.landing');
         Route::get('/login', function () {return inertia('Iceman/LoginPage');})->name('iceman.login');
-        Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('iceman.verify-otp');
+
+        Route::post('/login', [IcemanAuthController::class, 'login'])->name('iceman.login.submit');
+        Route::post('/verify-otp', [IcemanAuthController::class, 'verifyOtp'])->name('iceman.verify-otp');
+    });
+
+    Route::middleware('auth:icemen')->group(function () {
+        Route::post('/logout', [IcemanAuthController::class, 'logout'])->name('iceman.logout');
+        
+        Route::get('/dashboard', function () {
+            return inertia('Iceman/DashboardPage');
+        })->name('iceman.dashboard');
     });
 });

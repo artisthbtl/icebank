@@ -16,6 +16,5 @@ Route::middleware('throttle:60,1')->prefix('auth')->name('auth.')->group(functio
 
     Route::middleware('signed')->group(function () {
         Route::get('/verify/{id}/{hash}', [AuthController::class, 'verify'])->name('verify');
-        Route::get('/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->name('verify-email-update');
     });
 });

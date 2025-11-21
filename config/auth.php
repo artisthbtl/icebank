@@ -45,7 +45,7 @@ return [
             'provider' => 'users',
         ],
         'icemen' => [
-            'driver' => 'jwt',
+            'driver' => 'session',
             'provider' => 'icemen',
         ],
     ],
