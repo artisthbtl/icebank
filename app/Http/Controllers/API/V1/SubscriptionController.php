@@ -67,9 +67,6 @@ class SubscriptionController extends Controller
                                 'new_balance' => $account->balance
                             ], 200);
                         }
-                        
-                        // If end_date has passed, fall through to the "Charge Logic" below
-                        // We treat "Canceled (Expired)" exactly the same as "Expired"
                     }
                 }
 

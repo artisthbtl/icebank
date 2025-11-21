@@ -4,6 +4,7 @@ import Navbar from "@/Components/Navbar";
 import AccountInfoCard from "@/Components/AccountInfoCard";
 import FeatureButtons from "@/Components/FeatureButtons";
 import RecentTransactionCard from '@/Components/RecentTransactionCard';
+import ActiveSubscriptionCard from '@/Components/ActiveSubscriptionCard'; // Import the new card
 import LatestVerificationCard from '@/Components/LatestVerificationCard';
 import AddBalanceModal from '@/Components/AddBalanceModal';
 import EnterPinModal from '@/Components/EnterPinModal';
@@ -18,7 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import '../../css/DashboardPage.css'; 
 
 export default function DashboardPage() {
-    const { user, account, recentTransactions, latestVerification } = usePage().props;
+    const { user, account, recentTransactions, latestVerification, activeSubscriptions } = usePage().props;
     
     const [isAddBalanceOpen, setIsAddBalanceOpen] = useState(false);
     const [isEnterPinOpen, setIsEnterPinOpen] = useState(false);
@@ -91,7 +92,6 @@ export default function DashboardPage() {
                 </Alert>
             );
         }
-
         if (status === 'rejected') {
             return (
                 <Alert 
@@ -109,7 +109,6 @@ export default function DashboardPage() {
                 </Alert>
             );
         }
-
         if (status === 'pending') {
             return (
                 <Alert 
@@ -122,7 +121,6 @@ export default function DashboardPage() {
                 </Alert>
             );
         }
-
         if (!status) {
             return (
                 <Alert 
@@ -135,7 +133,6 @@ export default function DashboardPage() {
                 </Alert>
             );
         }
-
         return null;
     };
 
@@ -157,6 +154,12 @@ export default function DashboardPage() {
                         />
                     </Box>
 
+                    {activeSubscriptions?.data?.length > 0 && (
+                        <Box sx={{ my: 4 }}>
+                            <ActiveSubscriptionCard subscriptions={activeSubscriptions} />
+                        </Box>
+                    )}
+
                     <Box sx={{ my: 4 }}>
                         <RecentTransactionCard transactions={recentTransactions} />
                     </Box>
@@ -169,6 +172,7 @@ export default function DashboardPage() {
 
                 </Container>
 
+                {/* ... (keep existing Modals) ... */}
                 <AddBalanceModal 
                     open={isAddBalanceOpen} 
                     onClose={() => setIsAddBalanceOpen(false)}

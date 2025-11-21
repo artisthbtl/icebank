@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\V1\AccountResource;
+use App\Http\Resources\V1\SubscriptionResource;
 use App\Http\Resources\V1\TransactionResource;
 use App\Http\Resources\V1\UserResource;
 use App\Http\Resources\V1\VerificationResource;
@@ -22,12 +23,19 @@ class DashboardController extends Controller
             ? $user->account->transactions()->latest()->take(5)->get() 
             : collect([]);
 
+        $activeSubscriptions = $user->subscriptions()
+            ->where('status', 'active')
+            ->with(['plan.service.company'])
+            ->latest()
+            ->get();
+
         $latestVerification = $user->verifications()->latest()->first();
 
         return Inertia::render('DashboardPage', [
             'user' => (new UserResource($user))->resolve(),
             'account' => $user->account ? (new AccountResource($user->account))->resolve() : null,
             'recentTransactions' => TransactionResource::collection($recentTransactions),
+            'activeSubscriptions' => SubscriptionResource::collection($activeSubscriptions),
             'latestVerification' => $latestVerification ? (new VerificationResource($latestVerification))->resolve() : null,
         ]);
     }
