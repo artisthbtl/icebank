@@ -38,16 +38,17 @@ class AccountController extends Controller
     public function addBalance(AddBalanceRequest $request)
     {
         $user = Auth::user();
-        $account = $user->account;
         $amount = $request->amount;
-
         $maxBalance = 99999999999.99;
-        if (($account->balance + $amount) > $maxBalance) {
-            return response()->json(['error' => 'Balance limit exceeded.'], 400);
-        }
 
         try {
-            DB::transaction(function () use ($account, $amount) {                
+            $newBalance = DB::transaction(function () use ($user, $amount, $maxBalance) {
+                $account = $user->account()->lockForUpdate()->first();
+
+                if (($account->balance + $amount) > $maxBalance) {
+                    throw new Exception('Balance limit exceeded.'); 
+                }
+
                 $account->balance += $amount;
                 $account->save();
 
@@ -57,14 +58,21 @@ class AccountController extends Controller
                     'amount' => $amount,
                     'description' => 'Added balance to account',
                 ]);
+
+                return $account->balance;
             });
+
         } catch (Exception $e) {
+            if ($e->getMessage() === 'Balance limit exceeded.') {
+                return response()->json(['error' => 'Balance limit exceeded.'], 400);
+            }
+
             return response()->json(['error' => 'An error occurred while adding balance.'], 500);
         }
 
         return response()->json([
             'message' => "$amount ices has been added to your account.",
-            'newBalance' => $account->balance
+            'newBalance' => $newBalance
         ], 200);
     }
 }

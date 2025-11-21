@@ -6,8 +6,6 @@ use App\Models\Transaction;
 use App\Models\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\V1\TransferRequest;
-use App\Http\Resources\V1\TransactionResource;
-use App\Http\Resources\V1\TransactionCollection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Exception;
@@ -15,44 +13,14 @@ use Illuminate\Http\Request as HttpRequest;
 
 class TransactionController extends Controller
 {
-    public function index()
-    {
-        $user = Auth::user();
-        $account = $user->account;
-
-        if (!$account) {
-            return response()->json(['message' => 'User does not have an account.'], 404);
-        }
-
-        $transactions = Transaction::where('account_id', $account->id)
-                                   ->with(['plan.service.company', 'receiverAccount.user', 'senderAccount.user'])
-                                   ->orderBy('created_at', 'desc')
-                                   ->paginate();
-
-        return new TransactionCollection($transactions);
-    }
-
-    public function show(Transaction $transaction)
-    {
-        $this->authorize('view', $transaction);
-    
-        if ($transaction->type === 'pay_plan') {
-            $transaction->load('plan.service.company');
-        } elseif ($transaction->type === 'transfer') {
-            if ($transaction->amount < 0) {
-                $transaction->load('receiverAccount.user');
-            } else {
-                $transaction->load('senderAccount.user');
-            }
-        }
-        return new TransactionResource($transaction);
-    }
-
     public function validateTransfer(HttpRequest $request)
     {
         $request->validate([
-            'amount' => 'required|numeric|min:1',
+            'amount' => 'required|numeric|min:1|max:1000000.00',
             'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
+        ], [
+            'amount.max' => 'The amount entered is too large.',
+            'amount.min' => 'The amount must be at least 0.01.',
         ]);
 
         $user = Auth::user();
@@ -66,6 +34,13 @@ class TransactionController extends Controller
         $fee = 0.5;
         if ($sender->balance < ($request->amount + $fee)) {
             return response()->json(['errors' => ['amount' => ['Insufficient balance for transfer + fee.']]], 422);
+        }
+
+        $maxBalance = 99999999999.99;
+        if (($receiver->balance + $request->amount) > $maxBalance) {
+            return response()->json([
+                'errors' => ['amount' => ['Receiver cannot accept this amount due to balance limits.']]
+            ], 422);
         }
 
         return response()->json([
@@ -82,9 +57,10 @@ class TransactionController extends Controller
         $user = Auth::user();
         $amount = $request->amount;
         $fee = 0.5;
+        $maxBalance = 99999999999.99;
 
         try {
-            return DB::transaction(function () use ($user, $request, $amount, $fee) {
+            return DB::transaction(function () use ($user, $request, $amount, $fee, $maxBalance) {
                 
                 $sender = $user->account()->lockForUpdate()->first();
                 
@@ -102,6 +78,10 @@ class TransactionController extends Controller
 
                 if ($sender->balance < ($amount + $fee)) {
                     return response()->json(['error' => 'Insufficient balance.'], 400);
+                }
+
+                if (($receiver->balance + $amount) > $maxBalance) {
+                    return response()->json(['error' => 'Transfer failed. Receiver balance limit exceeded.'], 400);
                 }
 
                 $sender->balance -= ($amount + $fee);

@@ -36,16 +36,18 @@ export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
         setLoading(true);
 
         try {
-            // Post to the subscription route with the plan ID
             await axios.post(route('subscribe.store', plan.id), { 
                 pin: pin
             });
             
             setPin('');
-            onSuccess(plan.name); // Trigger success in parent
+            
+            if (onSuccess) {
+                onSuccess(plan.name);
+            }
+            
             onClose(); 
             
-            // Reload to update user balance and account info
             router.reload({ only: ['user', 'account', 'recentTransactions'] });
 
         } catch (err) {
@@ -96,7 +98,7 @@ export default function SubscribeModal({ open, onClose, plan, onSuccess }) {
                         <Typography className="detail-label total">Total Price</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <IceCubeIcon width={20} height={20} color="#38BDF8" />
-                            <Typography className="detail-value total">{plan.price} Ices</Typography>
+                            <Typography className="detail-value total">{plan.price}</Typography>
                         </Box>
                     </div>
                 </Box>

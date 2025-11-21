@@ -19,4 +19,12 @@ class TransferRequest extends FormRequest
             'receiverAccountNumber' => 'required|string|exists:accounts,account_number',
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'amount.max' => 'The amount entered is too large.',
+            'amount.min' => 'The amount must be at least 0.01.',
+        ];
+    }
 }

@@ -77,7 +77,7 @@ export default function EnterPinModal({ open, onClose, amount }) {
                     <Typography variant="h5" className="enter-pin-title">
                         Enter PIN
                     </Typography>
-                    <IconButton onClick={handleClose} className="enter-pin-close-btn"> {/* Use handleClose here */}
+                    <IconButton onClick={handleClose} className="enter-pin-close-btn">
                         <CloseIcon />
                     </IconButton>
                 </div>
@@ -86,24 +86,25 @@ export default function EnterPinModal({ open, onClose, amount }) {
                     Please enter your 6-digit PIN to confirm adding <span className="confirm-amount-text">{amount} Ices</span> to your account.
                 </Typography>
 
-                <Box component="form" onSubmit={handleSubmit}>
+                <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                     
-                    <div className="pin-input-container">
-                        <TextField
-                            value={pin}
-                            onChange={handlePinChange}
-                            type="password"
-                            placeholder="••••••"
-                            fullWidth
-                            autoFocus
-                            slotProps={{ 
-                                inputMode: 'numeric', 
-                                maxLength: 6,
-                                autoComplete: "off"
-                            }}
-                            className="pin-textfield"
-                        />
-                    </div>
+                    <Typography className="enter-pin-label">Enter your PIN to confirm</Typography>
+
+                    <TextField
+                        value={pin}
+                        onChange={handlePinChange}
+                        type="password"
+                        placeholder="••••••"
+                        fullWidth
+                        autoFocus
+                        className="conf-pin-field"
+                        sx={{ mb: 3 }}
+                        slotProps={{ 
+                            inputMode: 'numeric', 
+                            maxLength: 6,
+                            autoComplete: "off"
+                        }}
+                    />
 
                     <Button
                         type="submit"

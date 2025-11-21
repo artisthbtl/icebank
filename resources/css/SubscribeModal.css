@@ -89,6 +89,15 @@
     margin-bottom: 8px !important;
     font-size: 0.9rem !important;
     font-weight: 500 !important;
+    text-align: center !important;
+    display: block !important;
+}
+
+.conf-pin-field .MuiInputBase-input {
+    text-align: center !important;
+    letter-spacing: 0.5em !important;
+    font-size: 1.5rem !important;
+    padding: 12px !important;
 }
 
 .conf-pin-field .MuiOutlinedInput-root {
