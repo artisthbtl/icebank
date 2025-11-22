@@ -1,0 +1,108 @@
+@import './IcemanDashboardPage.css'; 
+
+.iceman-users-page-wrapper {
+    background-color: #04040b;
+    color: #E2E8F0;
+    min-height: 100vh;
+    width: 100%;
+    font-family: "Host Grotesk", sans-serif;
+}
+
+.iceman-users-content-container {
+    padding-top: 32px;
+    padding-bottom: 48px;
+}
+
+.iceman-users-header-section {
+    margin-bottom: 32px;
+}
+
+.page-title {
+    color: #E2E8F0 !important;
+    font-weight: 700 !important;
+}
+
+.page-subtitle {
+    color: #94A3B8 !important;
+}
+
+.user-list-container {
+    background-color: #1E293B;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    padding: 0 24px;
+    overflow: hidden;
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #334155;
+    transition: background-color 0.2s ease;
+}
+
+.user-item:last-child {
+    border-bottom: none;
+}
+
+.user-item-pending {
+    /* Optional: subtle highlight for pending items */
+    /* background-color: rgba(251, 191, 36, 0.05); */
+}
+
+.user-info-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-avatar {
+    width: 48px !important;
+    height: 48px !important;
+    background-color: #38BDF8 !important;
+    color: #0F172A !important;
+    font-weight: 700 !important;
+}
+
+.user-name {
+    color: #E2E8F0 !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+}
+
+.user-email {
+    color: #94A3B8 !important;
+    font-size: 0.875rem !important;
+}
+
+.user-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.status-chip-pending {
+    background-color: rgba(251, 191, 36, 0.1) !important;
+    color: #FBBF24 !important;
+    border: 1px solid rgba(251, 191, 36, 0.2) !important;
+    font-weight: 600 !important;
+}
+
+.manage-btn {
+    border-color: #334155 !important;
+    color: #38BDF8 !important;
+    text-transform: none !important;
+    padding: 6px 16px !important;
+}
+
+.manage-btn:hover {
+    background-color: rgba(56, 189, 248, 0.1) !important;
+    border-color: #38BDF8 !important;
+}
