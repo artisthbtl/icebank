@@ -11,6 +11,8 @@ use App\Http\Middleware\IsIceman;
 use App\Http\Middleware\IsVerified;
 use App\Http\Middleware\ValidatePin;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -31,6 +33,26 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
+
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('iceman/*')) {
+                return route('iceman.login');
+            }
+            
+            if (Auth::guard('icemen')->check()) {
+                return route('iceman.dashboard');
+            }
+
+            return route('login');
+        });
+
+        $middleware->redirectUsersTo(function (Request $request) {
+            if (Auth::guard('icemen')->check()) { 
+                return route('iceman.dashboard');
+            }
+            
+            return route('dashboard');
+        });
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('subscriptions:renew')->daily();
