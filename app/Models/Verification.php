@@ -14,6 +14,7 @@ class Verification extends Model
         'ktp_path',
         'selfie_path',
         'status',
+        'rejection_reason',
     ];
     
     public function user()

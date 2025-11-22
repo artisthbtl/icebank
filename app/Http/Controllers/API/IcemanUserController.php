@@ -8,6 +8,7 @@ use App\Models\Subscription;
 use App\Models\Transaction;
 use App\Models\Verification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class IcemanUserController extends Controller
@@ -75,5 +76,37 @@ class IcemanUserController extends Controller
         return Storage::disk('local')->response($path);
     }
 
-    
+    public function approveVerification(Verification $verification)
+    {
+        DB::transaction(function () use ($verification) {
+            $verification->update([
+                'status' => 'approved',
+                'rejection_reason' => null,
+            ]);
+
+            $verification->user->account()->update([
+                'is_verified' => 'yes'
+            ]);
+        });
+
+        return redirect()->back()->with('success', 'User verification approved successfully.');
+    }
+
+    public function rejectVerification(Request $request, Verification $verification)
+    {
+        $validated = $request->validate([
+            'rejection_reason' => ['required', 'string', 'max:1000'],
+        ]);
+
+        $verification->update([
+            'status' => 'rejected',
+            'rejection_reason' => $validated['rejection_reason'],
+        ]);
+        
+        $verification->user->account()->update([
+            'is_verified' => 'no'
+        ]);
+
+        return redirect()->back()->with('success', 'User verification rejected.');
+    }
 }

@@ -99,5 +99,9 @@ Route::prefix('iceman')->group(function () {
         Route::get('/users/{user}', [IcemanUserController::class, 'show'])->name('iceman.users.show');
 
         Route::get('/verification-file/{verification}', [IcemanUserController::class, 'showFile'])->name('iceman.verification.file');
+        Route::post('/verifications/{verification}/approve', [IcemanUserController::class, 'approveVerification'])
+            ->name('iceman.verifications.approve');
+        Route::post('/verifications/{verification}/reject', [IcemanUserController::class, 'rejectVerification'])
+            ->name('iceman.verifications.reject');
     });
 });

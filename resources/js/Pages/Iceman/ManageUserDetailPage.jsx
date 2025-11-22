@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Container, Box, Typography, Button, Grid, Chip, Avatar, Pagination } from '@mui/material';
 import IcemanNavbar from '@/Components/IcemanNavbar';
@@ -6,10 +6,15 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import CancelIcon from '@mui/icons-material/Cancel';
 import IceCubeIcon from '@/Components/IceCubeIcon';
+import ApproveVerificationModal from '@/Components/ApproveVerificationModal';
+import RejectVerificationModal from '@/Components/RejectVerificationModal';
 import '../../../css/IcemanUserDetailPage.css';
 
 export default function ManageUserDetailPage({ user, latestVerification, activeSubscriptions, transactions }) {
-    
+    const [isApproveModalOpen, setIsApproveModalOpen] = useState(false);
+    const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
+
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
             day: 'numeric', month: 'short', year: 'numeric'
@@ -35,6 +40,31 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
         });
     };
 
+    // --- Handlers ---
+    const handleApproveConfirm = () => {
+        setIsProcessing(true);
+        router.post(route('iceman.verifications.approve', latestVerification.id), {}, {
+            onSuccess: () => {
+                setIsApproveModalOpen(false);
+                setIsProcessing(false);
+            },
+            onError: () => setIsProcessing(false)
+        });
+    };
+
+    const handleRejectConfirm = (reason) => {
+        setIsProcessing(true);
+        router.post(route('iceman.verifications.reject', latestVerification.id), {
+            rejection_reason: reason
+        }, {
+            onSuccess: () => {
+                setIsRejectModalOpen(false);
+                setIsProcessing(false);
+            },
+            onError: () => setIsProcessing(false)
+        });
+    };
+
     return (
         <>
             <Head title={`Manage ${user.first_name}`} />
@@ -43,7 +73,7 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
                 <IcemanNavbar />
 
                 <Container maxWidth="lg" className="iceman-user-detail-container">
-                    
+                    {/* Back Button & Header */}
                     <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Link href={route('iceman.users')} className="back-link">
                             <ArrowBackIcon sx={{ color: '#94A3B8' }} />
@@ -58,6 +88,7 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
                         </div>
                     </Box>
 
+                    {/* Verification Pending Card */}
                     {latestVerification && latestVerification.status === 'pending' && (
                         <Box className="detail-card verification-alert-card">
                             <div className="card-header-row">
@@ -65,16 +96,20 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
                                     ⚠️ Verification Request Pending
                                 </Typography>
                                 <div className="verification-actions">
+                                    {/* Triggers Reject Modal */}
                                     <Button 
                                         className="btn-reject" 
                                         size="large" 
                                         sx={{ mr: 1 }}
+                                        onClick={() => setIsRejectModalOpen(true)}
                                     >
                                         Reject
                                     </Button>
+                                    {/* Triggers Approve Modal */}
                                     <Button 
                                         className="btn-approve" 
-                                        size="large" 
+                                        size="large"
+                                        onClick={() => setIsApproveModalOpen(true)}
                                     >
                                         Approve
                                     </Button>
@@ -248,6 +283,21 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
                             <Typography className="empty-text">No transactions found.</Typography>
                         )}
                     </Box>
+
+                    {/* --- Modals --- */}
+                    <ApproveVerificationModal 
+                        isOpen={isApproveModalOpen}
+                        onClose={() => setIsApproveModalOpen(false)}
+                        onConfirm={handleApproveConfirm}
+                        isLoading={isProcessing}
+                    />
+
+                    <RejectVerificationModal 
+                        isOpen={isRejectModalOpen}
+                        onClose={() => setIsRejectModalOpen(false)}
+                        onConfirm={handleRejectConfirm}
+                        isLoading={isProcessing}
+                    />
 
                 </Container>
             </div>
