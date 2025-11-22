@@ -13,6 +13,8 @@ use App\Http\Middleware\ValidatePin;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -32,6 +34,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->web(append: [
             HandleInertiaRequests::class,
+            AuthenticateSession::class,
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
@@ -58,5 +61,19 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->command('subscriptions:renew')->daily();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->renderable(function (NotFoundHttpException $e, Request $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return null;
+            }
+
+            if (Auth::guard('icemen')->check()) {
+                return redirect()->route('iceman.dashboard');
+            }
+
+            if (Auth::guard('web')->check()) {
+                return redirect()->route('dashboard');
+            }
+
+            return redirect()->route('landing');
+        });
     })->create();

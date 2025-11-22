@@ -211,3 +211,9 @@
     background-color: rgba(15, 23, 42, 0.3);
     border-top: 1px dashed #334155;
 }
+
+.MuiAvatar-root img {
+    object-fit: contain !important; 
+    height: 100% !important; 
+    width: 100% !important; 
+}

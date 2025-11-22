@@ -21,7 +21,10 @@ Route::middleware('guest:web', 'guest:icemen')->group(function () {
     Route::get('/', function () {return inertia('LandingPage');})->name('landing');
     Route::get('/register', function () {return inertia('RegisterPage');})->name('register');
     Route::get('/login', function () {return inertia('LoginPage');})->name('login');
-    Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])->name('verify-otp');
+    
+    Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp'])
+        ->middleware('throttle:5,10') 
+        ->name('verify-otp');
 
     Route::get('/reset-password', function (Illuminate\Http\Request $request) {
         return inertia('ResetPasswordPage', [
@@ -47,27 +50,50 @@ Route::middleware('has.account')->group(function () {
 
             Route::get('/verification-file/{filename}', [VerificationController::class, 'showFile'])->name('verification.file');
 
-            Route::put('/profile/pin', [UserController::class, 'updatePin'])->name('profile.update-pin');
-            Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('profile.update-password');
-            Route::put('/profile/email', [UserController::class, 'updateEmail'])->name('profile.update-email');
-            Route::post('/profile/photo', [UserController::class, 'updateProfilePhoto'])->name('profile.update-photo');
-            Route::delete('/profile/photo', [UserController::class, 'deleteProfilePhoto'])->name('profile.delete-photo');
-            Route::delete('/profile', [UserController::class, 'destroy'])->name('profile.destroy');
+            Route::put('/profile/pin', [UserController::class, 'updatePin'])
+                ->middleware('throttle:5,5') 
+                ->name('profile.update-pin');
+            Route::put('/profile/password', [UserController::class, 'updatePassword'])
+                ->middleware('throttle:5,5') 
+                ->name('profile.update-password');
+            Route::put('/profile/email', [UserController::class, 'updateEmail'])
+                ->middleware('throttle:5,5') 
+                ->name('profile.update-email');
+            Route::post('/profile/photo', [UserController::class, 'updateProfilePhoto'])
+                ->middleware('throttle:10,1') 
+                ->name('profile.update-photo');
+            Route::delete('/profile/photo', [UserController::class, 'deleteProfilePhoto'])
+                ->middleware('throttle:10,1') 
+                ->name('profile.delete-photo');
+            Route::delete('/profile', [UserController::class, 'destroy'])
+                ->middleware('throttle:5,5')
+                ->name('profile.destroy');
 
             Route::get('/transactions', [TransactionHistoryController::class, 'index'])->name('transactions.index');
 
             Route::middleware(['can.verify'])->group(function () {
                 Route::get('/verify-id', function () {return inertia('IdVerificationPage');})->name('verify.id');
-                Route::post('/users/verifications', [VerificationController::class, 'store'])->name('verification.store');
+                Route::post('/users/verifications', [VerificationController::class, 'store'])
+                    ->middleware('throttle:4,60')
+                    ->name('verification.store');
             });
 
             Route::middleware('is.verified')->group(function () {
-                Route::post('/transfer/validate', [TransactionController::class, 'validateTransfer'])->name('transfer.validate');
-                Route::post('/transfer', [TransactionController::class, 'transfer'])->middleware('validate.pin')->name('transfer');
+                Route::post('/transfer/validate', [TransactionController::class, 'validateTransfer'])
+                    ->middleware('throttle:20,1') 
+                    ->name('transfer.validate');
+                Route::post('/transfer', [TransactionController::class, 'transfer'])
+                    ->middleware(['throttle:5,1', 'validate.pin']) 
+                    ->name('transfer');
+
                 Route::get('/subscribe', [SubscribeController::class, 'index'])->name('subscribe.index');                
-                Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])->middleware('validate.pin')->name('subscribe.store');
+                Route::post('/subscribe/{plan}', [SubscriptionController::class, 'subscribe'])
+                    ->middleware(['throttle:5,1', 'validate.pin']) 
+                    ->name('subscribe.store');
                 Route::put('/subscribe/{subscription}/cancel', [SubscriptionController::class, 'cancel'])->name('subscribe.cancel');
-                Route::post('/subscribe/{plan}/reactivate', [SubscriptionController::class, 'reactivate'])->name('subscribe.reactivate');
+                Route::post('/subscribe/{plan}/reactivate', [SubscriptionController::class, 'reactivate'])
+                    ->middleware('throttle:5,1')
+                    ->name('subscribe.reactivate');
             });
         });
     });
@@ -81,8 +107,12 @@ Route::prefix('iceman')->group(function () {
         Route::get('/', function () {return inertia('Iceman/Iceman');})->name('iceman.landing');
         Route::get('/login', function () {return inertia('Iceman/LoginPage');})->name('iceman.login');
 
-        Route::post('/login', [IcemanAuthController::class, 'login'])->name('iceman.login.submit');
-        Route::post('/verify-otp', [IcemanAuthController::class, 'verifyOtp'])->name('iceman.verify-otp');
+        Route::post('/login', [IcemanAuthController::class, 'login'])
+            ->middleware('throttle:6,1') 
+            ->name('iceman.login.submit');
+        Route::post('/verify-otp', [IcemanAuthController::class, 'verifyOtp'])
+            ->middleware('throttle:5,10') 
+            ->name('iceman.verify-otp');
     });
 
     Route::middleware('auth:icemen')->group(function () {

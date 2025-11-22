@@ -32,11 +32,11 @@ const ServiceItem = ({ service, onSelectPlan }) => {
         <div className="service-list-item"> 
             <div className="service-header" onClick={() => setExpanded(!expanded)}>
                 <div className="service-info-left">
-                    <Avatar 
-                        src={service.company?.logo_path ? `/storage/${service.company.logo_path}` : undefined} 
+                    <Avatar
+                        variant='square'
+                        src={service.company?.logoUrl} 
                         alt={service.company?.name}
                         className="company-logo"
-                        variant="rounded"
                     >
                         {service.company?.name?.charAt(0)}
                     </Avatar>

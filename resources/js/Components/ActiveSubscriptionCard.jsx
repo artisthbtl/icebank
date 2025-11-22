@@ -88,9 +88,9 @@ export default function ActiveSubscriptionCard({ subscriptions }) {
                         <div key={sub.id} className="active-sub-item">
                             <div className="active-sub-left-group">
                                 <Avatar 
-                                    variant="rounded"
-                                    src={sub.plan?.service?.company?.logo_path} 
+                                    src={sub.plan?.service?.company?.logoUrl} 
                                     alt={sub.plan?.service?.company?.name}
+                                    variant='square'
                                     sx={{ 
                                         width: 40, 
                                         height: 40, 

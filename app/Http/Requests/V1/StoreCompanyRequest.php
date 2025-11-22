@@ -15,7 +15,14 @@ class StoreCompanyRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,webp|max:2048|dimensions:ratio=1/1',
+        ];
+    }
+    
+    public function messages(): array
+    {
+        return [
+            'logo.dimensions' => 'The logo must be a square image (e.g., 500x500 pixels) to fit correctly.',
         ];
     }
 }

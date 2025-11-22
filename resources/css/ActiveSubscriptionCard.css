@@ -170,3 +170,9 @@
 .active-sub-cancel-btn:active {
     transform: scale(0.95);
 }
+
+.MuiAvatar-root img {
+    object-fit: contain !important; 
+    height: 100% !important; 
+    width: 100% !important; 
+}

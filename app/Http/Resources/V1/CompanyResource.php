@@ -12,7 +12,7 @@ class CompanyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'logoPath' => $this->logo_path,
+            'logoUrl' => $this->logo_url, 
         ];
     }
 }

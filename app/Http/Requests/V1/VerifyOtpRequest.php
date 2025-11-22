@@ -18,7 +18,7 @@ class VerifyOtpRequest extends FormRequest
         ];
 
         if ($this->is('auth/verify-otp')) {
-            $rules['userId'] = 'required|exists:users,id';
+            $rules['loginToken'] = 'required|string|size:64';
         } else {
             $rules['icemanId'] = 'required|exists:icemen,id';
         }

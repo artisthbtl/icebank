@@ -114,6 +114,8 @@ class UserController extends Controller
         $user->password = Hash::make($request->newPassword);
         $user->save();
 
+        Auth::logoutOtherDevices($request->newPassword); 
+
         return back();
     }
 

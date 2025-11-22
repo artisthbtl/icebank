@@ -15,7 +15,14 @@ class UpdateCompanyRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'logo' => 'nullable|image|max:2048',
+            'logo' => 'nullable|image|max:2048|dimensions:ratio=1/1',
+        ];
+    }
+    
+    public function messages(): array
+    {
+        return [
+            'logo.dimensions' => 'The logo must be a square image (e.g., 500x500 pixels) to fit correctly.',
         ];
     }
 }

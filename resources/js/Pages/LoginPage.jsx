@@ -37,7 +37,7 @@ const loginUser = async (userData) => {
 
 export default function LoginPage() {
     const [currentView, setCurrentView] = useState('login');
-    const [loginUserId, setLoginUserId] = useState(null);
+    const [loginToken, setLoginToken] = useState(null);
     const [criticalError, setCriticalError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
     const [formHeight, setFormHeight] = useState(null);
@@ -73,8 +73,8 @@ export default function LoginPage() {
                 setPollToken(data.pollToken);
                 setCurrentView('polling');
             } 
-            else if (data.userId) {
-                setLoginUserId(data.userId);
+            else if (data.loginToken) {
+                setLoginToken(data.loginToken);
                 setCurrentView('otp');
             }
         },
@@ -116,6 +116,7 @@ export default function LoginPage() {
         setCriticalError(null);
         setLoginData(null);
         setPollToken(null);
+        setLoginToken(null);
     };
 
     return (
@@ -261,7 +262,7 @@ export default function LoginPage() {
                         )}
 
                         {currentView === 'otp' && (
-                            <OtpForm userId={loginUserId} />
+                            <OtpForm loginToken={loginToken} />
                         )}
 
                         {currentView === 'error' && (

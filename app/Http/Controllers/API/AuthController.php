@@ -35,7 +35,7 @@ class AuthController extends Controller
         $user = User::where('email', $credentials['email'])->first();
 
         if (!$user || !Hash::check($credentials['password'], $user->password)) {
-            return response()->json(['error' => 'Invalid Credentials'], 401);
+            return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
         if (!$user->email_verified_at) {
@@ -61,10 +61,41 @@ class AuthController extends Controller
 
         $this->authService->sendOtp($user);
 
+        $loginToken = Str::random(64);
+        
+        Cache::put('login_otp_pending_' . $loginToken, $user->id, now()->addMinutes(5));
+
         return response()->json([
             'message' => 'OTP has been sent to your email.',
-            'userId' => $user->id,
+            'loginToken' => $loginToken,
         ]);
+    }
+
+    public function verifyOtp(VerifyOtpRequest $request)
+    {
+        $loginToken = $request->input('loginToken');
+        $userId = Cache::get('login_otp_pending_' . $loginToken);
+
+        if (!$userId) {
+            return response()->json(['error' => 'Session expired or invalid. Please login again.'], 401);
+        }
+
+        if (!$this->authService->verifyOtp($userId, $request->otp)) {
+            return response()->json(['error' => 'Invalid or expired OTP.'], 401);
+        }
+
+        $user = User::find($userId);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        Auth::login($user, true);
+        $request->session()->regenerate();
+
+        Cache::forget('login_otp_pending_' . $loginToken);
+
+        return response()->json(['message' => 'Login successful.']);
     }
 
     public function checkVerificationStatus($pollToken)
@@ -90,25 +121,6 @@ class AuthController extends Controller
         return response()->json([
             'verified' => $isVerified
         ]);
-    }
-
-    public function verifyOtp(VerifyOtpRequest $request)
-    {
-        if (!$this->authService->verifyOtp($request->userId, $request->otp)) {
-            return response()->json(['error' => 'Invalid or expired OTP.'], 401);
-        }
-
-        $user = User::find($request->userId);
-
-        if (!$user) {
-            return response()->json(['error' => 'User not found.'], 404);
-        }
-
-        Auth::login($user, true);
-
-        $request->session()->regenerate();
-
-        return response()->json(['message' => 'Login successful.']);
     }
 
     public function register(RegistrationRequest $request)
@@ -160,11 +172,6 @@ class AuthController extends Controller
         }
 
         return response()->json(['message' => 'Email has been successfully verified.'], 200);
-    }
-
-    public function me()
-    {
-        return response()->json(auth('api')->user());
     }
 
     public function logout(Request $request)

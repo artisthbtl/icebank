@@ -10,6 +10,7 @@ const otpSchema = z.object({
 });
 
 export default function OtpForm({ 
+    loginToken, 
     userId, 
     idKey = 'userId',
     submitRoute = 'verify-otp',
@@ -60,7 +61,12 @@ export default function OtpForm({
         setError('root.serverError', { type: 'manual', message: undefined });
         
         const payload = { otp: data.otp };
-        payload[idKey] = userId;
+
+        if (loginToken) {
+            payload.loginToken = loginToken;
+        } else if (userId) {
+            payload[idKey] = userId;
+        }
 
         mutation.mutate(payload);
     };

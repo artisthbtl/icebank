@@ -11,6 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import DeleteUserModal from '@/Components/DeleteUserModal';
 import '../../css/ProfilePage.css';
 import '../../css/DashboardPage.css';
@@ -27,6 +28,8 @@ export default function ProfilePage() {
     const [photoStatus, setPhotoStatus] = useState({ type: null, message: '' });
     const [photoValidation, setPhotoValidation] = useState('');
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const showVerifyButton = user.isVerified === 'no' && (user.latestVerificationStatus === null || user.latestVerificationStatus === 'rejected');
+    const isPending = user.latestVerificationStatus === 'pending';
     const fileInputRef = useRef(null);
     
     const emailForm = useForm({
@@ -72,7 +75,7 @@ export default function ProfilePage() {
 
     const handleUpdateEmail = (e) => {
         e.preventDefault();
-        setEmailStatus({ type: null, message: '' }); // Reset status
+        setEmailStatus({ type: null, message: '' });
         
         emailForm.put(route('profile.update-email'), {
             onSuccess: () => {
@@ -337,17 +340,25 @@ export default function ProfilePage() {
                                             <CheckCircleIcon sx={{ fontSize: 14, mr: 0.5 }} />
                                             Verified
                                         </span>
+                                    ) : isPending ? (
+                                        <span className="verify-status-badge status-pending" style={{ 
+                                            backgroundColor: 'rgba(234, 179, 8, 0.1)', 
+                                            color: '#ca8a04',
+                                            border: '1px solid rgba(234, 179, 8, 0.2)'
+                                        }}>
+                                            <AccessTimeIcon sx={{ fontSize: 14, mr: 0.5 }} /> {/* Import AccessTimeIcon */}
+                                            Pending
+                                        </span>
                                     ) : (
-                                        <>
-                                            <span className="verify-status-badge status-unverified">
-                                                <ErrorOutlineIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                                                Unverified
-                                            </span>
-                                        </>
+                                        <span className="verify-status-badge status-unverified">
+                                            <ErrorOutlineIcon sx={{ fontSize: 14, mr: 0.5 }} />
+                                            Unverified
+                                        </span>
                                     )}
                                 </Box>
                             </Grid>
-                            {user.isVerified === 'no' && (
+
+                            {showVerifyButton && (
                                 <Grid size={12}>
                                     <Button 
                                         type="submit" 
