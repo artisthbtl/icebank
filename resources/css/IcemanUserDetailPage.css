@@ -53,9 +53,62 @@
 }
 
 .verification-alert-card {
-    border: 1px solid rgba(251, 191, 36, 0.3);
-    background: linear-gradient(to bottom right, rgba(251, 191, 36, 0.05), rgba(30, 41, 59, 1));
     margin-bottom: 24px;
+}
+
+.verification-actions {
+    display: flex;
+    align-items: center;
+}
+
+.verification-actions .btn-reject,
+.verification-actions .btn-approve {
+    position: relative;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+    transition: transform 0.1s ease !important;
+}
+
+.verification-actions .btn-reject {
+    color: #EE4B2B !important; 
+}
+
+.verification-actions .btn-approve {
+    color: #38BDF8 !important;
+}
+
+.verification-actions .btn-reject::after,
+.verification-actions .btn-approve::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    width: 100%;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.8;
+}
+
+.verification-actions .btn-reject::after {
+    background-color: #EE4B2B;
+}
+
+.verification-actions .btn-approve::after {
+    background-color: #38BDF8;
+}
+
+.verification-actions .btn-reject:hover::after,
+.verification-actions .btn-approve:hover::after {
+    transform: scaleX(0.8);
+}
+
+.verification-actions .btn-reject:active,
+.verification-actions .btn-approve:active {
+    transform: scale(0.95) !important;
 }
 
 .card-header-row {

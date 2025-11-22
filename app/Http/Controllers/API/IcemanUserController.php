@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Subscription;
 use App\Models\Transaction;
+use App\Models\Verification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class IcemanUserController extends Controller
 {
@@ -55,4 +57,23 @@ class IcemanUserController extends Controller
             'transactions' => $transactions
         ]);
     }
+
+    public function showFile(Verification $verification, Request $request)
+    {
+        $type = $request->query('type');
+        
+        $path = match($type) {
+            'ktp' => $verification->ktp_path,
+            'selfie' => $verification->selfie_path,
+            default => null,
+        };
+
+        if (!$path || !Storage::disk('local')->exists($path)) {
+            abort(404);
+        }
+
+        return Storage::disk('local')->response($path);
+    }
+
+    
 }

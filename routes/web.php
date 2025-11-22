@@ -97,5 +97,7 @@ Route::prefix('iceman')->group(function () {
 
         Route::get('/users', [IcemanUserController::class, 'index'])->name('iceman.users');
         Route::get('/users/{user}', [IcemanUserController::class, 'show'])->name('iceman.users.show');
+
+        Route::get('/verification-file/{verification}', [IcemanUserController::class, 'showFile'])->name('iceman.verification.file');
     });
 });

@@ -27,6 +27,14 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
         });
     };
 
+    const getVerificationImageUrl = (type) => {
+        if (!latestVerification) return null;
+        return route('iceman.verification.file', { 
+            verification: latestVerification.id, 
+            type: type 
+        });
+    };
+
     return (
         <>
             <Head title={`Manage ${user.first_name}`} />
@@ -57,31 +65,38 @@ export default function ManageUserDetailPage({ user, latestVerification, activeS
                                     ⚠️ Verification Request Pending
                                 </Typography>
                                 <div className="verification-actions">
-                                    <Button variant="outlined" color="error" size="small" sx={{ textTransform: 'none' }}>
+                                    <Button 
+                                        className="btn-reject" 
+                                        size="large" 
+                                        sx={{ mr: 1 }}
+                                    >
                                         Reject
                                     </Button>
-                                    <Button variant="contained" color="success" size="small" sx={{ textTransform: 'none' }}>
+                                    <Button 
+                                        className="btn-approve" 
+                                        size="large" 
+                                    >
                                         Approve
                                     </Button>
                                 </div>
                             </div>
                             
                             <Grid container spacing={3} sx={{ mt: 1 }}>
-                                <Grid item xs={12} md={6}>
+                                <Grid size={6} md={6}>
                                     <Typography variant="subtitle2" sx={{ color: '#94A3B8', mb: 1 }}>KTP / ID Card</Typography>
                                     <div className="verification-image-container">
                                         <img 
-                                            src={latestVerification.ktp_path ? `/storage/${latestVerification.ktp_path}` : '/images/placeholder-id.png'} 
+                                            src={latestVerification.ktp_path ? getVerificationImageUrl('ktp') : '/images/placeholder-id.png'} 
                                             alt="KTP" 
                                             className="verification-img"
                                         />
                                     </div>
                                 </Grid>
-                                <Grid item xs={12} md={6}>
+                                <Grid size={6} md={6}>
                                     <Typography variant="subtitle2" sx={{ color: '#94A3B8', mb: 1 }}>Selfie</Typography>
                                     <div className="verification-image-container">
                                         <img 
-                                            src={latestVerification.selfie_path ? `/storage/${latestVerification.selfie_path}` : '/images/placeholder-selfie.png'} 
+                                            src={latestVerification.selfie_path ? getVerificationImageUrl('selfie') : '/images/placeholder-selfie.png'} 
                                             alt="Selfie" 
                                             className="verification-img"
                                         />
