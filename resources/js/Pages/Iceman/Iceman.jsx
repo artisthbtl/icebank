@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import heroImage from '../../Assets/IcebankHero.png';
-import '../../../css/landingPage.css';
+import '../../../css/LandingPage.css';
 import { Link } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
