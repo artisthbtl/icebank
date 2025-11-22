@@ -10,7 +10,7 @@ use App\Http\Controllers\API\SubscribeController;
 use App\Http\Controllers\API\TransactionHistoryController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
-use App\Http\Controllers\IcemanAuthController;
+use App\Http\Controllers\API\IcemanAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/auth/verify-email-update/{user}', [UserController::class, 'verifyEmailUpdate'])->middleware('signed')->name('auth.verify-update');
@@ -89,5 +89,13 @@ Route::prefix('iceman')->group(function () {
         Route::get('/dashboard', function () {
             return inertia('Iceman/DashboardPage');
         })->name('iceman.dashboard');
+
+        Route::get('/services', function () {
+            return inertia('Iceman/ManageServicesPage');
+        })->name('iceman.services');
+
+        Route::get('/users', function () {
+            return inertia('Iceman/ManageUsersPage');
+        })->name('iceman.users');
     });
 });

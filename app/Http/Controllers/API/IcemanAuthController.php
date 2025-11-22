@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Models\Iceman;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
 use App\Http\Requests\V1\LoginRequest;
 use App\Http\Requests\V1\VerifyOtpRequest;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
