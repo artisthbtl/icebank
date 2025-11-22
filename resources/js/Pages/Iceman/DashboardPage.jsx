@@ -1,9 +1,9 @@
 import React from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Container, Box, Typography, Button, Grid } from '@mui/material';
-import IcemanNavbar from '@/Components/IcemanNavbar';
+import { Container, Box, Typography, Button, Grid } from '@mui/material'; // Note: Ensure you have Grid v2 or Grid if using MUI v5/v6
 import PeopleIcon from '@mui/icons-material/People';
 import DesignServicesIcon from '@mui/icons-material/DesignServices';
+import IcemanNavbar from '@/Components/IcemanNavbar';
 import '../../../css/IcemanDashboardPage.css'; 
 
 export default function DashboardPage() {
@@ -53,9 +53,9 @@ export default function DashboardPage() {
                                 </div>
                                 <h2 className="iceman-card-title">Manage Services</h2>
                                 <p className="iceman-card-description">
-                                    Configure subscription plans, update service details, and pricing.
+                                    Manage companies, services, and subscription plans.
                                 </p>
-                                <Link href={route('iceman.services')} style={{ width: '100%', textDecoration: 'none' }}>
+                                <Link href={route('iceman.companies.index')} style={{ width: '100%', textDecoration: 'none' }}>
                                     <Button 
                                         variant="contained" 
                                         className="iceman-action-btn"

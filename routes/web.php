@@ -11,6 +11,7 @@ use App\Http\Controllers\API\TransactionHistoryController;
 use App\Http\Controllers\API\V1\TransactionController;
 use App\Http\Controllers\API\V1\SubscriptionController;
 use App\Http\Controllers\API\IcemanAuthController;
+use App\Http\Controllers\API\IcemanManageServicesController;
 use App\Http\Controllers\API\IcemanUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -103,5 +104,18 @@ Route::prefix('iceman')->group(function () {
             ->name('iceman.verifications.approve');
         Route::post('/verifications/{verification}/reject', [IcemanUserController::class, 'rejectVerification'])
             ->name('iceman.verifications.reject');
+
+        Route::get('/companies', [IcemanManageServicesController::class, 'index'])->name('iceman.companies.index');
+        Route::post('/companies', [IcemanManageServicesController::class, 'storeCompany'])->name('iceman.companies.store');
+        Route::post('/companies/{company}', [IcemanManageServicesController::class, 'updateCompany'])->name('iceman.companies.update');
+
+        Route::get('/companies/{company}', [IcemanManageServicesController::class, 'showCompany'])->name('iceman.companies.show');
+        Route::post('/companies/{company}/services', [IcemanManageServicesController::class, 'storeService'])->name('iceman.services.store');
+        
+        Route::get('/services/{service}', [IcemanManageServicesController::class, 'showService'])->name('iceman.services.show');
+        Route::post('/services/{service}', [IcemanManageServicesController::class, 'updateService'])->name('iceman.services.update');
+        
+        Route::post('/services/{service}/plans', [IcemanManageServicesController::class, 'storePlan'])->name('iceman.plans.store');
+        Route::post('/plans/{plan}', [IcemanManageServicesController::class, 'updatePlan'])->name('iceman.plans.update');
     });
 });

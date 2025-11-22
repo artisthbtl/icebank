@@ -1,0 +1,166 @@
+.iceman-companies-page-wrapper {
+    min-height: 100vh;
+    background-color: #0F172A;
+    padding-bottom: 4rem;
+}
+
+.iceman-companies-content-container {
+    padding-top: 2rem;
+}
+
+.iceman-companies-header-section {
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.page-title {
+    color: #F1F5F9;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.page-subtitle {
+    color: #94A3B8;
+}
+
+.companies-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1E293B;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    border: 1px solid #334155;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #0F172A;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    width: 300px;
+    border: 1px solid #334155;
+}
+
+.search-icon {
+    color: #64748B;
+    margin-right: 0.75rem;
+}
+
+.search-input {
+    width: 100%;
+}
+
+.search-input input {
+    color: #E2E8F0 !important;
+    font-size: 0.95rem;
+}
+
+.add-company-btn {
+    background-color: #38BDF8 !important;
+    color: #0F172A !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    padding: 6px 16px !important;
+}
+
+.add-company-btn:hover {
+    background-color: #0EA5E9 !important;
+}
+
+.company-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.company-item {
+    background-color: #1E293B;
+    border-radius: 12px;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid #334155;
+    transition: all 0.2s ease;
+}
+
+.company-item:hover {
+    border-color: #475569;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.company-info-group {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.company-logo {
+    width: 56px !important;
+    height: 56px !important;
+    background-color: #334155 !important;
+    font-size: 1.5rem !important;
+    color: #CBD5E1 !important;
+    border-radius: 12px !important;
+}
+
+.company-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.company-name {
+    color: #F1F5F9;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+}
+
+.company-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+}
+
+.service-count-badge {
+    background-color: #0F172A;
+    color: #94A3B8;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid #334155;
+}
+
+.company-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.edit-btn {
+    color: #94A3B8 !important;
+    border-color: #475569 !important;
+}
+
+.edit-btn:hover {
+    color: #E2E8F0 !important;
+    border-color: #64748B !important;
+    background-color: #334155 !important;
+}
+
+.manage-services-btn {
+    color: #38BDF8 !important; /* Sky 400 */
+    border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.manage-services-btn:hover {
+    background-color: rgba(56, 189, 248, 0.1) !important;
+    border-color: #38BDF8 !important;
+}
