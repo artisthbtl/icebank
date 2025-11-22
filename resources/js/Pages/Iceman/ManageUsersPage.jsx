@@ -1,6 +1,6 @@
 import React from 'react';
-import { Head, usePage, Link } from '@inertiajs/react';
-import { Container, Box, Typography, Button, Avatar, Chip } from '@mui/material';
+import { Head, usePage, Link, router } from '@inertiajs/react';
+import { Container, Box, Typography, Button, Avatar, Chip, Pagination } from '@mui/material';
 import IcemanNavbar from '@/Components/IcemanNavbar';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -8,6 +8,10 @@ import '../../../css/IcemanManageUsersPage.css';
 
 export default function ManageUsersPage() {
     const { users } = usePage().props;
+
+    const handlePageChange = (event, value) => {
+        router.get(window.location.pathname, { page: value }, { preserveState: true });
+    };
 
     return (
         <>
@@ -27,9 +31,9 @@ export default function ManageUsersPage() {
                     </Box>
 
                     <Box className="user-list-container">
-                        {users.length > 0 ? (
+                        {users.data && users.data.length > 0 ? (
                             <div className="user-list">
-                                {users.map((user) => {
+                                {users.data.map((user) => {
                                     const isPending = user.latest_verification_status === 'pending';
                                     
                                     return (
@@ -79,6 +83,17 @@ export default function ManageUsersPage() {
                         ) : (
                             <Box sx={{ textAlign: 'center', py: 8, color: '#64748B' }}>
                                 <Typography variant="h6">No users found.</Typography>
+                            </Box>
+                        )}
+
+                        {users.last_page > 1 && (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                                <Pagination 
+                                    count={users.last_page} 
+                                    page={users.current_page} 
+                                    onChange={handlePageChange}
+                                    color="primary"
+                                />
                             </Box>
                         )}
                     </Box>

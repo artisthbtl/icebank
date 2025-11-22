@@ -19,7 +19,7 @@ export default function IcemanNavbar() {
                             component="div"
                             className="dashboard-logo-text"
                         >
-                            Icebank
+                            Iceman
                         </Typography>
                     </Link>
 

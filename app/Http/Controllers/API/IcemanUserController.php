@@ -15,21 +15,22 @@ class IcemanUserController extends Controller
 {
     public function index()
     {
-        $users = User::with('verifications')->get();
+        $users = User::with('verifications')
+            ->withCount(['verifications as has_pending' => function ($query) {
+                $query->where('status', 'pending');
+            }])
+            ->orderByDesc('has_pending')
+            ->latest()
+            ->paginate(10);
 
-        $sortedUsers = $users->sortByDesc(function ($user) {
-            $latestVerification = $user->verifications->sortByDesc('created_at')->first();
-            return $latestVerification && $latestVerification->status === 'pending';
-        })->values();
-
-        $sortedUsers->transform(function ($user) {
+        $users->through(function ($user) {
             $latest = $user->verifications->sortByDesc('created_at')->first();
             $user->latest_verification_status = $latest ? $latest->status : null;
             return $user;
         });
 
         return inertia('Iceman/ManageUsersPage', [
-            'users' => $sortedUsers
+            'users' => $users
         ]);
     }
 
@@ -46,7 +47,9 @@ class IcemanUserController extends Controller
             ->take(5)
             ->get();
 
-        $transactions = Transaction::where('account_id', $user->account?->id)
+        $accountId = $user->account?->id ?? -1;
+
+        $transactions = Transaction::where('account_id', $accountId)
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -98,14 +101,18 @@ class IcemanUserController extends Controller
             'rejection_reason' => ['required', 'string', 'max:1000'],
         ]);
 
-        $verification->update([
-            'status' => 'rejected',
-            'rejection_reason' => $validated['rejection_reason'],
-        ]);
-        
-        $verification->user->account()->update([
-            'is_verified' => 'no'
-        ]);
+        DB::transaction(function () use ($verification, $validated) {
+            $verification->update([
+                'status' => 'rejected',
+                'rejection_reason' => $validated['rejection_reason'],
+            ]);
+            
+            if ($verification->user->account) {
+                $verification->user->account()->update([
+                    'is_verified' => 'no'
+                ]);
+            }
+        });
 
         return redirect()->back()->with('success', 'User verification rejected.');
     }

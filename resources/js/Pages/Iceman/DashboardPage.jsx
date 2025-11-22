@@ -17,9 +17,9 @@ export default function DashboardPage() {
                 <Container maxWidth="md" className="dashboard-content-container">
                     <Box sx={{ mb: 4 }}>
                         <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', mb: 1 }}>
-                            Overview
+                            Admin Page
                         </Typography>
-                        <Typography variant="body1" color="text.secondary">
+                        <Typography variant="body1">
                             Manage the Icebank system resources.
                         </Typography>
                     </Box>
