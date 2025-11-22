@@ -3,6 +3,8 @@
 namespace App\Http\Requests\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Enums\V1\CompanyTypeEnum;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateServiceRequest extends FormRequest
 {
@@ -11,12 +13,21 @@ class UpdateServiceRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('description')) {
+            $this->merge([
+                'description' => strip_tags($this->description),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'name' => 'sometimes|string|max:255',
-            'type' => 'sometime|string|max:255',
-            'description' => 'sometimes|string',
+            'type' => ['sometimes', new Enum(CompanyTypeEnum::class)],
+            'description' => 'sometimes|nullable|string',
         ];
     }
 }

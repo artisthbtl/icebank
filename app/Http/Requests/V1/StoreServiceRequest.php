@@ -12,13 +12,21 @@ class StoreServiceRequest extends FormRequest
     {
         return true;
     }
+    
+    protected function prepareForValidation()
+    {
+        if ($this->has('description')) {
+            $this->merge([
+                'description' => strip_tags($this->description),
+            ]);
+        }
+    }
 
     public function rules(): array
     {
         return [
-            'companyId' => 'required|exists:companies,id',
             'name' => 'required|string|max:255',
-            'type' => ['nullable', new Enum(CompanyTypeEnum::class)],
+            'type' => ['required', new Enum(CompanyTypeEnum::class)],
             'description' => 'nullable|string',
         ];
     }

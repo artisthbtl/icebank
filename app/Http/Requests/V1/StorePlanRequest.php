@@ -11,13 +11,19 @@ class StorePlanRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        if ($this->has('name')) {
+            $this->merge(['name' => strip_tags($this->name)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
-            'serviceId' => 'required|exists:services,id',
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:1',
-            'duration' => 'required|integer|min:1',
+            'name'     => 'required|string|max:255',
+            'price'    => 'required|numeric|min:1|max:100000', 
+            'duration' => 'required|integer|min:1|max:3650',
         ];
     }
 }
